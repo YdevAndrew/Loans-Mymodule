@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.LoanRequestFormController">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.LoanRequestFormController">
    <children>
       <Label layoutX="305.0" layoutY="14.0" text="Formulario de solicitud">
          <font>
             <Font size="34.0" />
          </font>
       </Label>
-      <Separator layoutX="20.0" layoutY="66.0" prefHeight="3.0" prefWidth="960.0" />
-      <VBox layoutX="20.0" layoutY="69.0" prefHeight="607.0" prefWidth="960.0">
+      <Separator layoutX="60.0" layoutY="63.0" prefHeight="3.0" prefWidth="960.0" />
+      <VBox layoutX="60.0" layoutY="78.0" prefHeight="607.0" prefWidth="960.0">
          <children>
             <Label text="1. Ingresa tus datos personales:">
                <opaqueInsets>
@@ -229,7 +229,7 @@
                   <Insets top="30.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Guardar">
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSaveOnAction" prefHeight="50.0" prefWidth="250.0" text="Guardar">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -237,7 +237,7 @@
                         <Insets left="115.0" right="115.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnSend" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Enviar">
+                  <Button fx:id="btnSend" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="50.0" prefWidth="250.0" text="Enviar">
                      <font>
                         <Font size="20.0" />
                      </font>
