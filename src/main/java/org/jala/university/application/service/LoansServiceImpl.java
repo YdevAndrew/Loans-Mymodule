@@ -1,22 +1,24 @@
 package org.jala.university.application.service;
 
-import org.jala.university.application.dto.SampleEntityDto;
-import org.jala.university.application.mapper.SampleEntityMapper;
-import org.jala.university.domain.entity.SampleEntity;
-import org.jala.university.domain.repository.SampleEntityRepository;
+import org.jala.university.application.dto.LoanRequestFormDto;
+import org.jala.university.application.mapper.LoanRequestFormMapper;
+import org.jala.university.domain.entity.LoanRequestFormEntity;
+import org.jala.university.domain.repository.LoanRequestFormRepository;
 
 public class LoansServiceImpl implements LoansService {
-    private final SampleEntityRepository sampleEntityRepository;
-    private final SampleEntityMapper sampleEntityMapper;
+    private final LoanRequestFormMapper loanRequestFormMapper;
+    private final LoanRequestFormRepository loanRequestFormRepository;
 
-    public LoansServiceImpl(SampleEntityRepository sampleEntityRepository, SampleEntityMapper sampleEntityMapper) {
-        this.sampleEntityRepository = sampleEntityRepository;
-        this.sampleEntityMapper = sampleEntityMapper;
+    public LoansServiceImpl(LoanRequestFormMapper loanRequestFormMapper, LoanRequestFormRepository loanRequestFormRepository) {
+        this.loanRequestFormMapper = loanRequestFormMapper;
+        this.loanRequestFormRepository = loanRequestFormRepository;
     }
     // Here should be added all the functionality to handle the business logic
+
     @Override
-    public SampleEntityDto doSomething(SampleEntityDto sampleEntityDto) {
-        SampleEntity saved = sampleEntityRepository.save(sampleEntityMapper.mapFrom(sampleEntityDto));
-        return sampleEntityMapper.mapTo(saved);
+    public LoanRequestFormDto saveForm(LoanRequestFormDto loanRequestFormDto) {
+        LoanRequestFormEntity loanRequestFormEntity = loanRequestFormMapper.mapFrom(loanRequestFormDto);
+        LoanRequestFormEntity saved = loanRequestFormRepository.save(loanRequestFormEntity);
+        return loanRequestFormMapper.mapTo(saved);
     }
 }

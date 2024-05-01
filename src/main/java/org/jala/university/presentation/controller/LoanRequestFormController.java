@@ -2,14 +2,19 @@ package org.jala.university.presentation.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import org.jala.university.ServiceFactory;
 import org.jala.university.application.dto.LoanRequestFormDto;
+import org.jala.university.application.service.LoansService;
 
 
 import java.math.BigDecimal;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class LoanRequestFormController {
+public class LoanRequestFormController implements Initializable {
     @FXML
     private TextField txtNames;
 
@@ -37,17 +42,21 @@ public class LoanRequestFormController {
     @FXML
     private TextField txtDesiredLoanPeriod;
 
+    LoansService loansService;
+
+    public LoanRequestFormController() {
+        this.loansService = ServiceFactory.loansService();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    }
+
     public void btnSaveOnAction(ActionEvent actionEvent) {
         if (validateInput()) {
-            String address = txtStreetAndNumber.getText() + ", " + txtColony.getText() + ", " + txtState.getText() + ", " +txtCity.getText();
-            LoanRequestFormDto loanRequestFormDto = LoanRequestFormDto.builder()
-              .namesApplicant(txtNames.getText())
-              .lastnamesApplicant(txtLastnames.getText())
-              .address(address)
-              .monthlyIncome(new BigDecimal(txtMonthlyIncome.getText()))
-              .loanAmount( new BigDecimal(txtLoanAmount.getText()))
-              .desiredLoanPeriod(Integer.parseInt(txtDesiredLoanPeriod.getText()))
-              .build();
+            LoanRequestFormDto loanRequestFormDto = createLoanRequestFormDto();
+            loansService.saveForm(loanRequestFormDto);
         }
     }
 
@@ -63,28 +72,43 @@ public class LoanRequestFormController {
             || txtState.getText().isEmpty() || txtCity.getText().isEmpty()
             || txtMonthlyIncome.getText().isEmpty() || txtLoanAmount.getText().isEmpty()
             || txtDesiredLoanPeriod.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setContentText("Ningún campo debe estar vacío");
-            alert.show();
 
+            showErrorAlert("Ningún campo debe estar vacío");
             result = false;
-        }
 
-        try {
-            Double.parseDouble(txtLoanAmount.getText());
-            Double.parseDouble(txtMonthlyIncome.getText());
-            Integer.parseInt(txtDesiredLoanPeriod.getText());
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setContentText("Los campos para los ingresos mensuales, el monto del prestamo y el plazo de pago deseado deben ser solo números.");
-            alert.show();
-            result = false;
+        } else {
+            try {
+                Double.parseDouble(txtLoanAmount.getText());
+                Double.parseDouble(txtMonthlyIncome.getText());
+                Integer.parseInt(txtDesiredLoanPeriod.getText());
+            } catch (NumberFormatException e) {
+                showErrorAlert("Los campos para los ingresos mensuales, el monto del prestamo y el plazo de pago deseado deben ser solo números.");
+                result = false;
+            }
         }
 
         return result;
     }
 
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
 
+    private LoanRequestFormDto createLoanRequestFormDto() {
+        String address = txtStreetAndNumber.getText() + ", " + txtColony.getText() + ", " + txtState.getText() + ", " +txtCity.getText();
+
+        LoanRequestFormDto loanRequestFormDto = LoanRequestFormDto.builder()
+          .namesApplicant(txtNames.getText())
+          .lastnamesApplicant(txtLastnames.getText())
+          .address(address)
+          .monthlyIncome(new BigDecimal(txtMonthlyIncome.getText()))
+          .loanAmount( new BigDecimal(txtLoanAmount.getText()))
+          .desiredLoanPeriod(Integer.parseInt(txtDesiredLoanPeriod.getText()))
+          .build();
+
+        return loanRequestFormDto;
+    }
 }

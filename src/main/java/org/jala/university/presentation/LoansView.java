@@ -5,12 +5,12 @@ import org.jala.university.commons.presentation.View;
 
 @Getter
 public enum LoansView {
-    MAIN("main-view.fxml");
+    MAIN("main-view.fxml"),
+    LOAN_REQUEST_VIEW("loan-request-form-view.fxml");
 
     private final View view;
 
     LoansView(String fileName) {
         this.view = new View(fileName);
     }
-
 }

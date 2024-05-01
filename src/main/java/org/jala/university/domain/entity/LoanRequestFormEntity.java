@@ -1,7 +1,9 @@
 package org.jala.university.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import org.jala.university.commons.domain.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,11 +14,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@Table(name = "loan_request_form")
 public class LoanRequestFormEntity implements BaseEntity<UUID> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
     UUID id;
 
     @Column

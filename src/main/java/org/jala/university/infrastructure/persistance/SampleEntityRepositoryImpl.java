@@ -8,7 +8,7 @@ import org.jala.university.domain.repository.SampleEntityRepository;
 import java.util.UUID;
 
 public class SampleEntityRepositoryImpl extends CrudRepository<SampleEntity, UUID> implements SampleEntityRepository {
-    protected SampleEntityRepositoryImpl(EntityManager entityManager) {
+    public SampleEntityRepositoryImpl(EntityManager entityManager) {
         super(SampleEntity.class, entityManager);
     }
 }
