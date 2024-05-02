@@ -8,13 +8,14 @@ import javafx.scene.control.TextField;
 import org.jala.university.ServiceFactory;
 import org.jala.university.application.dto.LoanRequestFormDto;
 import org.jala.university.application.service.LoansService;
+import org.jala.university.commons.presentation.BaseController;
 
 
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoanRequestFormController implements Initializable {
+public class LoanRequestFormController extends BaseController implements Initializable {
     @FXML
     private TextField txtNames;
 
