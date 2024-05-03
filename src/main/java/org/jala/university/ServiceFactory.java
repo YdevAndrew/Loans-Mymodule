@@ -1,14 +1,10 @@
 package org.jala.university;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.jala.university.application.mapper.LoanRequestFormMapper;
 import org.jala.university.application.service.LoansService;
 import org.jala.university.application.service.LoansServiceImpl;
 import org.jala.university.domain.repository.LoanRequestFormRepository;
-import org.jala.university.infrastructure.persistance.LoanRequestFormMock;
-import org.jala.university.infrastructure.persistance.LoanRequestFormRepositoryImpl;
+import org.jala.university.infrastructure.persistance.mocks.LoanRequestFormMock;
 
 public class ServiceFactory {
     private static LoansService service;

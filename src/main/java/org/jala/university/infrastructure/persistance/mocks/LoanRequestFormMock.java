@@ -1,6 +1,5 @@
-package org.jala.university.infrastructure.persistance;
+package org.jala.university.infrastructure.persistance.mocks;
 
-import org.jala.university.commons.domain.Repository;
 import org.jala.university.domain.entity.LoanRequestFormEntity;
 import org.jala.university.domain.repository.LoanRequestFormRepository;
 
