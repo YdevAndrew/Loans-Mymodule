@@ -57,7 +57,12 @@ public class LoanRequestFormController extends BaseController implements Initial
     public void btnSaveOnAction(ActionEvent actionEvent) {
         if (validateInput()) {
             LoanRequestFormDto loanRequestFormDto = createLoanRequestFormDto();
-            loansService.saveForm(loanRequestFormDto);
+            LoanRequestFormDto saved = loansService.saveForm(loanRequestFormDto);
+            if (saved != null) {
+                showInformationAlert("Loan request successfully saved");
+            } else {
+                showErrorAlert("Error saving the request");
+            }
         }
     }
 
@@ -98,10 +103,17 @@ public class LoanRequestFormController extends BaseController implements Initial
         alert.show();
     }
 
+    private void showInformationAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
     private LoanRequestFormDto createLoanRequestFormDto() {
         String address = txtStreetAndNumber.getText() + ", " + txtColony.getText() + ", " + txtState.getText() + ", " +txtCity.getText();
 
-        LoanRequestFormDto loanRequestFormDto = LoanRequestFormDto.builder()
+        return LoanRequestFormDto.builder()
           .namesApplicant(txtNames.getText())
           .lastnamesApplicant(txtLastnames.getText())
           .address(address)
@@ -109,7 +121,5 @@ public class LoanRequestFormController extends BaseController implements Initial
           .loanAmount( new BigDecimal(txtLoanAmount.getText()))
           .desiredLoanPeriod(Integer.parseInt(txtDesiredLoanPeriod.getText()))
           .build();
-
-        return loanRequestFormDto;
     }
 }
