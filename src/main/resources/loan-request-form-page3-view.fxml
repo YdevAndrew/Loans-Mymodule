@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.LoanRequestFormPage3Controller">
    <children>
       <Label layoutX="356.0" layoutY="35.0" text="Formulario de solicitud">
@@ -39,12 +38,12 @@
                   <Font name="System Italic" size="22.0" />
                </font>
                <VBox.margin>
-                  <Insets left="125.0" top="30.0" />
+                  <Insets left="125.0" top="20.0" />
                </VBox.margin>
             </Label>
             <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label prefHeight="21.0" prefWidth="400.0" text="Identificacion oficial (Área frontal):">
+                  <Label prefHeight="21.0" prefWidth="400.0" text="Identificacion oficial (Ambos lados):">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -62,30 +61,7 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets top="30.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="55.0" prefWidth="958.0">
-               <children>
-                  <Label prefHeight="21.0" prefWidth="400.0" text="Identificacion oficial (Área posterior):">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="75.0" top="15.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="50.0" top="12.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-               <VBox.margin>
-                  <Insets top="30.0" />
+                  <Insets top="20.0" />
                </VBox.margin>
             </HBox>
             <HBox prefHeight="55.0" prefWidth="960.0">
@@ -108,17 +84,17 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets top="30.0" />
+                  <Insets top="20.0" />
                </VBox.margin>
             </HBox>
             <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label prefHeight="21.0" prefWidth="400.0" text="Comprobante de ingresos:">
+                  <Label prefHeight="46.0" prefWidth="400.0" text="Comprobante de ingresos (Papeletas de pago):" wrapText="true">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="75.0" top="15.0" />
+                        <Insets left="75.0" top="5.0" />
                      </HBox.margin>
                   </Label>
                   <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="320.0" text="Selecciona un archivo">
@@ -131,7 +107,53 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets top="30.0" />
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="55.0" prefWidth="958.0">
+               <children>
+                  <Label prefHeight="21.0" prefWidth="400.0" text="Certificado de trabajo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="75.0" top="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="50.0" top="12.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="55.0" prefWidth="958.0">
+               <children>
+                  <Label prefHeight="21.0" prefWidth="400.0" text="Comprobante de antiguedad laboral:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="75.0" top="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="50.0" top="12.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
                </VBox.margin>
             </HBox>
             <Separator prefWidth="200.0">
@@ -159,7 +181,7 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </HBox>
          </children>

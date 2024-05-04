@@ -11,7 +11,7 @@ public class MainView extends Application {
     public void start(Stage primaryStage) {
         Scene scene = new Scene(new Pane());
         ViewSwitcher.setup(primaryStage, scene);
-        ViewSwitcher.switchTo(LoansView.LOAN_REQUEST_VIEW.getView());
+        ViewSwitcher.switchTo(LoansView.LOAN_REQUEST_VIEW_PAGE1.getView());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Loans Module Application");
         primaryStage.show();

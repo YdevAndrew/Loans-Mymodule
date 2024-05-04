@@ -42,7 +42,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLastnames" prefHeight="30.0" prefWidth="340.0">
+                  <TextField fx:id="txtNames" prefHeight="30.0" prefWidth="340.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -55,7 +55,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLastnames1" prefHeight="30.0" prefWidth="342.0">
+                  <TextField fx:id="txtLastnames" prefHeight="30.0" prefWidth="342.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -75,12 +75,12 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount" prefHeight="30.0" prefWidth="369.0">
+                  <TextField fx:id="txtIdCode" prefHeight="30.0" prefWidth="369.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
-                  <DatePicker editable="false" prefHeight="33.0" prefWidth="307.0" promptText="Fecha de Nacimiento" style="-fx-font-size: 18;">
+                  <DatePicker fx:id="dpBirthDay" editable="false" prefHeight="33.0" prefWidth="307.0" promptText="Fecha de Nacimiento" style="-fx-font-size: 18;">
                      <HBox.margin>
                         <Insets left="50.0" top="12.0" />
                      </HBox.margin>
@@ -100,7 +100,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount1" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtEmail" prefHeight="30.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -113,7 +113,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount11" prefHeight="29.0" prefWidth="300.0">
+                  <TextField fx:id="txtPhone" prefHeight="29.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets top="12.0" />
                      </HBox.margin>
@@ -144,7 +144,7 @@
                         <Insets left="35.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount2" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtStreetAndNumber" prefHeight="30.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -157,7 +157,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount21" prefHeight="30.0" prefWidth="281.0">
+                  <TextField fx:id="txtColony" prefHeight="30.0" prefWidth="281.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -177,7 +177,7 @@
                         <Insets left="35.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtDesiredLoanPeriod" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtState" prefHeight="30.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets left="30.0" top="12.0" />
                      </HBox.margin>
@@ -190,7 +190,7 @@
                         <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtDesiredLoanPeriod1" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtCity" prefHeight="30.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
@@ -210,7 +210,7 @@
                   <Insets top="20.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="btnSend" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="50.0" prefWidth="250.0" text="Siguiente">
+                  <Button fx:id="btnNext" mnemonicParsing="false" onAction="#btnNextOnAction" prefHeight="50.0" prefWidth="250.0" text="Siguiente">
                      <font>
                         <Font size="20.0" />
                      </font>

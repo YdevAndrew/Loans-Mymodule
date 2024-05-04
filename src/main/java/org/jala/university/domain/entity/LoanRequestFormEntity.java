@@ -4,13 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 import org.jala.university.commons.domain.BaseEntity;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Blob;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -22,30 +20,55 @@ public class LoanRequestFormEntity implements BaseEntity<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
     UUID id;
-
     @Column
     String namesApplicant;
-
     @Column
     String lastnamesApplicant;
-
+    @Column
+    String identityCode;
+    @Column
+    LocalDate dateOfBirth;
+    @Column
+    String email;
+    @Column
+    String phoneNumber;
     @Column
     String address;
 
     @Column
+    String employerName;
+    @Column
     BigDecimal monthlyIncome;
-
+    @Column
+    String jobTitle;
+    @Column
+    Integer yearsOfService;
     @Column
     BigDecimal loanAmount;
-
     @Column
-    int desiredLoanPeriod;
+    String loanType;
+    @Column
+    Integer desiredLoanPeriod;
 
-    @CreatedDate
-    Date created;
+    @Lob
+    @Column
+    Blob idCardPDF;
+    @Lob
+    @Column
+    Blob proofAddressPDF;
+    @Lob
+    @Column
+    Blob proofIncomePDF;
+    @Lob
+    @Column
+    Blob laborCertificatePDF;
+    @Lob
+    @Column
+    Blob proofLengthServicePDF;
 
-    @LastModifiedDate
-    Date updated;
+    public LoanRequestFormEntity() {
+        super();
+    }
 
     @Override
     public UUID getId() {

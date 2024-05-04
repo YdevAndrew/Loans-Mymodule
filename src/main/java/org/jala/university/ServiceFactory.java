@@ -20,8 +20,8 @@ public class ServiceFactory {
         // EntityManager entityManager = entityManagerFactory.createEntityManager();
         // LoanRequestFormRepository loanRequestFormRepository = new LoanRequestFormRepositoryImpl(entityManager);
         LoanRequestFormRepository loanRequestFormRepository = new LoanRequestFormMock();
-        LoanRequestFormMapper accountMapper = new LoanRequestFormMapper();
-        service = new LoansServiceImpl(accountMapper, loanRequestFormRepository);
+        LoanRequestFormMapper loanRequestFormMapper = new LoanRequestFormMapper();
+        service = new LoansServiceImpl(loanRequestFormMapper, loanRequestFormRepository);
         return service;
     }
 }
