@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoanRequestFormController extends BaseController implements Initializable {
+public class LoanRequestFormPage1Controller extends BaseController implements Initializable {
     @FXML
     private TextField txtNames;
 
@@ -45,7 +45,7 @@ public class LoanRequestFormController extends BaseController implements Initial
 
     LoansService loansService;
 
-    public LoanRequestFormController() {
+    public LoanRequestFormPage1Controller() {
         this.loansService = ServiceFactory.loansService();
     }
 

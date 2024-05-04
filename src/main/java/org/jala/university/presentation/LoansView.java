@@ -6,7 +6,7 @@ import org.jala.university.commons.presentation.View;
 @Getter
 public enum LoansView {
     MAIN("main-view.fxml"),
-    LOAN_REQUEST_VIEW("loan-request-form-view.fxml");
+    LOAN_REQUEST_VIEW("loan-request-form-page1-view.fxml");
 
     private final View view;
 
