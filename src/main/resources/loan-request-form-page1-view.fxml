@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
@@ -12,148 +13,107 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.LoanRequestFormPage1Controller">
    <children>
-      <Label layoutX="305.0" layoutY="14.0" text="Formulario de solicitud">
+      <Label layoutX="346.0" layoutY="29.0" text="Formulario de solicitud">
          <font>
             <Font size="34.0" />
          </font>
       </Label>
-      <Separator layoutX="60.0" layoutY="63.0" prefHeight="3.0" prefWidth="960.0" />
-      <VBox layoutX="60.0" layoutY="78.0" prefHeight="607.0" prefWidth="960.0">
+      <Separator layoutX="60.0" layoutY="77.0" prefHeight="3.0" prefWidth="960.0" />
+      <VBox layoutX="60.0" layoutY="91.0" prefHeight="580.0" prefWidth="960.0">
          <children>
-            <Label text="1. Ingresa tus datos personales:">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="36.0" prefWidth="470.0" text="Datos personales del solicitante:" textAlignment="CENTER">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
-               <padding>
-                  <Insets left="25.0" top="10.0" />
-               </padding>
                <font>
-                  <Font size="22.0" />
+                  <Font size="26.0" />
                </font>
+               <VBox.margin>
+                  <Insets left="245.0" top="15.0" />
+               </VBox.margin>
             </Label>
             <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label text="Nombre(s):">
+                  <Label prefHeight="21.0" prefWidth="105.0" text="Nombre(s):">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="35.0" top="15.0" />
+                        <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtNames" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtLastnames" prefHeight="30.0" prefWidth="340.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
-                  <Label text="Apellidos:">
-                     <HBox.margin>
-                        <Insets left="50.0" top="15.0" />
-                     </HBox.margin>
+                  <Label prefHeight="21.0" prefWidth="88.0" text="Apellidos:">
                      <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txtLastnames" prefHeight="30.0" prefWidth="300.0">
-                     <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
-                     </HBox.margin>
-                  </TextField>
-               </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <Label text="Coloca los detalles de tu dirección:">
-               <font>
-                  <Font size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="35.0" top="15.0" />
-               </VBox.margin>
-            </Label>
-            <HBox prefHeight="55.0" prefWidth="200.0">
-               <children>
-                  <Label text="Calle y numero de casa:">
-                     <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="35.0" top="15.0" />
+                        <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtStreetAndNumber" prefHeight="31.0" prefWidth="300.0">
-                     <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <Label text="Colonia:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="35.0" top="15.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="txtColony" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtLastnames1" prefHeight="30.0" prefWidth="342.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
                </children>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="15.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="55.0" prefWidth="200.0">
+            <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label text="Estado:">
+                  <Label text="Código de Identidad:">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                      </font>
-                     <padding>
-                        <Insets left="35.0" top="15.0" />
-                     </padding>
+                     <HBox.margin>
+                        <Insets left="30.0" top="15.0" />
+                     </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtState" prefHeight="31.0" prefWidth="300.0">
+                  <TextField fx:id="txtLoanAmount" prefHeight="30.0" prefWidth="369.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
-                  <Label text="Ciudad:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <padding>
-                        <Insets left="35.0" top="15.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="txtCity" prefHeight="30.0" prefWidth="300.0">
+                  <DatePicker editable="false" prefHeight="33.0" prefWidth="307.0" promptText="Fecha de Nacimiento" style="-fx-font-size: 18;">
                      <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
+                        <Insets left="50.0" top="12.0" />
                      </HBox.margin>
-                  </TextField>
+                  </DatePicker>
                </children>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
             </HBox>
-            <HBox prefHeight="55.0" prefWidth="200.0">
+            <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label text="¿Cuáles son tus ingresos económicos mensuales?">
+                  <Label prefHeight="21.0" prefWidth="185.0" text="Correo electrónico:">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="35.0" top="15.0" />
+                        <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <Label text="\$">
+                  <TextField fx:id="txtLoanAmount1" prefHeight="30.0" prefWidth="300.0">
+                     <HBox.margin>
+                        <Insets left="10.0" top="12.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label prefHeight="21.0" prefWidth="100.0" text="Telefono:">
                      <font>
-                        <Font size="26.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="25.0" top="10.0" />
+                        <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtMonthlyIncome" prefHeight="31.0" prefWidth="300.0">
+                  <TextField fx:id="txtLoanAmount11" prefHeight="29.0" prefWidth="300.0">
                      <HBox.margin>
                         <Insets top="12.0" />
                      </HBox.margin>
@@ -163,55 +123,55 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </HBox>
-            <Separator prefWidth="200.0">
-               <VBox.margin>
-                  <Insets top="15.0" />
-               </VBox.margin>
-            </Separator>
-            <Label text="2. Ingresa los detalles del préstamo a solicitar:">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="36.0" prefWidth="490.0" text="Coloca los detalles de tu direccion:" textAlignment="CENTER">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
-               <padding>
-                  <Insets left="25.0" top="10.0" />
-               </padding>
                <font>
-                  <Font size="22.0" />
+                  <Font size="24.0" />
                </font>
                <VBox.margin>
-                  <Insets top="15.0" />
+                  <Insets left="235.0" top="30.0" />
                </VBox.margin>
             </Label>
             <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label text="Monto del prestamo">
+                  <Label text="Calle y numero de casa">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="35.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <Label text="\$">
+                  <TextField fx:id="txtLoanAmount2" prefHeight="30.0" prefWidth="300.0">
+                     <HBox.margin>
+                        <Insets left="10.0" top="12.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label text="Colonia:">
                      <font>
-                        <Font size="26.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="30.0" top="10.0" />
+                        <Insets left="30.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtLoanAmount" prefHeight="30.0" prefWidth="300.0">
+                  <TextField fx:id="txtLoanAmount21" prefHeight="30.0" prefWidth="281.0">
                      <HBox.margin>
                         <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
                </children>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
             </HBox>
             <HBox prefHeight="55.0" prefWidth="958.0">
                <children>
-                  <Label text="Plazo  de pago deseado en meses:">
+                  <Label text="Estado:">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="35.0" top="15.0" />
@@ -222,32 +182,50 @@
                         <Insets left="30.0" top="12.0" />
                      </HBox.margin>
                   </TextField>
+                  <Label text="Ciudad:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="30.0" top="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="txtDesiredLoanPeriod1" prefHeight="30.0" prefWidth="300.0">
+                     <HBox.margin>
+                        <Insets left="10.0" top="12.0" />
+                     </HBox.margin>
+                  </TextField>
                </children>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
             </HBox>
+            <Separator prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Separator>
             <HBox prefHeight="60.0" prefWidth="960.0">
                <VBox.margin>
-                  <Insets top="30.0" />
+                  <Insets top="20.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSaveOnAction" prefHeight="50.0" prefWidth="250.0" text="Guardar">
+                  <Button fx:id="btnSend" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="50.0" prefWidth="250.0" text="Siguiente">
                      <font>
                         <Font size="20.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="115.0" right="115.0" top="5.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="btnSend" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="50.0" prefWidth="250.0" text="Enviar">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="115.0" right="115.0" top="5.0" />
+                        <Insets left="710.0" top="5.0" />
                      </HBox.margin>
                   </Button>
                </children>
             </HBox>
          </children>
       </VBox>
+      <Label alignment="CENTER" layoutX="60.0" layoutY="671.0" text="Pagina 1 de 3">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
