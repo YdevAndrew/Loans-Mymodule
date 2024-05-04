@@ -48,7 +48,7 @@
 
 <Pane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MainViewController">
    <children>
-      <SplitPane dividerPositions="0.3" prefHeight="720.0" prefWidth="1080.0">
+      <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" prefHeight="720.0" prefWidth="1080.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="724.0" prefWidth="653.0" SplitPane.resizableWithParent="false">
                <children>
