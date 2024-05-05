@@ -20,6 +20,10 @@ import java.util.ResourceBundle;
 @EqualsAndHashCode(callSuper = true)
 public class LoanRequestFormPage2Controller extends BaseController implements Initializable {
 
+    private HashMap<String, Object> personalData = new HashMap<>();
+
+    private final ShowAlert showAlert = new ShowAlert();
+
     @FXML
     private TextField txtEmployerName;
 
@@ -41,27 +45,27 @@ public class LoanRequestFormPage2Controller extends BaseController implements In
     @FXML
     private TextField txtDesiredLoanPeriod;
 
-    private HashMap<String, Object> personalData = new HashMap<>();
-
-    private final ShowAlert showAlert = new ShowAlert();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cBoxLoanType.getItems().addAll("Personal", "Estudios", "Hipotecario");
+
         Platform.runLater(() -> {
-            RequestFormViewContext context = (RequestFormViewContext) this.context;
-            if (context != null) {
-                personalData = context.getFormData();
-            } else {
-                showAlert.showErrorAlert("Error al guardar los datos anteriores");
-            }
+
+            new Thread(() -> {
+                RequestFormViewContext context = (RequestFormViewContext) this.context;
+                if (context != null) {
+                    personalData = context.getFormData();
+                } else {
+                    showAlert.showErrorAlert("Error al guardar los datos anteriores");
+                }
+            }).start();
+
         });
     }
 
     @FXML
     private void btnNext2OnAction(ActionEvent event) {
-        boolean test = validateInput();
-        System.out.println(test);
         if (validateInput()) {
             addNewFormData();
             RequestFormViewContext newContext = RequestFormViewContext.builder().formData(personalData).build();
@@ -76,7 +80,7 @@ public class LoanRequestFormPage2Controller extends BaseController implements In
         personalData.put("yearsOfService", Integer.parseInt(txtYearsOfService.getText()));
         personalData.put("loanAmount", new BigDecimal(txtLoanAmount.getText()));
         personalData.put("loanType", cBoxLoanType.getValue());
-        personalData.put("desiredLoanPeriod", new BigDecimal(txtDesiredLoanPeriod.getText()));
+        personalData.put("desiredLoanPeriod", Integer.parseInt(txtDesiredLoanPeriod.getText()));
     }
 
     private boolean validateInput() {

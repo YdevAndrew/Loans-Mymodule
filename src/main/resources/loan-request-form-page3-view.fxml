@@ -11,7 +11,7 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.LoanRequestFormPage3Controller">
    <children>
-      <Label layoutX="356.0" layoutY="35.0" text="Formulario de solicitud">
+      <Label layoutX="355.0" layoutY="25.0" text="Formulario de solicitud">
          <font>
             <Font size="34.0" />
          </font>
@@ -51,7 +51,7 @@
                         <Insets left="75.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                  <Button fx:id="btnLoadIdCardPDF" mnemonicParsing="false" onAction="#btnLoadIdCardPDFOnAction" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -74,7 +74,7 @@
                         <Insets left="75.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                  <Button fx:id="btnLoadProofAddressPDF" mnemonicParsing="false" onAction="#btnLoadProofAddressPDFOnAction" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -97,7 +97,7 @@
                         <Insets left="75.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="320.0" text="Selecciona un archivo">
+                  <Button fx:id="btnLoadProofIncomePDF" mnemonicParsing="false" onAction="#btnLoadProofIncomePDFOnAction" prefHeight="33.0" prefWidth="320.0" text="Selecciona un archivo">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -120,7 +120,7 @@
                         <Insets left="75.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                  <Button fx:id="btnLoadLaborCertificatePDF" mnemonicParsing="false" onAction="#btnLoadLaborCertificatePDFOnAction" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -143,7 +143,7 @@
                         <Insets left="75.0" top="15.0" />
                      </HBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
+                  <Button fx:id="btnLoadProofLengthServicePDF" mnemonicParsing="false" onAction="#btnLoadProofLengthServicePDFOnAction" prefHeight="30.0" prefWidth="320.0" text="Selecciona un archivo">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -163,7 +163,7 @@
             </Separator>
             <HBox prefHeight="60.0" prefWidth="960.0">
                <children>
-                  <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Guardar">
+                  <Button fx:id="btnSaveForm" mnemonicParsing="false" onAction="#btnSaveFormOnAction" prefHeight="50.0" prefWidth="250.0" text="Guardar">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -171,7 +171,7 @@
                         <Insets left="115.0" right="115.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnSend" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Enviar">
+                  <Button fx:id="btnSendForm" mnemonicParsing="false" onAction="#btnSendFormOnAction" prefHeight="50.0" prefWidth="250.0" text="Enviar">
                      <font>
                         <Font size="20.0" />
                      </font>
