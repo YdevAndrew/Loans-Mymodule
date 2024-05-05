@@ -3,10 +3,10 @@ package org.jala.university.presentation.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import lombok.EqualsAndHashCode;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.presentation.LoansView;
@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@EqualsAndHashCode(callSuper = true)
 public class LoanRequestFormPage1Controller extends BaseController implements Initializable {
     @FXML
     private TextField txtNames;
@@ -50,9 +51,12 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
     @FXML
     private TextField txtCity;
 
+    private ShowAlert showAlert;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         disableUnavailableDates();
+        showAlert = new ShowAlert();
     }
 
     @FXML
@@ -77,20 +81,21 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
     }
 
     private boolean validateInput() {
-        boolean result = false;
-
-        if (areCompleteFields()) {
-            if(validateEmail()) {
-                if (validatePhone()) {
-                    result = true;
-                }
-            }
+        if (!areCompleteFields()) {
+            return false;
         }
 
-        return result;
+        if (!validateEmail()) {
+            return false;
+        }
+
+        return validatePhone();
     }
 
     private void disableUnavailableDates() {
+        LocalDate date18yearsBefore = LocalDate.now().minusYears(18);
+        dpBirthDay.setValue(date18yearsBefore);
+
         dpBirthDay.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
@@ -109,7 +114,7 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
                 || txtStreetAndNumber.getText().isEmpty() || txtColony.getText().isEmpty()
                 || txtState.getText().isEmpty() || txtCity.getText().isEmpty()) {
 
-            showErrorAlert("Ningún campo debe estar vacío");
+            showAlert.showErrorAlert("Ningún campo debe estar vacío");
             result = false;
 
         }
@@ -122,7 +127,7 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
         Matcher matcher = pattern.matcher(txtEmail.getText());
 
         if (!matcher.matches()) {
-            showErrorAlert("Email invalido. Porfavor ingresa un email válido");
+            showAlert.showErrorAlert("Email invalido. Porfavor ingresa un email válido");
         }
 
         return matcher.matches();
@@ -134,22 +139,11 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
         Matcher matcher = pattern.matcher(txtPhone.getText());
 
         if (!matcher.matches()) {
-            showErrorAlert("El número de telefono debe ser menor o igual a 15 carácteres númericos");
+            showAlert.showErrorAlert("El número de telefono debe ser menor o igual a 15 carácteres númericos");
         }
 
         return matcher.matches();
     }
 
-    private boolean validateDateBirth() {
-        boolean result = true;
-        return result;
-    }
-
-    private void showErrorAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.show();
-    }
 
 }

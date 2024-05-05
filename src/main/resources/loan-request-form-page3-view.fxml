@@ -163,7 +163,7 @@
             </Separator>
             <HBox prefHeight="60.0" prefWidth="960.0">
                <children>
-                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSaveOnAction" prefHeight="50.0" prefWidth="250.0" text="Guardar">
+                  <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Guardar">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -171,7 +171,7 @@
                         <Insets left="115.0" right="115.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnSend" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="50.0" prefWidth="250.0" text="Enviar">
+                  <Button fx:id="btnSend" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Enviar">
                      <font>
                         <Font size="20.0" />
                      </font>
