@@ -4,13 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import org.jala.university.presentation.MainView;
 
-public class MainApp  extends Application {
+public class MainApp {
     public static void main(String[] args) {
         MainView.launch(args);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        stage.show();
     }
 }

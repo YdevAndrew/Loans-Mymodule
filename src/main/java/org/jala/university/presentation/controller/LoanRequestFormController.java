@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoanRequestFormController extends BaseController implements Initializable {
+public class LoanRequestFormController extends BaseController {
     @FXML
     private TextField txtNames;
 
@@ -49,11 +49,6 @@ public class LoanRequestFormController extends BaseController implements Initial
         this.loansService = ServiceFactory.loansService();
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
-
     public void btnSaveOnAction(ActionEvent actionEvent) {
         if (validateInput()) {
             LoanRequestFormDto loanRequestFormDto = createLoanRequestFormDto();
@@ -64,10 +59,6 @@ public class LoanRequestFormController extends BaseController implements Initial
                 showErrorAlert("Error saving the request");
             }
         }
-    }
-
-    public void btnSendOnAction(ActionEvent e) {
-
     }
 
     private boolean validateInput() {
