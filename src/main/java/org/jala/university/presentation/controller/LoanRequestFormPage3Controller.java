@@ -276,12 +276,6 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
         }
     }
 
-
-    @FXML
-    private void btnSendFormOnAction(ActionEvent event) {
-
-    }
-
     public LoanRequestFormDto getLoanRequestFormDto() {
         return LoanRequestFormDto.builder()
                 .namesApplicant(personalData.get("names").toString())
