@@ -18,7 +18,7 @@ import java.util.UUID;
 @Table(name = "loan_request_form")
 public class LoanRequestFormEntity implements BaseEntity<UUID> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     @Column
     String namesApplicant;

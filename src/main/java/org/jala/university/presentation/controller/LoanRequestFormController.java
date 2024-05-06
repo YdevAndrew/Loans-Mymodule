@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @EqualsAndHashCode(callSuper = true)
-public class LoanRequestFormPage1Controller extends BaseController implements Initializable {
+public class LoanRequestFormController extends BaseController implements Initializable {
     @FXML
     private TextField txtNames;
 
