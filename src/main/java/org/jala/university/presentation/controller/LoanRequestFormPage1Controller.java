@@ -127,7 +127,7 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
         Matcher matcher = pattern.matcher(txtEmail.getText());
 
         if (!matcher.matches()) {
-            showAlert.showErrorAlert("Email invalido. Porfavor ingresa un email válido");
+            showAlert.showErrorAlert("Email invalido. Por favor ingresa un email válido");
         }
 
         return matcher.matches();
@@ -139,7 +139,7 @@ public class LoanRequestFormPage1Controller extends BaseController implements In
         Matcher matcher = pattern.matcher(txtPhone.getText());
 
         if (!matcher.matches()) {
-            showAlert.showErrorAlert("El número de telefono debe ser menor o igual a 15 carácteres númericos");
+            showAlert.showErrorAlert("El número de teléfono debe ser menor o igual a 15 carácteres numéricos");
         }
 
         return matcher.matches();

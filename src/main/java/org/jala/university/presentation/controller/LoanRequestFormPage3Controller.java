@@ -5,7 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.stage.FileChooser;
 import lombok.EqualsAndHashCode;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.jala.university.ServiceFactory;
 import org.jala.university.application.dto.LoanRequestFormDto;
 import org.jala.university.application.mapper.LoanRequestFormMapper;
@@ -13,8 +19,15 @@ import org.jala.university.application.service.LoansService;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.presentation.controller.context.RequestFormViewContext;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -27,6 +40,21 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
     private final LoanRequestFormMapper mapper;
 
     private HashMap<String, Object> personalData;
+
+    @FXML
+    private Hyperlink IdShowPDFAdrress;
+
+    @FXML
+    private Hyperlink IdShowPDFClientID;
+
+    @FXML
+    private Hyperlink IdShowPDFLaborCertificate;
+
+    @FXML
+    private Hyperlink IdShowPDFLengthService;
+
+    @FXML
+    private Hyperlink IdShowPDFProofIncome;
 
     @FXML
     private Button btnLoadIdCardPDF;
@@ -51,6 +79,17 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
 
     LoansService loansService;
 
+    private Blob idCardPDFBytes;
+
+    private Blob proofIncomePDFBytes;
+
+    private Blob proofAddressPDFBytes;
+
+
+    private Blob laborCertificatePDFBytes;
+
+    private Blob lengthServicePDFBytes;
+
     public LoanRequestFormPage3Controller() {
         this.showAlert = new ShowAlert();
         this.mapper = new LoanRequestFormMapper();
@@ -74,41 +113,169 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
         });
     }
 
+
+    private Blob uploadPDF(){
+        File pdfFile = chooseFilePdf();
+        if (pdfFile != null) {
+            try {
+                InputStream inputStream = new FileInputStream(pdfFile);
+                byte[] bytesPDF = IOUtils.toByteArray(inputStream);
+                if (validatePdfWeight(bytesPDF)){
+                    return new SerialBlob(bytesPDF);
+                }
+
+                inputStream.close();
+            } catch (IOException | SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        return null;
+
+    }
+
+    private boolean validatePdfWeight(byte[] bytesPDF) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytesPDF);
+        int documentWeight = bais.available();
+        int allowedWeightDocument = 50000000;
+        if (documentWeight < allowedWeightDocument){
+            System.out.println("Peso del documento PDF: " + documentWeight + " bytes");
+            return true;
+        } else {
+            showAlert.showErrorAlert("El documento excede la cantidad permitida ");
+            return false;
+        }
+    }
+
+    private File chooseFilePdf() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo PDF");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos PDF", "*.pdf")
+        );
+        return fileChooser.showOpenDialog(null);
+    }
+
+
+    private void showPDF(Blob pdfBlob) {
+        try  {
+            byte[] pdfBytes = pdfBlob.getBytes(1, (int) pdfBlob.length());
+            PDDocument document = Loader.loadPDF(pdfBytes);
+
+            System.out.println("Número de páginas: " + document.getNumberOfPages());
+            System.out.println(document.getVersion());
+
+
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+            JPanel pdfPanel = new JPanel();
+            pdfPanel.setLayout(new BoxLayout(pdfPanel, BoxLayout.Y_AXIS));
+
+
+            for (int i = 0; i < document.getNumberOfPages(); i++) {
+                BufferedImage image = pdfRenderer.renderImage(i);
+                JLabel pageLabel = new JLabel(new ImageIcon(image));
+                pdfPanel.add(pageLabel);
+            }
+
+
+            JScrollPane scrollPane = new JScrollPane(pdfPanel);
+            scrollPane.setPreferredSize(new Dimension(600, 600));
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+
+            JFrame pdfFrame = new JFrame("Visor de archivos PDF del formulario de préstamos");
+            pdfFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            pdfFrame.getContentPane().add(scrollPane);
+            pdfFrame.pack();
+            pdfFrame.setVisible(true);
+
+        } catch (IOException e) {
+            throw new RuntimeException();
+        } catch (NullPointerException e) {
+            showAlert.showErrorAlert("No hay PDF seleccionado");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @FXML
-    private void btnLoadIdCardPDFOnAction(ActionEvent event) {
+    private void uploadLoadIdCardPDF(ActionEvent event) {
+        idCardPDFBytes = uploadPDF();
+    }
+
+    @FXML
+    private void uploadProofAddressPDF(ActionEvent event) {
+        proofAddressPDFBytes = uploadPDF();
+    }
+
+    @FXML
+    private void uploadProofIncomePDF(ActionEvent event) {
+        proofIncomePDFBytes = uploadPDF();
+    }
+
+    @FXML
+    private void uploadLaborCertificatePDF(ActionEvent event) {
+        laborCertificatePDFBytes = uploadPDF();
+    }
+
+    @FXML
+    private void uploadProofLengthServicePDF(ActionEvent event) {
+        lengthServicePDFBytes = uploadPDF();
+    }
+
+    @FXML
+    void showPDFClientID(ActionEvent event) {
+        showPDF(idCardPDFBytes);
+    }
+
+    @FXML
+    void showPDFAddress(ActionEvent event) {
+        showPDF(proofAddressPDFBytes);
+    }
+
+    @FXML
+    void showPDFLaborCertificate(ActionEvent event) {
+        showPDF(laborCertificatePDFBytes);
 
     }
 
     @FXML
-    private void btnLoadProofAddressPDFOnAction(ActionEvent event) {
-
+    void showPDFLengthService(ActionEvent event) {
+        showPDF(lengthServicePDFBytes);
     }
 
     @FXML
-    private void btnLoadProofIncomePDFOnAction(ActionEvent event) {
-
+    void showPDFProofIncome(ActionEvent event) {
+        showPDF(proofIncomePDFBytes);
     }
 
-    @FXML
-    private void btnLoadLaborCertificatePDFOnAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void btnLoadProofLengthServicePDFOnAction(ActionEvent event) {
-
-    }
 
     @FXML
     private void btnSaveFormOnAction(ActionEvent event) {
-        LoanRequestFormDto loanRequestFormDto = getLoanRequestFormDto();
-        LoanRequestFormDto saved = loansService.saveForm(loanRequestFormDto);
-        if (saved != null) {
-            showAlert.showInformationAlert("Formulario guardado exitosamente");
+        if (validateUploadPdf()){
+            LoanRequestFormDto loanRequestFormDto = getLoanRequestFormDto();
+            LoanRequestFormDto saved = loansService.saveForm(loanRequestFormDto);
+            if (saved != null) {
+                showAlert.showInformationAlert("Formulario guardado exitosamente");
+            } else {
+                showAlert.showErrorAlert("Error saving the request");
+            }
+        }
+
+    }
+
+    public boolean validateUploadPdf() {
+        if (idCardPDFBytes == null || proofIncomePDFBytes == null || proofAddressPDFBytes == null
+                || laborCertificatePDFBytes == null || lengthServicePDFBytes == null){
+            showAlert.showErrorAlert("Debe subir todos los pdf solicitados");
+            return false;
         } else {
-            showAlert.showErrorAlert("Error saving the request");
+            return true;
         }
     }
+
 
     @FXML
     private void btnSendFormOnAction(ActionEvent event) {
@@ -131,6 +298,11 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
                 .loanAmount((BigDecimal) personalData.get("loanAmount"))
                 .loanType(personalData.get("loanType").toString())
                 .desiredLoanPeriod((Integer) personalData.get("desiredLoanPeriod"))
+                .idCardPDF(idCardPDFBytes)
+                .proofIncomePDF(proofIncomePDFBytes)
+                .laborCertificatePDF(laborCertificatePDFBytes)
+                .proofLengthServicePDF(lengthServicePDFBytes)
+                .proofAddressPDF(proofAddressPDFBytes)
                 .build();
     }
 }
