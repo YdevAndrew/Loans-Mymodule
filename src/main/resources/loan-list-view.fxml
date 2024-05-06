@@ -29,7 +29,7 @@
                               </Label>
                               <ImageView fitHeight="92.0" fitWidth="127.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/buildings.png" />
+                                    <Image url="@images/buildings.png" />
                                  </image>
                               </ImageView>
                               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="VER DETALLES" />
