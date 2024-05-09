@@ -7,8 +7,8 @@
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/bank_system"/>
-            <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="root"/>
+            <property name="jakarta.persistence.jdbc.user" value="Alex-Serpa"/>
+            <property name="jakarta.persistence.jdbc.password" value="password"/>
             <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
