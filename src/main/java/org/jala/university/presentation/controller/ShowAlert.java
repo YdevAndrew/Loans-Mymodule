@@ -3,8 +3,6 @@ package org.jala.university.presentation.controller;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-import java.util.Optional;
-
 public class ShowAlert {
     public void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -24,7 +22,7 @@ public class ShowAlert {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK;
+        alert.show();
+        return alert.getResult() == ButtonType.OK;
     }
 }

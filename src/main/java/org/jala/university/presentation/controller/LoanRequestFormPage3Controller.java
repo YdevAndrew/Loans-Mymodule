@@ -13,12 +13,10 @@ import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.jala.university.ServiceFactory;
-import org.jala.university.application.dto.LoanRequestDto;
 import org.jala.university.application.dto.LoanRequestFormDto;
 import org.jala.university.application.mapper.LoanRequestFormMapper;
 import org.jala.university.application.service.LoansService;
 import org.jala.university.commons.presentation.BaseController;
-import org.jala.university.domain.entity.LoanRequestFormEntity;
 import org.jala.university.presentation.controller.context.RequestFormViewContext;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -33,7 +31,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 public class LoanRequestFormPage3Controller extends BaseController implements Initializable {
@@ -88,11 +85,10 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
 
     private Blob proofAddressPDFBytes;
 
+
     private Blob laborCertificatePDFBytes;
 
     private Blob lengthServicePDFBytes;
-
-    private LoanRequestFormDto loanRequestFormDto;
 
     public LoanRequestFormPage3Controller() {
         this.showAlert = new ShowAlert();
@@ -259,11 +255,12 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
     @FXML
     private void btnSaveFormOnAction(ActionEvent event) {
         if (validateUploadPdf()){
-            loanRequestFormDto = getLoanRequestFormDto();
-            if (loanRequestFormDto != null) {
+            LoanRequestFormDto loanRequestFormDto = getLoanRequestFormDto();
+            LoanRequestFormDto saved = loansService.saveForm(loanRequestFormDto);
+            if (saved != null) {
                 showAlert.showInformationAlert("Formulario guardado exitosamente");
             } else {
-                showAlert.showErrorAlert("Error al guardar la solicitud");
+                showAlert.showErrorAlert("Error saving the request");
             }
         }
 
@@ -278,51 +275,6 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
             return true;
         }
     }
-
-    @FXML
-    public void btnSendFormOnAction(ActionEvent actionEvent) {
-
-        if (!validateUploadPdf()) {
-            showAlert.showErrorAlert("Validación fallida. Verifique la entrada.");
-            return;
-        }
-
-        if (loanRequestFormDto == null) {
-            showAlert.showInformationAlert("Formulario guardado exitosamente");
-        }
-
-        boolean confirmation = showAlert.showConfirmationAlert("¿Está seguro de que desea enviar la solicitud?");
-        if (confirmation) {
-            if (loanRequestFormDto != null) {
-                LoanRequestDto requestDto = createLoanRequestDto(loanRequestFormDto.getId(), "Enviado", loanRequestFormDto);
-                LoanRequestDto requestSaved = loansService.saveRequest(requestDto);
-                if (requestSaved != null) {
-                    showAlert.showInformationAlert("La solicitud de préstamo ha sido enviada con éxito.");
-                } else {
-                    showAlert.showErrorAlert("Error al enviar la solicitud.");
-                }
-            } else {
-                LoanRequestDto requestDto = createLoanRequestDto(getLoanRequestFormDto().getId(), "Enviado", getLoanRequestFormDto());
-                LoanRequestDto requestSaved = loansService.saveRequest(requestDto);
-                if (requestSaved != null) {
-                    showAlert.showInformationAlert("La solicitud de préstamo ha sido enviada con éxito.");
-                } else {
-                    showAlert.showErrorAlert("Error al enviar la solicitud.");
-                }
-            }
-        } else {
-            showAlert.showInformationAlert("Envío cancelado.");
-
-            LoanRequestDto requestDto = createLoanRequestDto(getLoanRequestFormDto().getId(), "Cancelado", getLoanRequestFormDto());
-            LoanRequestDto requestSaved = loansService.saveRequest(requestDto);
-            if (requestSaved != null) {
-                showAlert.showInformationAlert("La solicitud de préstamo ha sido cancelada.");
-            }
-
-        }
-    }
-
-
 
     public LoanRequestFormDto getLoanRequestFormDto() {
         return LoanRequestFormDto.builder()
@@ -345,13 +297,6 @@ public class LoanRequestFormPage3Controller extends BaseController implements In
                 .laborCertificatePDF(laborCertificatePDFBytes)
                 .proofLengthServicePDF(lengthServicePDFBytes)
                 .proofAddressPDF(proofAddressPDFBytes)
-                .build();
-    }
-    private LoanRequestDto createLoanRequestDto(UUID id, String status, LoanRequestFormDto loanRequestFormDto) {
-        return LoanRequestDto.builder()
-                .id(id)
-                .status(status)
-                .loanRequestForm(loanRequestFormDto)
                 .build();
     }
 }
