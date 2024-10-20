@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.jala.university.presentation.controller.MainViewController" prefWidth="800" prefHeight="600">
+   <children>
+      <VBox alignment="CENTER" spacing="10.0" fx:id="initialPane">
+         <Label text="Bem-vindo ao sistema de Empréstimos!" style="-fx-font-size: 20px;"/>
+
+         <Button text="Simulação de Empréstimo" onAction="#startLoanSimulation"/>
+      </VBox>
+
+      <!-- Formulário de solicitação de empréstimo (oculto inicialmente) -->
+      <VBox alignment="CENTER" spacing="10.0" fx:id="loanSimulationPane" visible="false" managed="false">
+         <Label text="Simulação de Empréstimo" style="-fx-font-size: 20px;"/>
+
+         <Label text="Nome"/>
+         <TextField fx:id="nameField" promptText="Digite seu nome"/>
+
+         <Label text="Montante do Empréstimo"/>
+         <TextField fx:id="loanAmountField" promptText="Digite o valor do empréstimo"/>
+
+         <Label text="Prazo do Empréstimo"/>
+         <TextField fx:id="loanTermField" promptText="Digite o prazo do empréstimo"/>
+
+         <Button text="Enviar Solicitação" onAction="#submitLoanRequest"/>
+
+         <Label fx:id="errorMessage" textFill="red"/>
+      </VBox>
+   </children>
+</StackPane>
