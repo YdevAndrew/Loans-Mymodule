@@ -5,15 +5,26 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.jala.university.commons.presentation.ViewSwitcher;
+
 public class MainView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
         Scene scene = new Scene(new Pane());
         ViewSwitcher.setup(primaryStage, scene);
+
+
         ViewSwitcher.switchTo(LoansView.MAIN.getView());
+
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Loans Module Application");
+
+
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(400);
+        primaryStage.setWidth(800);
+        primaryStage.setHeight(600);
         primaryStage.show();
     }
 }
