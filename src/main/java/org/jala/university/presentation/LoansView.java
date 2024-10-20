@@ -12,4 +12,5 @@ public enum LoansView {
     LoansView(String fileName) {
         this.view = new View(fileName);
     }
+
 }
