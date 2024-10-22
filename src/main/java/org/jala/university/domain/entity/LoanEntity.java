@@ -1,6 +1,7 @@
 package org.jala.university.domain.entity;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.jala.university.commons.domain.BaseEntity;
@@ -13,6 +14,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,49 +25,51 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "LOAN")
 public class LoanEntity implements BaseEntity<UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
-    private Double maximumAmount;
+    @Column(name = "maximum_amount")
+    private BigDecimal maximumAmount;
 
-    @Column
-    private Double amountBorrowed;
+    @Column(name = "amount_borrowed")
+    private BigDecimal amountBorrowed;
 
-    @Column
-    private Double totalInterest;
+    @Column(name = "total_interest")
+    private BigDecimal totalInterest;
 
-    @Column
+    @Column(name = "number_of_installments")
     private Integer numberOfInstallments;
 
-    @Column
-    private Double valueOfInstallments;
+    @Column(name = "value_of_installments")
+    private BigDecimal valueOfInstallments;
 
-    @Column
+    @Column(name = "payment_method")
     private Integer paymentMethod;
 
-    @Column
+    @Column(name = "status")
     private Integer status;
 
+    @Column(name = "issue_date")
     @CreatedDate
-    Date issueDate;
+    LocalDate issueDate;
 
-    @Column
-    Date installmentsDueDate;
+    @Column(name = "installments_due_date")
+    LocalDate installmentsDueDate;
 
-    @Column
-    Date loanDueDate;
+    @Column(name = "loan_due_date")
+    LocalDate loanDueDate;
 
     /*@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id", nullable = false)
     private Form form;*/
 
-    public LoanEntity(UUID id, Double maximumAmount, Double amountBorrowed, Double totalInterest,
-            Integer numberOfInstallments, Double valueOfInstallments, PaymentMethod paymentMethod, Status status,
-            Date issueDate, Date installmentsDueDate, Date loanDueDate) {
+    public LoanEntity(UUID id, BigDecimal maximumAmount, BigDecimal amountBorrowed, BigDecimal totalInterest,
+            Integer numberOfInstallments, BigDecimal valueOfInstallments, PaymentMethod paymentMethod, Status status,
+            LocalDate issueDate, LocalDate installmentsDueDate, LocalDate loanDueDate) {
 
         this.id = id;
         this.maximumAmount = maximumAmount;
