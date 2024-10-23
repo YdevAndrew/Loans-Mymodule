@@ -150,11 +150,11 @@ class LoanEntityServiceTest {
 
         LoanEntityDto dto = LoanEntityDto.builder()
                 .id(id)
-                .maximumAmount(BigDecimal.valueOf(10000))
-                .amountBorrowed(BigDecimal.valueOf(5000))
-                .totalInterest(BigDecimal.valueOf(500))
+                .maximumAmount(10000.00)
+                .amountBorrowed(5000.00)
+                .totalInterest(500.00)
                 .numberOfInstallments(12)
-                .valueOfInstallments(BigDecimal.valueOf(450))
+                .valueOfInstallments(450.00)
                 .build();
 
         LoanEntity existingEntity = LoanEntity.builder().id(id).build();
@@ -185,11 +185,10 @@ class LoanEntityServiceTest {
     private LoanEntityDto createLoanDto() {
         return LoanEntityDto.builder()
                 .id(UUID.randomUUID())
-                .maximumAmount(BigDecimal.valueOf(10000))
-                .amountBorrowed(BigDecimal.valueOf(5000))
-                .totalInterest(BigDecimal.valueOf(500))
+                .amountBorrowed(5000.00)
+                .totalInterest(500.00)
                 .numberOfInstallments(12)
-                .valueOfInstallments(BigDecimal.valueOf(450))
+                .valueOfInstallments(450.00)
                 .build();
     }
 
