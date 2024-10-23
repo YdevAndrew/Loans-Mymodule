@@ -1,6 +1,7 @@
 package org.jala.university.application.dto;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.jala.university.domain.entity.enums.PaymentMethod;
@@ -14,15 +15,15 @@ import lombok.Value;
 public class LoanEntityDto {
 
     UUID id;
-    Double maximumAmount;
-    Double amountBorrowed;
-    Double totalInterest;
+    BigDecimal maximumAmount;
+    BigDecimal amountBorrowed;
+    BigDecimal totalInterest;
     Integer numberOfInstallments;
-    Double valueOfInstallments;
+    BigDecimal valueOfInstallments;
     PaymentMethod paymentMethod;
     Status status;
-    Date issueDate;
-    Date installmentsDueDate;
-    Date loanDueDate;
+    LocalDate issueDate;
+    LocalDate installmentsDueDate;
+    LocalDate loanDueDate;
     //Form form;
 }

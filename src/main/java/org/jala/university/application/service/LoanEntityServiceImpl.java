@@ -10,6 +10,7 @@ import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.repository.LoanEntityRepository;
 import org.jala.university.infrastructure.persistance.RepositoryFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoanEntityServiceImpl implements LoanEntityService {
@@ -21,15 +22,19 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         this.loanEntityMapper = loanEntityMapper;
     }
 
-    // Here should be added all the functionality to handle the business logic
+    @Override
+    @Transactional(readOnly = true)
     public LoanEntityDto findById(UUID id) {
         LoanEntity entity = loanEntityRepository.findById(id);
+
         if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
         }
         return loanEntityMapper.mapTo(entity);
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<LoanEntityDto> findAll() {
         return loanEntityRepository.findAll().stream()
                .map(loanEntityMapper::mapTo)
@@ -37,20 +42,26 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     }
 
     @Override
-    public LoanEntityDto save(LoanEntityDto sampleEntityDto) {
-        LoanEntity saved = loanEntityRepository.save(loanEntityMapper.mapFrom(sampleEntityDto));
-        return loanEntityMapper.mapTo(saved);
+    @Transactional
+    public LoanEntityDto save(LoanEntityDto entityDto) {
+        LoanEntity savedEntity = loanEntityRepository.save(loanEntityMapper.mapFrom(entityDto));
+        return loanEntityMapper.mapTo(savedEntity);
     }
 
+    @Override
+    @Transactional
     public void deleteById(UUID id) {
         LoanEntity entity = loanEntityRepository.findById(id);
-        if (entity != null) {
-            loanEntityRepository.delete(entity);
-        } else {
+
+        if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
-        }
+        } 
+
+        loanEntityRepository.delete(entity);
     }
 
+    @Override
+    @Transactional
     public void delete(LoanEntityDto entityDto) {
         LoanEntity entity = loanEntityMapper.mapFrom(entityDto);
 
@@ -61,13 +72,16 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         }
     }
 
-    public LoanEntityDto update(UUID id, LoanEntityDto updatedDto) {
+    @Override
+    @Transactional
+    public LoanEntityDto update(UUID id, LoanEntityDto entityDto) {
         LoanEntity existingEntity = loanEntityRepository.findById(id);
+
         if (existingEntity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
         }
 
-        LoanEntity updatedEntity = loanEntityMapper.mapFrom(updatedDto);
+        LoanEntity updatedEntity = loanEntityMapper.mapFrom(entityDto);
         updatedEntity.setId(id);
 
         LoanEntity savedEntity = loanEntityRepository.save(updatedEntity);

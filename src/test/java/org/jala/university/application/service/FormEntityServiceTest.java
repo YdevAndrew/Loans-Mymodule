@@ -1,0 +1,198 @@
+package org.jala.university.application.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+import org.jala.university.application.dto.FormEntityDto;
+import org.jala.university.application.mapper.FormEntityMapper;
+import org.jala.university.domain.entity.FormEntity;
+import org.jala.university.domain.repository.FormEntityRepository;
+import org.jala.university.infrastructure.persistance.RepositoryFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+class FormEntityServiceTest {
+
+    @Mock
+    private FormEntityRepository formEntityRepository;
+
+    @Mock
+    private FormEntityMapper formEntityMapper;
+
+    @Mock
+    private RepositoryFactory repositoryFactory;
+
+    private FormEntityService formEntityService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        when(repositoryFactory.createFormEntityRepository()).thenReturn(formEntityRepository);
+        formEntityService = new FormEntityServiceImpl(repositoryFactory, formEntityMapper);
+    }
+
+    @Test
+    void testFindById_Success() {
+        UUID id = UUID.randomUUID();
+        FormEntity entity = FormEntity.builder().id(id).build();
+        FormEntityDto dto = FormEntityDto.builder().id(id).build();
+
+        when(formEntityRepository.findById(id)).thenReturn(entity);
+        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+
+        FormEntityDto result = formEntityService.findById(id);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        verify(formEntityRepository).findById(id);
+    }
+
+    @Test
+    void testFindById_NotFound() {
+        UUID id = UUID.randomUUID();
+
+        when(formEntityRepository.findById(id)).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> formEntityService.findById(id));
+
+        verify(formEntityRepository).findById(id);
+    }
+
+    @Test
+    void testFindById_NullId() {
+        assertThrows(IllegalArgumentException.class, () -> formEntityService.findById(null));
+    }
+
+    @Test
+    void testFindAll() {
+        FormEntity entity = FormEntity.builder().id(UUID.randomUUID()).build();
+        FormEntityDto dto = FormEntityDto.builder().id(entity.getId()).build();
+
+        when(formEntityRepository.findAll()).thenReturn(List.of(entity));
+        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+
+        List<FormEntityDto> result = formEntityService.findAll();
+
+        assertEquals(1, result.size());
+        assertEquals(entity.getId(), result.get(0).getId());
+        verify(formEntityRepository).findAll();
+    }
+
+    @Test
+    void testSave() {
+        FormEntityDto dto = createSampleDto();
+        FormEntity entity = FormEntity.builder().build();
+
+        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
+        when(formEntityRepository.save(entity)).thenReturn(entity);
+        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+
+        FormEntityDto result = formEntityService.save(dto);
+
+        assertNotNull(result);
+        verify(formEntityRepository).save(entity);
+    }
+
+    @Test
+    void testDeleteById_Success() {
+        UUID id = UUID.randomUUID();
+        FormEntity entity = FormEntity.builder().id(id).build();
+
+        when(formEntityRepository.findById(id)).thenReturn(entity);
+
+        formEntityService.deleteById(id);
+
+        verify(formEntityRepository).delete(entity);
+    }
+
+    @Test
+    void testDeleteById_NotFound() {
+        UUID id = UUID.randomUUID();
+
+        when(formEntityRepository.findById(id)).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> formEntityService.deleteById(id));
+
+        verify(formEntityRepository).findById(id);
+    }
+
+    @Test
+    void testDelete_Success() {
+        FormEntityDto dto = createSampleDto();
+        FormEntity entity = FormEntity.builder().id(dto.getId()).build();
+
+        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
+        when(formEntityRepository.findById(entity.getId())).thenReturn(entity);
+
+        formEntityService.delete(dto);
+
+        verify(formEntityRepository).delete(entity);
+    }
+
+    @Test
+    void testDelete_NotFound() {
+        FormEntityDto dto = createSampleDto();
+        FormEntity entity = FormEntity.builder().id(dto.getId()).build();
+
+        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
+        when(formEntityRepository.findById(entity.getId())).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> formEntityService.delete(dto));
+
+        verify(formEntityRepository).findById(entity.getId());
+    }
+
+    @Test
+    void testUpdate_Success() {
+        UUID id = UUID.randomUUID();
+
+        FormEntityDto dto = FormEntityDto.builder()
+                .id(id)
+                .income(BigDecimal.valueOf(5000))
+                .documentPhoto(new byte[0])
+                .proofOfIncome(new byte[0])
+                .build();
+
+        FormEntity existingEntity = FormEntity.builder().id(id).build();
+        FormEntity updatedEntity = FormEntity.builder().id(id).build();
+
+        when(formEntityRepository.findById(id)).thenReturn(existingEntity);
+        when(formEntityMapper.mapFrom(dto)).thenReturn(updatedEntity);
+        when(formEntityRepository.save(updatedEntity)).thenReturn(updatedEntity);
+        when(formEntityMapper.mapTo(updatedEntity)).thenReturn(dto);
+
+        FormEntityDto result = formEntityService.update(id, dto);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        verify(formEntityRepository).save(updatedEntity);
+    }
+
+    @Test
+    void testUpdate_NotFound() {
+        UUID id = UUID.randomUUID();
+        FormEntityDto dto = createSampleDto();
+
+        when(formEntityRepository.findById(id)).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> formEntityService.update(id, dto));
+    }
+
+    private FormEntityDto createSampleDto() {
+        return FormEntityDto.builder()
+                .id(UUID.randomUUID())
+                .income(BigDecimal.valueOf(5000))
+                .documentPhoto(new byte[0])
+                .proofOfIncome(new byte[0])
+                .build();
+    }
+}
