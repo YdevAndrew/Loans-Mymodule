@@ -15,6 +15,7 @@ public class FormEntityMapper implements Mapper<FormEntity, FormEntityDto> {
                 .documentPhoto(formEntity.getDocumentPhoto())
                 .income(formEntity.getIncome())
                 .proofOfIncome(formEntity.getProofOfIncome())
+                .maximumAmount(formEntity.getMaximumAmount())
                 .build();
     }
 
@@ -25,6 +26,7 @@ public class FormEntityMapper implements Mapper<FormEntity, FormEntityDto> {
                 .documentPhoto(formEntityDto.getDocumentPhoto())
                 .income(formEntityDto.getIncome())
                 .proofOfIncome(formEntityDto.getProofOfIncome())
+                .maximumAmount(formEntityDto.getMaximumAmount())
                 .build();
     }
 }

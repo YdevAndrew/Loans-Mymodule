@@ -12,7 +12,6 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
     public LoanEntityDto mapTo(LoanEntity loanEntity) {
         return LoanEntityDto.builder()
                 .id(loanEntity.getId())
-                .maximumAmount(loanEntity.getMaximumAmount())
                 .amountBorrowed(loanEntity.getAmountBorrowed())
                 .totalInterest(loanEntity.getTotalInterest())
                 .valueOfInstallments(loanEntity.getValueOfInstallments())
@@ -28,7 +27,6 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
     public LoanEntity mapFrom(LoanEntityDto loanEntityDto) {
         return LoanEntity.builder()
                 .id(loanEntityDto.getId())
-                .maximumAmount(loanEntityDto.getMaximumAmount())
                 .amountBorrowed(loanEntityDto.getAmountBorrowed())
                 .totalInterest(loanEntityDto.getTotalInterest())
                 .valueOfInstallments(loanEntityDto.getValueOfInstallments())

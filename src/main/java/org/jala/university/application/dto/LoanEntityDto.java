@@ -1,6 +1,5 @@
 package org.jala.university.application.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -15,11 +14,11 @@ import lombok.Value;
 public class LoanEntityDto {
 
     UUID id;
-    BigDecimal maximumAmount;
-    BigDecimal amountBorrowed;
-    BigDecimal totalInterest;
+    Double maximumAmount;
+    Double amountBorrowed;
+    Double totalInterest;
     Integer numberOfInstallments;
-    BigDecimal valueOfInstallments;
+    Double valueOfInstallments;
     PaymentMethod paymentMethod;
     Status status;
     LocalDate issueDate;

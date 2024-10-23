@@ -1,6 +1,5 @@
 package org.jala.university.domain.entity;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.jala.university.commons.domain.BaseEntity;
@@ -34,9 +33,29 @@ public class FormEntity implements BaseEntity<UUID> {
     private byte[] documentPhoto;
 
     @Column(name = "income")
-    private BigDecimal income;
+    private Double income;
 
     @Lob
     @Column(name = "proof_of_income")
     private byte[] proofOfIncome;
+
+    @Column(name = "maximum_amount")
+    private Double maximumAmount;
+
+    public void setIncome(Double income) {
+        this.income = income;
+        calculateMaximumAmount();
+    }
+
+    public FormEntity(byte[] documentPhoto, Double income, byte[] proofOfIncome) {
+        this.documentPhoto = documentPhoto;
+        this.income = income;
+        this.proofOfIncome = proofOfIncome;
+        calculateMaximumAmount();
+    }
+
+    //maximumAmount = income + (0.8 * income).
+    private void calculateMaximumAmount() {
+        this.maximumAmount = income + income * 0.8;
+    }    
 }
