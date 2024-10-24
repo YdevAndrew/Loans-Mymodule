@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -157,7 +156,7 @@ class FormEntityServiceTest {
 
         FormEntityDto dto = FormEntityDto.builder()
                 .id(id)
-                .income(BigDecimal.valueOf(5000))
+                .income(5000.00)
                 .documentPhoto(new byte[0])
                 .proofOfIncome(new byte[0])
                 .build();
@@ -190,9 +189,10 @@ class FormEntityServiceTest {
     private FormEntityDto createSampleDto() {
         return FormEntityDto.builder()
                 .id(UUID.randomUUID())
-                .income(BigDecimal.valueOf(5000))
+                .income(5000.00)
                 .documentPhoto(new byte[0])
                 .proofOfIncome(new byte[0])
+                .maximumAmount(100000.00)
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package org.jala.university.application.dto;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import lombok.Builder;
@@ -12,6 +11,7 @@ public class FormEntityDto {
 
     UUID id;
     byte[] documentPhoto;
-    BigDecimal income;
+    Double income;
     byte[] proofOfIncome;
+    Double maximumAmount;
 }
