@@ -22,7 +22,7 @@
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
   </properties>
 
-  <dependencies>
+    <dependencies>
     <!-- Local Dependency   -->
     <dependency>
       <groupId>org.jala.university</groupId>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
+      <version>1.18.28</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -75,7 +75,19 @@
       <artifactId>postgresql</artifactId>
       <version>42.7.4</version>
     </dependency>
-  </dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>RELEASE</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>RELEASE</version>
+        <scope>compile</scope>
+      </dependency>
+    </dependencies>
 
   <!-- Should be included when add dependecy to other gitlab project
     <repositories>
