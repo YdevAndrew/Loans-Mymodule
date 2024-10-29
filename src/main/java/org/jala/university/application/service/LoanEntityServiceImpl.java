@@ -23,10 +23,10 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     private final LoanEntityMapper loanEntityMapper;
     private final TaskScheduler taskScheduler;
 
-    public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper) {
+    public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper, TaskScheduler taskScheduler) {
         this.loanEntityRepository = factory.createLoanEntityRepository();
         this.loanEntityMapper = loanEntityMapper;
-        this.taskScheduler = SchedulerConfig.getScheduler();
+        this.taskScheduler = taskScheduler;
     }
 
     @Override

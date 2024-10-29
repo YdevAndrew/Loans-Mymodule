@@ -79,13 +79,13 @@ public class LoanEntity implements BaseEntity<UUID> {
 
     /*
      * @ManyToOne
-     * 
+     *
      * @JoinColumn(name = "account_id", nullable = false)
      * private Account account;
      */
 
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
-            PaymentMethod paymentMethod, LocalDate issueDate, LocalDate installmentsDueDate, LocalDate loanDueDate) {
+                      PaymentMethod paymentMethod, LocalDate issueDate, LocalDate installmentsDueDate, LocalDate loanDueDate) {
 
         this.amountBorrowed = amountBorrowed;
         this.numberOfInstallments = numberOfInstallments;

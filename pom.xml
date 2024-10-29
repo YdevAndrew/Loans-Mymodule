@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.jala.university</groupId>
   <artifactId>loans-module</artifactId>
   <version>1.0-RELEASE</version>
@@ -23,29 +22,33 @@
   </properties>
 
   <dependencies>
-    <!-- Local Dependency   -->
+    <!-- Local Dependency -->
     <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>commons-module</artifactId>
       <version>${commons.module.version}</version>
     </dependency>
-    <!--    Third-party libs-->
+
+    <!-- Spring Boot Dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
       <version>${spring.boot.version}</version>
     </dependency>
     <dependency>
-      <groupId>jakarta.persistence</groupId>
-      <artifactId>jakarta.persistence-api</artifactId>
-      <version>${jakarta.persistence.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring.boot.version}</version>
     </dependency>
+
+    <!-- Logging Dependencies (Logback) -->
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.28</version>
-      <optional>true</optional>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.5</version>
     </dependency>
+
+    <!-- JavaFX Dependencies -->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -56,7 +59,8 @@
       <artifactId>javafx-fxml</artifactId>
       <version>${javafx.version}</version>
     </dependency>
-    <!-- Unit Test Dependecies -->
+
+    <!-- Unit Test Dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -69,25 +73,26 @@
       <version>5.5.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+
+    <!-- Postgres Database Dependency -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.7.4</version>
     </dependency>
+
+    <!-- Other dependencies -->
     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>RELEASE</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>RELEASE</version>
-        <scope>compile</scope>
-      </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>${jakarta.persistence.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
@@ -95,13 +100,6 @@
     </dependency>
   </dependencies>
 
-  <!-- Should be included when add dependecy to other gitlab project
-    <repositories>
-      <repository>
-        <id>base-module-repo</id>
-        <url>https://gitlab.com/api/v4/projects/{project_code}/packages/maven</url>
-      </repository>
-    </repositories> -->
   <build>
     <plugins>
       <plugin>

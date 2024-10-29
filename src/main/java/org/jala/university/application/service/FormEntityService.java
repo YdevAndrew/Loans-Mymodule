@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jala.university.application.dto.FormEntityDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface FormEntityService {
 
     FormEntityDto findById(UUID id);

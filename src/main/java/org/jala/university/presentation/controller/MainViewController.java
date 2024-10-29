@@ -1,3 +1,4 @@
+// File: MainViewController.java
 package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
@@ -6,135 +7,120 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import org.jala.university.commons.presentation.BaseController;
+import org.jala.university.application.dto.FormEntityDto;
+import org.jala.university.application.service.FormEntityService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
-public class MainViewController extends BaseController {
+@Controller
+public class MainViewController {
 
-    @FXML
-    private VBox initialPane;
-
-    @FXML
-    private VBox loanSimulationPane;
-
-    @FXML
-    private TextField documentField;
-
-    @FXML
-    private TextField salaryField;
+    private  FormEntityService formService;
 
     @FXML
-    private TextField incomeProofField;
+    private VBox initialPane, loanSimulationPane;
+
+    @FXML
+    private TextField documentField, salaryField, incomeProofField;
 
     @FXML
     private Label errorMessage;
 
     @FXML
-    private Button loanButton;  // Botão referenciado pelo ID
-
-    private File documentFile;
-    private File incomeProofFile;
+    private Button loanButton;
 
     @FXML
     private TabPane mainTabPane;
 
-    // Imagens que serão ocultadas ao iniciar a simulação de empréstimo
+    private File documentFile;
+    private File incomeProofFile;
+
+    // Lista de todas as imagens que serão ocultadas/exibidas
     @FXML
-    ImageView image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, image11,image12,image13,image14,image15,image16;
+    private List<ImageView> imageViews = new ArrayList<>();
+
+
+    @FXML
+    private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
+            image9, image10, image11, image12, image13, image14, image15, image16;
+
+    public MainViewController(@Qualifier("formEntityServiceImpl") FormEntityService formService) {
+        this.formService = formService;
+    }
+
+
+    @FXML
+    private void initialize() {
+        // Adiciona todas as imagens à lista para manipulação em massa
+        imageViews.add(image1);
+        imageViews.add(image2);
+        imageViews.add(image3);
+        imageViews.add(image4);
+        imageViews.add(image5);
+        imageViews.add(image6);
+        imageViews.add(image7);
+        imageViews.add(image8);
+        imageViews.add(image9);
+        imageViews.add(image10);
+        imageViews.add(image11);
+        imageViews.add(image12);
+        imageViews.add(image13);
+        imageViews.add(image14);
+        imageViews.add(image15);
+        imageViews.add(image16);
+    }
 
     @FXML
     private void startLoanSimulation() {
-        initialPane.setVisible(false);
-        loanSimulationPane.setVisible(true);
-        loanSimulationPane.setManaged(true);
-        loanButton.setVisible(false);   // Esconde o botão visualmente
-        loanButton.setManaged(false);   // Remove o espaço ocupado pelo botão no layout
-
-        image1.setVisible(false);
-        image2.setVisible(false);
-        image3.setVisible(false);
-        image4.setVisible(false);
-        image5.setVisible(false);
-        image6.setVisible(false);
-        image7.setVisible(false);
-        image8.setVisible(false);
-        image9.setVisible(false);
-        image10.setVisible(false);
-        image11.setVisible(false);
-        image12.setVisible(false);
-        image13.setVisible(false);
-        image14.setVisible(false);
-        image15.setVisible(false);
-        image16.setVisible(false);
-
-        // Exibir o painel de simulação de empréstimo
+        toggleVisibility(false); // Oculta o painel inicial e as imagens
         loanSimulationPane.setVisible(true);
         loanSimulationPane.setManaged(true);
     }
 
     @FXML
     private void goBackToMenu() {
-        // Voltar para o menu inicial
+        toggleVisibility(true); // Exibe o painel inicial e as imagens
         loanSimulationPane.setVisible(false);
         loanSimulationPane.setManaged(false);
-        loanButton.setVisible(true);   // Esconde o botão visualmente
-        loanButton.setManaged(true);
-        initialPane.setVisible(true);
+    }
 
-        // Tornar todas as imagens visíveis novamente
-        image1.setVisible(true);
-        image2.setVisible(true);
-        image3.setVisible(true);
-        image4.setVisible(true);
-        image5.setVisible(true);
-        image6.setVisible(true);
-        image7.setVisible(true);
-        image8.setVisible(true);
-        image9.setVisible(true);
-        image10.setVisible(true);
-        image11.setVisible(true);
-        image12.setVisible(true);
-        image13.setVisible(true);
-        image14.setVisible(true);
-        image15.setVisible(true);
-        image16.setVisible(true);
+    private void toggleVisibility(boolean showInitial) {
+        initialPane.setVisible(showInitial);
+        loanButton.setVisible(showInitial);
+        loanButton.setManaged(showInitial);
 
-        // Ocultar o painel de simulação de empréstimo
-        loanSimulationPane.setVisible(false);
-        loanSimulationPane.setManaged(false);
+        // Alterna visibilidade de todas as imagens
+        imageViews.forEach(image -> {
+            image.setVisible(showInitial);
+            image.setManaged(showInitial);
+        });
     }
 
     @FXML
     private void chooseDocument() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Escolher Documento com Foto");
-        fileChooser.getExtensionFilters().add(
-                new ExtensionFilter("Imagens", "*.jpg", "*.jpeg", "*.png")
-        );
-        documentFile = fileChooser.showOpenDialog(documentField.getScene().getWindow());
-
-        if (documentFile != null) {
-            documentField.setText(documentFile.getName());
-        } else {
-            documentField.setText("Nenhum arquivo selecionado");
-        }
+        documentFile = openFileChooser("Escolher Documento com Foto", documentField);
     }
 
     @FXML
     private void chooseIncomeProof() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Escolher Comprovante de Renda");
-        fileChooser.getExtensionFilters().add(
-                new ExtensionFilter("Imagens", "*.jpg", "*.jpeg", "*.png")
-        );
-        incomeProofFile = fileChooser.showOpenDialog(incomeProofField.getScene().getWindow());
+        incomeProofFile = openFileChooser("Escolher Comprovante de Renda", incomeProofField);
+    }
 
-        if (incomeProofFile != null) {
-            incomeProofField.setText(incomeProofFile.getName());
-        } else {
-            incomeProofField.setText("Nenhum arquivo selecionado");
-        }
+    private File openFileChooser(String title, TextField field) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Imagens", "*.jpg", "*.jpeg", "*.png"));
+        File file = fileChooser.showOpenDialog(field.getScene().getWindow());
+
+        field.setText(file != null ? file.getName() : "Nenhum arquivo selecionado");
+        return file;
     }
 
     @FXML
@@ -143,7 +129,24 @@ public class MainViewController extends BaseController {
 
         if (validateInputs(salary)) {
             errorMessage.setText("");
-            showSuccessPopup("Solicitação enviada com sucesso!");
+            try {
+                String documentPhotoBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(documentFile.toPath()));
+                String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
+
+                FormEntityDto formDto = FormEntityDto.builder()
+                        .id(UUID.randomUUID())
+                        .income(Double.valueOf(salary))
+                        .documentPhoto(documentPhotoBase64.getBytes())
+                        .proofOfIncome(incomeProofBase64.getBytes())
+                        .build();
+
+                formService.save(formDto);
+                showSuccessPopup("Solicitação enviada com sucesso!");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                errorMessage.setText("Erro ao processar os arquivos. Tente novamente.");
+            }
         } else {
             errorMessage.setText("Por favor, preencha todos os campos corretamente.");
         }

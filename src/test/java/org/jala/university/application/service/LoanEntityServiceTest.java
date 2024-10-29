@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.scheduling.TaskScheduler;
 
 class LoanEntityServiceTest {
 
@@ -32,11 +33,14 @@ class LoanEntityServiceTest {
 
     private LoanEntityService loanEntityService;
 
+    @Mock
+    private TaskScheduler taskScheduler;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         when(repositoryFactory.createLoanEntityRepository()).thenReturn(loanEntityRepository);
-        loanEntityService = new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper);
+        loanEntityService = new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper, taskScheduler);
     }
 
     @Test
