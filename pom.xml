@@ -22,7 +22,7 @@
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
   </properties>
 
-    <dependencies>
+  <dependencies>
     <!-- Local Dependency   -->
     <dependency>
       <groupId>org.jala.university</groupId>
@@ -75,7 +75,7 @@
       <artifactId>postgresql</artifactId>
       <version>42.7.4</version>
     </dependency>
-      <dependency>
+    <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>RELEASE</version>
@@ -87,7 +87,13 @@
         <version>RELEASE</version>
         <scope>compile</scope>
       </dependency>
-    </dependencies>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>6.1.14</version>
+    </dependency>
+  </dependencies>
 
   <!-- Should be included when add dependecy to other gitlab project
     <repositories>

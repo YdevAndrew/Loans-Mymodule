@@ -88,7 +88,7 @@ class FormEntityServiceTest {
 
     @Test
     void testSave() {
-        FormEntityDto dto = createSampleDto();
+        FormEntityDto dto = createFormDto();
         FormEntity entity = FormEntity.builder().build();
 
         when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
@@ -126,7 +126,7 @@ class FormEntityServiceTest {
 
     @Test
     void testDelete_Success() {
-        FormEntityDto dto = createSampleDto();
+        FormEntityDto dto = createFormDto();
         FormEntity entity = FormEntity.builder().id(dto.getId()).build();
 
         when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
@@ -139,7 +139,7 @@ class FormEntityServiceTest {
 
     @Test
     void testDelete_NotFound() {
-        FormEntityDto dto = createSampleDto();
+        FormEntityDto dto = createFormDto();
         FormEntity entity = FormEntity.builder().id(dto.getId()).build();
 
         when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
@@ -179,14 +179,14 @@ class FormEntityServiceTest {
     @Test
     void testUpdate_NotFound() {
         UUID id = UUID.randomUUID();
-        FormEntityDto dto = createSampleDto();
+        FormEntityDto dto = createFormDto();
 
         when(formEntityRepository.findById(id)).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> formEntityService.update(id, dto));
     }
 
-    private FormEntityDto createSampleDto() {
+    private FormEntityDto createFormDto() {
         return FormEntityDto.builder()
                 .id(UUID.randomUUID())
                 .income(5000.00)

@@ -4,7 +4,8 @@ public enum Status {
 
     APPROVED(1),
     REJECTED(2),
-    UNDER_ANALYSIS(3);
+    REVIEW(3),
+    FINISHED(4);
 
     private int code;
 

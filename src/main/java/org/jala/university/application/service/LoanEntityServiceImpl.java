@@ -1,14 +1,20 @@
 package org.jala.university.application.service;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.time.Instant;
+import java.time.Duration;
 import java.util.stream.Collectors;
 
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.LoanEntityMapper;
+import org.jala.university.config.SchedulerConfig;
 import org.jala.university.domain.entity.LoanEntity;
+import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.domain.repository.LoanEntityRepository;
 import org.jala.university.infrastructure.persistance.RepositoryFactory;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoanEntityServiceImpl implements LoanEntityService {
     private final LoanEntityRepository loanEntityRepository;
     private final LoanEntityMapper loanEntityMapper;
+    private final TaskScheduler taskScheduler;
 
     public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper) {
         this.loanEntityRepository = factory.createLoanEntityRepository();
         this.loanEntityMapper = loanEntityMapper;
+        this.taskScheduler = SchedulerConfig.getScheduler();
     }
 
     @Override
@@ -45,6 +53,12 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional
     public LoanEntityDto save(LoanEntityDto entityDto) {
         LoanEntity savedEntity = loanEntityRepository.save(loanEntityMapper.mapFrom(entityDto));
+
+        if (savedEntity.getStatus().getCode() == Status.REVIEW.getCode()) {
+            scheduleStatusChange(savedEntity);
+        }
+        savedEntity.paymentMethodLogic();
+
         return loanEntityMapper.mapTo(savedEntity);
     }
 
@@ -86,5 +100,36 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
         LoanEntity savedEntity = loanEntityRepository.save(updatedEntity);
         return loanEntityMapper.mapTo(savedEntity);
+    }
+
+    private void scheduleStatusChange(LoanEntity loanEntity) {
+        Instant startTime = Instant.now().plus(Duration.ofMinutes(2)); // 2 minutos no futuro
+    
+        taskScheduler.schedule(() -> changeStatusRandomly(loanEntity), startTime);
+    }
+
+    private void changeStatusRandomly(LoanEntity loanEntity) {
+        Status newStatus = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
+        loanEntity.setStatus(newStatus);
+        loanEntityRepository.save(loanEntity);  // Atualiza o status no banco
+    }
+
+    //Recebe o id da conta e retorna os empréstimos da mesma.
+    @Override
+    public List<LoanEntityDto> findLoansByAccountId(UUID id) {
+        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(id);
+        return loans.stream()
+                .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
+                .toList();
+    }  
+    
+    @Override
+    public void markInstallmentAsPaid(LoanEntity loan) {
+        loan.markAsPaid();
+    }
+
+    @Override
+    public long getPaidInstallments(LoanEntity loan) {
+        return loan.getNumberOfPaidInstallments();
     }
 }
