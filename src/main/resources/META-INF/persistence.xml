@@ -2,10 +2,10 @@
     version="2.2">
     <persistence-unit name="loans">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>SampleEntity</class>
+        <class>org.jala.university.application.dto.SampleEntityDto</class>
         
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/loans" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/loans_test" />
             <property name="jakarta.persistence.jdbc.user" value="postgres" />
             <property name="jakarta.persistence.jdbc.password" value="1234" />
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
