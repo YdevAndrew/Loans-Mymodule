@@ -1,4 +1,3 @@
-// MainView.java
 package org.jala.university.presentation;
 
 import javafx.application.Application;
