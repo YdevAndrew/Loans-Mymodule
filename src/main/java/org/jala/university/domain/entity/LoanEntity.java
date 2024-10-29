@@ -1,6 +1,7 @@
 package org.jala.university.domain.entity;
 
 import java.time.LocalDate;
+import java.util.Random;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,8 +34,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "LOAN")
 public class LoanEntity implements BaseEntity<UUID> {
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -79,9 +77,12 @@ public class LoanEntity implements BaseEntity<UUID> {
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 
-    /*@ManyToOne
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;*/
+    /*
+     * @ManyToOne
+     * 
+     * @JoinColumn(name = "account_id", nullable = false)
+     * private Account account;
+     */
 
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
             PaymentMethod paymentMethod, LocalDate issueDate, LocalDate installmentsDueDate, LocalDate loanDueDate) {
@@ -93,8 +94,7 @@ public class LoanEntity implements BaseEntity<UUID> {
         this.issueDate = LocalDate.now();
         this.installmentsDueDate = installmentsDueDate;
         this.loanDueDate = this.issueDate.plusMonths(this.numberOfInstallments);
-        this.status = Status.REVIEW.getCode();
-        // generateStatus();
+        setStatus(Status.REVIEW);
         calculate();
         generateInstallments();
     }
@@ -141,59 +141,59 @@ public class LoanEntity implements BaseEntity<UUID> {
 
     // Retorna a data inicial em formato brasileiro
     public String getFormattedIssueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return this.issueDate.format(formatter);
     }
 
     // Retorna a data final do empréstimo em formato brasileiro
     public String getFormattedLoanDueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return this.loanDueDate.format(formatter);
     }
 
     // Retorna a data de vencimento da primeira parcela
     public String getFirstInstallmentDueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return this.issueDate.plusMonths(1).format(formatter);
     }
 
-    //Retorna o dia da data
+    // Retorna o dia da data
     public int getDueDateDay() {
         return this.issueDate.getDayOfMonth();
     }
 
-    //Retorna a primeira parcela não paga da lista
+    // Retorna a primeira parcela não paga da lista
     public InstallmentEntity getFirstUnpaidInstallment() {
         return installments.stream()
                 .filter(installment -> !installment.getPaid()) // Filtra as parcelas não pagas
                 .findFirst() // Retorna a primeira encontrada
                 .orElse(null); // Retorna null se todas estiverem pagas
-    }    
+    }
 
-    //Retorna o número de parcelas pagas
+    // Retorna o número de parcelas pagas
     public long getNumberOfPaidInstallments() {
         return installments.stream()
                 .filter(InstallmentEntity::getPaid)
                 .count();
-    }     
+    }
 
-    //Retorna o quanto falta a pagar (Outstanding Balance)
+    // Retorna o quanto falta a pagar (Outstanding Balance)
     public Double getOutstandingBalance() {
         return totalPayable - getNumberOfPaidInstallments() * valueOfInstallments;
     }
 
-    /*
-     * Gera o status automaticamente para aprovação imediata caso um dos
-     * requisitos seja cumprido. Ex: amountBorrowed < form.income * 6.
-     */
-    /*
-     * public void generateStatus() {
-     * if (this.status == null || this.status == Status.REVIEW.getCode()) {
-     * if (form != null && form.getIncome() > 2000 && amountBorrowed < 8000) {
-     * this.status = Status.APPROVED.getCode();
-     * } else {
-     * this.status = Status.REVIEW.getCode();
-     * }
-     * }
-     * }
-     */
+    public Status generateStatus() {
+        Status status = this.getStatus();
+
+        if (/*requisitos para mudança de status*/status == null) {
+
+            //status específico para os requisitos
+        } else {
+            status = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
+        }
+
+        return status;
+    }
 
     public void calculate() {
         double monthlyInterestRate = 0.02;
@@ -229,29 +229,33 @@ public class LoanEntity implements BaseEntity<UUID> {
         }
     }
 
-    //Coloca a primeira parcela não paga da lista como paga 
+    // Coloca a primeira parcela não paga da lista como paga
     public void markAsPaid() {
-        //if (metododetransacao()) {
-            for (InstallmentEntity installment : installments) {
-                if (!installment.getPaid()) {
-                    installment.setPaid(true);
-                    installment.setPaymentDate(LocalDate.now());
-                    updateStatusFinished();
-                    break;
-                }
+        // if (metododetransacao()) {
+        for (InstallmentEntity installment : installments) {
+            if (!installment.getPaid()) {
+                installment.setPaid(true);
+                installment.setPaymentDate(LocalDate.now());
+                updateStatusFinished();
+                break;
             }
-        /*} else {
-            System.out.println("Payment failed.");
-        }*/
+        }
+        /*
+         * } else {
+         * System.out.println("Payment failed.");
+         * }
+         */
     }
 
-    /*Verifica se todas as parcelas foram pagas, 
-    se sim, define o empréstimo como FINISHED*/
+    /*
+     * Verifica se todas as parcelas foram pagas,
+     * se sim, define o empréstimo como FINISHED
+     */
     private void updateStatusFinished() {
         if (installments.stream().allMatch(InstallmentEntity::getPaid)) {
             setStatus(Status.FINISHED);
         }
-    }    
+    }
 
     // Para pagamento automático
     public void paymentMethodLogic() {

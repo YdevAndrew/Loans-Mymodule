@@ -1,7 +1,6 @@
 package org.jala.university.application.service;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.time.Instant;
 import java.time.Duration;
@@ -57,7 +56,6 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         if (savedEntity.getStatus().getCode() == Status.REVIEW.getCode()) {
             scheduleStatusChange(savedEntity);
         }
-        savedEntity.paymentMethodLogic();
 
         return loanEntityMapper.mapTo(savedEntity);
     }
@@ -109,9 +107,18 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     }
 
     private void changeStatusRandomly(LoanEntity loanEntity) {
-        Status newStatus = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
+        Status newStatus = loanEntity.generateStatus();
+        if (newStatus == Status.APPROVED) {
+            sendAmountAccount();
+            loanEntity.paymentMethodLogic();
+        }
+
         loanEntity.setStatus(newStatus);
         loanEntityRepository.save(loanEntity);  // Atualiza o status no banco
+    }
+
+    private void sendAmountAccount() {
+        //Lógica de transação para mandar o dinheiro para a conta
     }
 
     //Recebe o id da conta e retorna os empréstimos da mesma.
