@@ -1,4 +1,3 @@
-// File: MainViewController.java
 package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
