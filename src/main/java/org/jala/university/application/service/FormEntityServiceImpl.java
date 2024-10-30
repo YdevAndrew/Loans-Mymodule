@@ -46,7 +46,9 @@ public class FormEntityServiceImpl implements FormEntityService {
     @Override
     @Transactional
     public FormEntityDto save(FormEntityDto formEntityDto) {
-        FormEntity savedEntity = formEntityRepository.save(formEntityMapper.mapFrom(formEntityDto));
+        FormEntity formEntity = formEntityMapper.mapFrom(formEntityDto);
+        formEntity.calculateMaximumAmount();
+        FormEntity savedEntity = formEntityRepository.save(formEntity);
         return formEntityMapper.mapTo(savedEntity);
     }
 

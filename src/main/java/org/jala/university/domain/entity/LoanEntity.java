@@ -70,7 +70,7 @@ public class LoanEntity implements BaseEntity<UUID> {
     @Column(name = "loan_due_date")
     LocalDate loanDueDate;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "form_id", nullable = false)
     private FormEntity form;
 

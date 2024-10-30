@@ -3,6 +3,7 @@ package org.jala.university.application.mapper;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.jala.university.domain.entity.LoanEntity;
+import org.jala.university.domain.entity.enums.Status;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .id(loanEntity.getId())
                 .amountBorrowed(loanEntity.getAmountBorrowed())
                 .totalInterest(loanEntity.getTotalInterest())
+                .numberOfInstallments(loanEntity.getNumberOfInstallments())
                 .valueOfInstallments(loanEntity.getValueOfInstallments())
                 .paymentMethod(loanEntity.getPaymentMethod())
                 .status(loanEntity.getStatus())
@@ -25,16 +27,19 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
 
     @Override
     public LoanEntity mapFrom(LoanEntityDto loanEntityDto) {
-        return LoanEntity.builder()
+        LoanEntity entity = LoanEntity.builder()
                 .id(loanEntityDto.getId())
                 .amountBorrowed(loanEntityDto.getAmountBorrowed())
-                .totalInterest(loanEntityDto.getTotalInterest())
-                .valueOfInstallments(loanEntityDto.getValueOfInstallments())
                 .paymentMethod(loanEntityDto.getPaymentMethod().getCode())
-                .status(loanEntityDto.getStatus().getCode())
-                .issueDate(loanEntityDto.getIssueDate())
-                .installmentsDueDate(loanEntityDto.getInstallmentsDueDate())
-                .loanDueDate(loanEntityDto.getLoanDueDate())
+                .numberOfInstallments(loanEntityDto.getNumberOfInstallments())
                 .build();
+
+                if (loanEntityDto.getStatus() != null) {
+                    entity.setStatus(loanEntityDto.getStatus());
+                } else {
+                    entity.setStatus(Status.REVIEW);
+                }
+
+                return entity;
     }
 }
