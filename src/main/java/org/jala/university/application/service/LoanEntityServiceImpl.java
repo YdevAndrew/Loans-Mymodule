@@ -56,8 +56,14 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional
     public LoanEntityDto save(LoanEntityDto entityDto) {
         LoanEntity entity = loanEntityMapper.mapFrom(entityDto);
-        entity.calculate();
+        entity.recalculate();
         entity.generateInstallments();
+        entity.generateAndSetDate();
+        //Quando juntar com o módulo Account
+        //entity.setAccount(getLoggedAccount());
+        if (entity.getStatus() == null) {
+            entity.setStatus(entity.generateStatus());
+        }
         LoanEntity savedEntity = loanEntityRepository.save(entity);
 
         if (savedEntity.getStatus().getCode() == Status.REVIEW.getCode()) {
@@ -109,8 +115,9 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     //Recebe o id da conta e retorna os empréstimos da mesma.
     @Override
-    public List<LoanEntityDto> findLoansByAccountId(UUID id) {
-        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(id);
+    public List<LoanEntityDto> findLoansByAccountId() {
+        UUID id = UUID.randomUUID();/*retirar quando juntar os módulos */
+        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(/*getLoggedAccount().get*/id);/*Ajustar quando juntar módulos */
         return loans.stream()
                 .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
                 .toList();

@@ -3,7 +3,6 @@ package org.jala.university.application.mapper;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.jala.university.domain.entity.LoanEntity;
-import org.jala.university.domain.entity.enums.Status;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,26 +19,24 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .paymentMethod(loanEntity.getPaymentMethod())
                 .status(loanEntity.getStatus())
                 .issueDate(loanEntity.getIssueDate())
-                .installmentsDueDate(loanEntity.getInstallmentsDueDate())
+                .installmentsDueDay(loanEntity.getInstallmentsDueDay())
                 .loanDueDate(loanEntity.getLoanDueDate())
                 .build();
     }
 
     @Override
     public LoanEntity mapFrom(LoanEntityDto loanEntityDto) {
-        LoanEntity entity = LoanEntity.builder()
+        return LoanEntity.builder()
                 .id(loanEntityDto.getId())
                 .amountBorrowed(loanEntityDto.getAmountBorrowed())
-                .paymentMethod(loanEntityDto.getPaymentMethod().getCode())
+                .totalInterest(loanEntityDto.getTotalInterest())
                 .numberOfInstallments(loanEntityDto.getNumberOfInstallments())
+                .valueOfInstallments(loanEntityDto.getValueOfInstallments())
+                .paymentMethod(loanEntityDto.getPaymentMethod().getCode())
+                .status(loanEntityDto.getStatus().getCode())
+                .issueDate(loanEntityDto.getIssueDate())
+                .installmentsDueDay(loanEntityDto.getInstallmentsDueDay())
+                .loanDueDate(loanEntityDto.getLoanDueDate())
                 .build();
-
-                if (loanEntityDto.getStatus() != null) {
-                    entity.setStatus(loanEntityDto.getStatus());
-                } else {
-                    entity.setStatus(Status.REVIEW);
-                }
-
-                return entity;
     }
 }

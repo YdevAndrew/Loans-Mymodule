@@ -15,7 +15,7 @@ public interface LoanEntityService {
     void deleteById(UUID id);
     void delete(LoanEntityDto entityDto);
     LoanEntityDto update(UUID id, LoanEntityDto entityDto);
-    List<LoanEntityDto> findLoansByAccountId(UUID id);
+    List<LoanEntityDto> findLoansByAccountId();
     LoanEntity associateForm(LoanEntityDto loanDto, FormEntityDto formdto);
     void markInstallmentAsPaid(LoanEntityDto dto);
     long getPaidInstallments(LoanEntityDto dto);
