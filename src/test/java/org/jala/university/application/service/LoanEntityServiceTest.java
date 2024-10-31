@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jala.university.application.dto.LoanEntityDto;
+import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.repository.LoanEntityRepository;
@@ -29,6 +30,9 @@ class LoanEntityServiceTest {
     private LoanEntityMapper loanEntityMapper;
 
     @Mock
+    private FormEntityMapper formEntityMapper;
+
+    @Mock
     private RepositoryFactory repositoryFactory;
 
     private LoanEntityService loanEntityService;
@@ -40,7 +44,7 @@ class LoanEntityServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         when(repositoryFactory.createLoanEntityRepository()).thenReturn(loanEntityRepository);
-        loanEntityService = new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper, taskScheduler);
+        loanEntityService = new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper, formEntityMapper, taskScheduler);
     }
 
     @Test

@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.jala.university.commons.domain.BaseEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
+import org.jala.university.utils.CalculationUtil;
 import org.springframework.data.annotation.CreatedDate;
 
 import jakarta.persistence.CascadeType;
@@ -19,6 +20,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -64,18 +66,22 @@ public class LoanEntity implements BaseEntity<UUID> {
     @CreatedDate
     LocalDate issueDate;
 
-    @Column(name = "installments_due_date")
-    LocalDate installmentsDueDate;
+    @Column(name = "installments_due_day")
+    Integer installmentsDueDay;
 
     @Column(name = "loan_due_date")
     LocalDate loanDueDate;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "form_id", nullable = false)
     private FormEntity form;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
+
+    /*@ManyToOne(optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountEntity account;*/
 
     /*
      * @ManyToOne
@@ -83,19 +89,18 @@ public class LoanEntity implements BaseEntity<UUID> {
      * @JoinColumn(name = "account_id", nullable = false)
      * private Account account;
      */
-
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
-                      PaymentMethod paymentMethod, LocalDate issueDate, LocalDate installmentsDueDate, LocalDate loanDueDate) {
+            PaymentMethod paymentMethod) {
 
         this.amountBorrowed = amountBorrowed;
         this.numberOfInstallments = numberOfInstallments;
         this.form = form;
         setPaymentMethod(paymentMethod);
         this.issueDate = LocalDate.now();
-        this.installmentsDueDate = installmentsDueDate;
+        this.installmentsDueDay = issueDate.getDayOfMonth();
         this.loanDueDate = this.issueDate.plusMonths(this.numberOfInstallments);
         setStatus(Status.REVIEW);
-        calculate();
+        recalculate();
         generateInstallments();
     }
 
@@ -121,24 +126,19 @@ public class LoanEntity implements BaseEntity<UUID> {
 
     public void setNumberOfInstallments(Integer number) {
         this.numberOfInstallments = number;
-        calculate();
+        recalculate();
         generateInstallments();
     }
 
     public void setamountBorrowed(Double amount) {
         this.amountBorrowed = amount;
-        calculate();
+        recalculate();
         generateInstallments();
     }
 
     /*
      * Para o Front:
      */
-    // Recebe o número de parcelas e retorna o valor das parcelas
-    public Double getValueOfInstallments(int installments) {
-        return totalPayable / installments;
-    }
-
     // Retorna a data inicial em formato brasileiro
     public String getFormattedIssueDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -185,29 +185,25 @@ public class LoanEntity implements BaseEntity<UUID> {
     public Status generateStatus() {
         Status status = this.getStatus();
 
-        if (/*requisitos para mudança de status*/status == null) {
+        if (/* requisitos para mudança de status */status == null) {
+            status = Status.REVIEW;
 
-            //status específico para os requisitos
-        } else {
+        } else if (status == Status.REVIEW) {
             status = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
         }
-
         return status;
     }
 
-    public void calculate() {
-        double monthlyInterestRate = 0.02;
+    public void generateAndSetDate() {
+        this.issueDate = LocalDate.now();
+        this.installmentsDueDay = issueDate.getDayOfMonth();
+        this.loanDueDate = issueDate.plusMonths(numberOfInstallments);
+    }
 
-        // (1 + 0.02)^n (cálculo de juros compostos)
-        double factor = Math.pow(1 + monthlyInterestRate, numberOfInstallments);
-
-        // Valor total a pagar com juros compostos
-        this.totalPayable = amountBorrowed * factor;
-
-        // Valor das parcelas mensais
-        this.valueOfInstallments = totalPayable / numberOfInstallments;
-
-        this.totalInterest = totalPayable - amountBorrowed;
+    public void recalculate() {
+        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, valueOfInstallments);
+        this.valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, valueOfInstallments);
+        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, valueOfInstallments);
     }
 
     public void generateInstallments() {

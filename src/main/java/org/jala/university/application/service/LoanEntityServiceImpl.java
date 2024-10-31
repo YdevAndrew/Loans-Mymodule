@@ -1,14 +1,16 @@
 package org.jala.university.application.service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.time.Instant;
-import java.time.Duration;
 import java.util.stream.Collectors;
 
+import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
+import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
-import org.jala.university.config.SchedulerConfig;
+import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.domain.repository.LoanEntityRepository;
@@ -21,11 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoanEntityServiceImpl implements LoanEntityService {
     private final LoanEntityRepository loanEntityRepository;
     private final LoanEntityMapper loanEntityMapper;
+    private final FormEntityMapper formEntityMapper;
     private final TaskScheduler taskScheduler;
 
-    public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper, TaskScheduler taskScheduler) {
+    public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper, TaskScheduler taskScheduler) {
         this.loanEntityRepository = factory.createLoanEntityRepository();
         this.loanEntityMapper = loanEntityMapper;
+        this.formEntityMapper = formEntityMapper;
         this.taskScheduler = taskScheduler;
     }
 
@@ -51,7 +55,16 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Override
     @Transactional
     public LoanEntityDto save(LoanEntityDto entityDto) {
-        LoanEntity savedEntity = loanEntityRepository.save(loanEntityMapper.mapFrom(entityDto));
+        LoanEntity entity = loanEntityMapper.mapFrom(entityDto);
+        entity.recalculate();
+        entity.generateInstallments();
+        entity.generateAndSetDate();
+        //Quando juntar com o módulo Account
+        //entity.setAccount(getLoggedAccount());
+        if (entity.getStatus() == null) {
+            entity.setStatus(entity.generateStatus());
+        }
+        LoanEntity savedEntity = loanEntityRepository.save(entity);
 
         if (savedEntity.getStatus().getCode() == Status.REVIEW.getCode()) {
             scheduleStatusChange(savedEntity);
@@ -100,6 +113,29 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         return loanEntityMapper.mapTo(savedEntity);
     }
 
+    //Recebe o id da conta e retorna os empréstimos da mesma.
+    @Override
+    public List<LoanEntityDto> findLoansByAccountId() {
+        UUID id = UUID.randomUUID();/*retirar quando juntar os módulos */
+        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(/*getLoggedAccount().get*/id);/*Ajustar quando juntar módulos */
+        return loans.stream()
+                .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
+                .toList();
+    }  
+
+    /*Recebe o FormDto e retorna o LoanEntity com o form associado, use ele
+     * se estiver salvando o empréstimo no banco pela primeira vez, exemplo: 
+     * loanWithForm = associateForm(loanEntityDto, formEntityDto);
+     * loanEntityService.save(loanWithForm).
+     */
+    @Override
+    public LoanEntity associateForm(LoanEntityDto loanDto, FormEntityDto formdto) {
+        LoanEntity loanEntity = loanEntityMapper.mapFrom(loanDto);
+        FormEntity formEntity = formEntityMapper.mapFrom(formdto);
+        loanEntity.setForm(formEntity);
+        return loanEntity;
+    }
+
     private void scheduleStatusChange(LoanEntity loanEntity) {
         Instant startTime = Instant.now().plus(Duration.ofMinutes(2)); // 2 minutos no futuro
     
@@ -120,23 +156,17 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     private void sendAmountAccount() {
         //Lógica de transação para mandar o dinheiro para a conta
     }
-
-    //Recebe o id da conta e retorna os empréstimos da mesma.
-    @Override
-    public List<LoanEntityDto> findLoansByAccountId(UUID id) {
-        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(id);
-        return loans.stream()
-                .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
-                .toList();
-    }  
     
     @Override
-    public void markInstallmentAsPaid(LoanEntity loan) {
-        loan.markAsPaid();
+    public void markInstallmentAsPaid(LoanEntityDto dto) {
+        LoanEntity entity = loanEntityMapper.mapFrom(dto);
+        entity.markAsPaid();
+        loanEntityRepository.save(entity);
     }
 
     @Override
-    public long getPaidInstallments(LoanEntity loan) {
-        return loan.getNumberOfPaidInstallments();
+    public long getPaidInstallments(LoanEntityDto dto) {
+        LoanEntity entity = loanEntityMapper.mapFrom(dto);
+        return entity.getNumberOfPaidInstallments();
     }
 }

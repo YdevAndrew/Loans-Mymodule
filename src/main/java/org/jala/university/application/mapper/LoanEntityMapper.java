@@ -14,11 +14,12 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .id(loanEntity.getId())
                 .amountBorrowed(loanEntity.getAmountBorrowed())
                 .totalInterest(loanEntity.getTotalInterest())
+                .numberOfInstallments(loanEntity.getNumberOfInstallments())
                 .valueOfInstallments(loanEntity.getValueOfInstallments())
                 .paymentMethod(loanEntity.getPaymentMethod())
                 .status(loanEntity.getStatus())
                 .issueDate(loanEntity.getIssueDate())
-                .installmentsDueDate(loanEntity.getInstallmentsDueDate())
+                .installmentsDueDay(loanEntity.getInstallmentsDueDay())
                 .loanDueDate(loanEntity.getLoanDueDate())
                 .build();
     }
@@ -29,11 +30,12 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .id(loanEntityDto.getId())
                 .amountBorrowed(loanEntityDto.getAmountBorrowed())
                 .totalInterest(loanEntityDto.getTotalInterest())
+                .numberOfInstallments(loanEntityDto.getNumberOfInstallments())
                 .valueOfInstallments(loanEntityDto.getValueOfInstallments())
                 .paymentMethod(loanEntityDto.getPaymentMethod().getCode())
                 .status(loanEntityDto.getStatus().getCode())
                 .issueDate(loanEntityDto.getIssueDate())
-                .installmentsDueDate(loanEntityDto.getInstallmentsDueDate())
+                .installmentsDueDay(loanEntityDto.getInstallmentsDueDay())
                 .loanDueDate(loanEntityDto.getLoanDueDate())
                 .build();
     }
