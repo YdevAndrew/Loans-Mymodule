@@ -15,7 +15,6 @@ import lombok.Value;
 public class LoanEntityDto {
 
     UUID id;
-    Double maximumAmount;
     Double amountBorrowed;
     Double totalInterest;
     Integer numberOfInstallments;
@@ -23,7 +22,7 @@ public class LoanEntityDto {
     PaymentMethod paymentMethod;
     Status status;
     LocalDate issueDate;
-    LocalDate installmentsDueDate;
+    Integer installmentsDueDay;
     LocalDate loanDueDate;
     FormEntity form;
 }

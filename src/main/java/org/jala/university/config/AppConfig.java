@@ -50,9 +50,9 @@ public class AppConfig {
     }
 
     @Bean
-    public LoanEntityServiceImpl loanEntityServiceImpl(RepositoryFactory repositoryFactory, LoanEntityMapper loanEntityMapper, TaskScheduler taskScheduler) {
+    public LoanEntityServiceImpl loanEntityServiceImpl(RepositoryFactory repositoryFactory, LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper,TaskScheduler taskScheduler) {
         // Injeta os beans RepositoryFactory, LoanEntityMapper e TaskScheduler em LoanEntityServiceImpl
-        return new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper, taskScheduler);
+        return new LoanEntityServiceImpl(repositoryFactory, loanEntityMapper, formEntityMapper, taskScheduler);
     }
 
 

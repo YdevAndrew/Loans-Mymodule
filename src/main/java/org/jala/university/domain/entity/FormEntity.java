@@ -55,7 +55,7 @@ public class FormEntity implements BaseEntity<UUID> {
     }
 
     //maximumAmount = income + (0.8 * income).
-    private void calculateMaximumAmount() {
+    public void calculateMaximumAmount() {
         this.maximumAmount = income + income * 0.8;
     }    
 }
