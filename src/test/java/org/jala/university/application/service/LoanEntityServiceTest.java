@@ -157,7 +157,7 @@ class LoanEntityServiceTest {
 
         LoanEntityDto dto = LoanEntityDto.builder()
                 .id(id)
-                .maximumAmount(10000.00)
+                //.maximumAmount(10000.00)
                 .amountBorrowed(5000.00)
                 .totalInterest(500.00)
                 .numberOfInstallments(12)
