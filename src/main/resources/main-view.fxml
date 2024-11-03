@@ -1,50 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MainViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="1267.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MainViewController">
    <children>
 
-      <!-- TabPane para gerenciar as abas -->
-      <TabPane fx:id="mainTabPane" layoutX="0" layoutY="0" prefHeight="598.0" prefWidth="760.0">
-         <tabs>
-            <!-- Aba inicial, que não pode ser fechada -->
-            <Tab closable="false">
-               <content>
-                  <!-- Conteúdo do Pane inicial -->
-                  <VBox fx:id="initialPane" spacing="10" style="-fx-padding: 20;">
-                     <Label style="-fx-font-size: 20px;" text="Bem-vindo ao Simulador de Empréstimos" />
-                     <Label text="Clique no botão abaixo para iniciar a simulação de empréstimo." />
-                     <!-- Botão para iniciar o empréstimo -->
-                     <Button onAction="#startLoanSimulation" style="-fx-background-color: #004BD6; -fx-text-fill: white;" text="Solicitar Empréstimo" />
-                  </VBox>
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
 
       <!-- Todas as 16 imagens referenciadas pelo ID -->
-      <ImageView fx:id="image1" fitHeight="46.0" fitWidth="62.0" layoutX="352.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="image1" fitHeight="46.0" fitWidth="62.0" layoutX="596.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@/images/logo.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image2" fitHeight="46.0" fitWidth="202.0" layoutX="510.0" layoutY="197.0">
+      <ImageView fx:id="image2" fitHeight="46.0" fitWidth="202.0" layoutX="997.0" layoutY="206.0">
          <image>
             <Image url="@/images/Botão.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image3" fitHeight="18.0" fitWidth="172.0" layoutX="525.0" layoutY="211.0">
+      <ImageView fx:id="image3" fitHeight="18.0" fitWidth="172.0" layoutX="1012.0" layoutY="220.0">
          <image>
             <Image url="@/images/Taxa fixa de 2% a.m.png" />
          </image>
@@ -56,25 +33,25 @@
          </image>
       </ImageView>
 
-      <ImageView fx:id="image5" fitHeight="28.0" fitWidth="760.0" layoutY="570.0">
+      <ImageView fx:id="image5" fitHeight="28.0" fitWidth="1276.0" layoutX="-10.0" layoutY="595.0">
          <image>
             <Image url="@/images/rodapé.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image6" fitHeight="46.0" fitWidth="352.0">
+      <ImageView fx:id="image6" fitHeight="46.0" fitWidth="601.0" layoutX="-5.0">
          <image>
             <Image url="@/images/cabeçalho.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image7" fitHeight="46.0" fitWidth="338.0" layoutX="424.0" layoutY="1.0">
+      <ImageView fx:id="image7" fitHeight="46.0" fitWidth="601.0" layoutX="659.0">
          <image>
             <Image url="@/images/cabeçalho.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image8" fitHeight="139.0" fitWidth="791.0" layoutX="-21.0" layoutY="47.0">
+      <ImageView fx:id="image8" fitHeight="139.0" fitWidth="1286.0" layoutX="-21.0" layoutY="47.0">
          <image>
             <Image url="@/images/Botão.png" />
          </image>
@@ -92,31 +69,31 @@
          </image>
       </ImageView>
 
-      <ImageView fx:id="image11" fitHeight="125.0" fitWidth="267.0" layoutX="493.0" layoutY="48.0">
+      <ImageView fx:id="image11" fitHeight="118.0" fitWidth="260.0" layoutX="985.0" layoutY="50.0">
          <image>
             <Image url="@/images/tablet.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image12" fitHeight="43.0" fitWidth="200.0" layoutX="511.0" layoutY="245.0">
+      <ImageView fx:id="image12" fitHeight="43.0" fitWidth="200.0" layoutX="998.0" layoutY="255.0">
          <image>
             <Image url="@/images/Botão.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image13" fitHeight="43.0" fitWidth="200.0" layoutX="511.0" layoutY="299.0">
+      <ImageView fx:id="image13" fitHeight="43.0" fitWidth="200.0" layoutX="998.0" layoutY="300.0">
          <image>
             <Image url="@/images/Botão.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image14" fitHeight="18.0" fitWidth="189.0" layoutX="517.0" layoutY="258.0">
+      <ImageView fx:id="image14" fitHeight="18.0" fitWidth="189.0" layoutX="1004.0" layoutY="268.0">
          <image>
             <Image url="@/images/Parcelamento em até 36x.png" />
          </image>
       </ImageView>
 
-      <ImageView fx:id="image15" fitHeight="18.0" fitWidth="159.0" layoutX="532.0" layoutY="312.0">
+      <ImageView fx:id="image15" fitHeight="18.0" fitWidth="159.0" layoutX="1019.0" layoutY="313.0">
          <image>
             <Image url="@/images/Resultado na hora.png" />
          </image>
@@ -124,7 +101,7 @@
 
       <Button fx:id="loanButton" layoutX="50.0" layoutY="488.0" mnemonicParsing="false" onAction="#startLoanSimulation" prefHeight="12.0" prefWidth="159.0" style="-fx-background-color: blue;">
          <graphic>
-            <ImageView fx:id="image16" fitHeight="12.0" fitWidth="159.0">
+            <ImageView fx:id="image16" fitHeight="20.0" fitWidth="180.0">
                <image>
                   <Image url="@/images/Solicite o seu emprestimo.png" />
                </image>
@@ -132,33 +109,31 @@
          </graphic>
       </Button>
 
-
-      <!-- Pane de simulação de empréstimo (inicialmente invisível) -->
+      <!-- Loan Simulation Pane -->
       <VBox fx:id="loanSimulationPane" layoutX="0" layoutY="0" managed="false" prefHeight="598.0" prefWidth="760.0" spacing="10" style="-fx-padding: 20;" visible="false">
-         <!-- Título -->
          <Label style="-fx-font-size: 20px;" text="Solicite seu Empréstimo" />
 
-         <!-- Campo para salário -->
+         <!-- Salary field -->
          <Label text="Salário:" />
          <TextField fx:id="salaryField" promptText="Digite seu salário" />
 
-         <!-- Campo para documento (botão de upload) -->
+         <!-- Document upload -->
          <Label text="Documento com Foto:" />
          <TextField fx:id="documentField" editable="false" promptText="Selecione um documento" />
          <Button onAction="#chooseDocument" text="Escolher Documento" />
 
-         <!-- Campo para comprovante de renda (botão de upload) -->
+         <!-- Income proof upload -->
          <Label text="Comprovante de Renda:" />
          <TextField fx:id="incomeProofField" editable="false" promptText="Selecione o comprovante de renda" />
          <Button onAction="#chooseIncomeProof" text="Escolher Comprovante" />
 
-         <!-- Mensagem de erro -->
+         <!-- Error message label -->
          <Label fx:id="errorMessage" textFill="red" />
 
-         <!-- Botão para submeter a solicitação de empréstimo -->
+         <!-- Submit loan request button -->
          <Button onAction="#submitLoanRequest" style="-fx-background-color: #004BD6; -fx-text-fill: white;" text="Solicitar Empréstimo" />
 
-         <!-- Botão para voltar ao menu -->
+         <!-- Back button -->
          <Button onAction="#goBackToMenu" style="-fx-background-color: #CCC;" text="Voltar" />
       </VBox>
 

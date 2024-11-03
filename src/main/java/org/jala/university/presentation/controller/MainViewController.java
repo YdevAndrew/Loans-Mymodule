@@ -1,6 +1,5 @@
 package org.jala.university.presentation.controller;
 
-
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -9,6 +8,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.service.FormEntityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
@@ -22,10 +22,12 @@ import java.util.UUID;
 @Controller
 public class MainViewController {
 
-    private  FormEntityService formService;
+    @Autowired
+    @Qualifier("formEntityServiceImpl")
+    private FormEntityService formService;
 
     @FXML
-    private VBox initialPane, loanSimulationPane;
+    private VBox loanSimulationPane;
 
     @FXML
     private TextField documentField, salaryField, incomeProofField;
@@ -36,33 +38,20 @@ public class MainViewController {
     @FXML
     private Button loanButton;
 
-    @FXML
-    private TabPane mainTabPane;
-
     private File documentFile;
     private File incomeProofFile;
 
-    // Lista de todas as imagens que serão ocultadas/exibidas
     @FXML
     private List<ImageView> imageViews = new ArrayList<>();
-
 
     @FXML
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
             image9, image10, image11, image12, image13, image14, image15, image16;
 
-
     public MainViewController() {}
-
-
-    public MainViewController(@Qualifier("formEntityServiceImpl") FormEntityService formService) {
-        this.formService = formService;
-    }
-
 
     @FXML
     private void initialize() {
-        // Adiciona todas as imagens à lista para manipulação em massa
         imageViews.add(image1);
         imageViews.add(image2);
         imageViews.add(image3);
@@ -83,24 +72,23 @@ public class MainViewController {
 
     @FXML
     private void startLoanSimulation() {
-        toggleVisibility(false); // Oculta o painel inicial e as imagens
+        toggleVisibility(false); // Oculta as imagens e o botão de empréstimo
         loanSimulationPane.setVisible(true);
         loanSimulationPane.setManaged(true);
     }
 
     @FXML
     private void goBackToMenu() {
-        toggleVisibility(true); // Exibe o painel inicial e as imagens
+        toggleVisibility(true); // Exibe as imagens e o botão de empréstimo
         loanSimulationPane.setVisible(false);
         loanSimulationPane.setManaged(false);
     }
 
     private void toggleVisibility(boolean showInitial) {
-        initialPane.setVisible(showInitial);
         loanButton.setVisible(showInitial);
         loanButton.setManaged(showInitial);
 
-        // Alterna visibilidade de todas as imagens
+        // Alterna a visibilidade de todas as imagens
         imageViews.forEach(image -> {
             image.setVisible(showInitial);
             image.setManaged(showInitial);
@@ -120,7 +108,7 @@ public class MainViewController {
     private File openFileChooser(String title, TextField field) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("Imagens", "*.jpg", "*.jpeg", "*.png"));
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Document", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
         File file = fileChooser.showOpenDialog(field.getScene().getWindow());
 
         field.setText(file != null ? file.getName() : "Nenhum arquivo selecionado");
@@ -134,6 +122,11 @@ public class MainViewController {
         if (validateInputs(salary)) {
             errorMessage.setText("");
             try {
+                if (documentFile == null || incomeProofFile == null) {
+                    errorMessage.setText("Documentos não foram selecionados corretamente.");
+                    return;
+                }
+
                 String documentPhotoBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(documentFile.toPath()));
                 String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
 

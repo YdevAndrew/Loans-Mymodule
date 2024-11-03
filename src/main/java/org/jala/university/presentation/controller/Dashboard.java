@@ -5,13 +5,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import org.jala.university.commons.presentation.BaseController;
+import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
 @Controller
-public class Dashboard extends BaseController {
+public class Dashboard {
+
+    private final SpringFXMLLoader springFXMLLoader;
+
+    public Dashboard(SpringFXMLLoader springFXMLLoader) {
+        this.springFXMLLoader = springFXMLLoader;
+    }
 
     @FXML
     private VBox myCardsVBox;
@@ -20,10 +26,10 @@ public class Dashboard extends BaseController {
     private VBox otherButtonsVBox;
 
     @FXML
-    private VBox mainViewContainer; // Contêiner para carregar main-view.fxml
+    private VBox mainViewContainer;
 
     @FXML
-    private ImageView loansImage; // ImageView para loans.png
+    private ImageView loansImage;
 
     @FXML
     public void handleMyCardsClick() {
@@ -38,14 +44,11 @@ public class Dashboard extends BaseController {
         }
     }
 
-
     @FXML
     public void loadMainView() {
         try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main-view.fxml"));
+            FXMLLoader loader = springFXMLLoader.load("/main-view.fxml");
             Node mainViewContent = loader.load();
-
 
             mainViewContainer.getChildren().clear();
             mainViewContainer.getChildren().add(mainViewContent);
