@@ -1,5 +1,6 @@
 package org.jala.university.presentation;
 
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,16 +31,14 @@ public class MainView extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = springFXMLLoader.load("/main-view.fxml");
+        FXMLLoader loader = springFXMLLoader.load("/board/DashboardApp.fxml");
         Scene scene = new Scene(loader.load());
-
         ViewSwitcher.setup(primaryStage, scene);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Loans Module Application");
-        primaryStage.setMinWidth(600);
-        primaryStage.setMinHeight(400);
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(600);
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
+        primaryStage.setMaximized(true); // Expande a janela para tela cheia
         primaryStage.show();
     }
 

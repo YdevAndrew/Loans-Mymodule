@@ -1,5 +1,6 @@
 package org.jala.university.presentation.controller;
 
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -49,6 +50,10 @@ public class MainViewController {
     @FXML
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
             image9, image10, image11, image12, image13, image14, image15, image16;
+
+
+    public MainViewController() {}
+
 
     public MainViewController(@Qualifier("formEntityServiceImpl") FormEntityService formService) {
         this.formService = formService;
