@@ -10,7 +10,6 @@ import lombok.Value;
 public class FormEntityDto {
 
     UUID id;
-    byte[] documentPhoto;
     Double income;
     byte[] proofOfIncome;
     Double maximumAmount;
