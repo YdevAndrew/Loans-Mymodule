@@ -1,45 +1,33 @@
 package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import org.jala.university.application.dto.FormEntityDto;
-import org.jala.university.application.service.FormEntityService;
+import javafx.stage.Stage;
+import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import java.io.File;
-import java.nio.file.Files;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class MainViewController {
 
     @Autowired
-    @Qualifier("formEntityServiceImpl")
-    private FormEntityService formService;
+    private SpringFXMLLoader springFXMLLoader;
 
     @FXML
-    private VBox loanSimulationPane;
-
-    @FXML
-    private TextField documentField, salaryField, incomeProofField;
-
-    @FXML
-    private Label errorMessage;
+    private Pane mainPane;
 
     @FXML
     private Button loanButton;
-
-    private File documentFile;
-    private File incomeProofFile;
 
     @FXML
     private List<ImageView> imageViews = new ArrayList<>();
@@ -48,7 +36,8 @@ public class MainViewController {
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
             image9, image10, image11, image12, image13, image14, image15, image16;
 
-    public MainViewController() {}
+    public MainViewController() {
+    }
 
     @FXML
     private void initialize() {
@@ -72,92 +61,35 @@ public class MainViewController {
 
     @FXML
     private void startLoanSimulation() {
-        toggleVisibility(false); // Oculta as imagens e o botão de empréstimo
-        loanSimulationPane.setVisible(true);
-        loanSimulationPane.setManaged(true);
+        try {
+            // Carrega o FXML do formulário como um Pane
+            FXMLLoader loader = springFXMLLoader.load("/Form/form.fxml");
+            Pane loanPane = loader.load();
+
+            // Limpa o mainPane e adiciona o formulário de empréstimo
+            mainPane.getChildren().clear();
+            mainPane.getChildren().add(loanPane);
+        } catch (IOException e) {
+            System.err.println("Error loading form.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void goBackToMenu() {
-        toggleVisibility(true); // Exibe as imagens e o botão de empréstimo
-        loanSimulationPane.setVisible(false);
-        loanSimulationPane.setManaged(false);
+        // Restaura a tela inicial com o botão de empréstimo e imagens
+        mainPane.getChildren().clear();
+        mainPane.getChildren().add(loanButton); // Recoloca o botão principal
+        toggleVisibility(true); // Reexibe as imagens da tela inicial
     }
 
     private void toggleVisibility(boolean showInitial) {
         loanButton.setVisible(showInitial);
         loanButton.setManaged(showInitial);
 
-        // Alterna a visibilidade de todas as imagens
         imageViews.forEach(image -> {
             image.setVisible(showInitial);
             image.setManaged(showInitial);
         });
-    }
-
-    @FXML
-    private void chooseDocument() {
-        documentFile = openFileChooser("Escolher Documento com Foto", documentField);
-    }
-
-    @FXML
-    private void chooseIncomeProof() {
-        incomeProofFile = openFileChooser("Escolher Comprovante de Renda", incomeProofField);
-    }
-
-    private File openFileChooser(String title, TextField field) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(title);
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("Document", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
-        File file = fileChooser.showOpenDialog(field.getScene().getWindow());
-
-        field.setText(file != null ? file.getName() : "Nenhum arquivo selecionado");
-        return file;
-    }
-
-    @FXML
-    private void submitLoanRequest() {
-        String salary = salaryField.getText();
-
-        if (validateInputs(salary)) {
-            errorMessage.setText("");
-            try {
-                if (documentFile == null || incomeProofFile == null) {
-                    errorMessage.setText("Documentos não foram selecionados corretamente.");
-                    return;
-                }
-
-                String documentPhotoBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(documentFile.toPath()));
-                String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
-
-                FormEntityDto formDto = FormEntityDto.builder()
-                        .id(UUID.randomUUID())
-                        .income(Double.valueOf(salary))
-                        .documentPhoto(documentPhotoBase64.getBytes())
-                        .proofOfIncome(incomeProofBase64.getBytes())
-                        .build();
-
-                formService.save(formDto);
-                showSuccessPopup("Solicitação enviada com sucesso!");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                errorMessage.setText("Erro ao processar os arquivos. Tente novamente.");
-            }
-        } else {
-            errorMessage.setText("Por favor, preencha todos os campos corretamente.");
-        }
-    }
-
-    private boolean validateInputs(String salary) {
-        return documentFile != null && incomeProofFile != null && !salary.isEmpty();
-    }
-
-    private void showSuccessPopup(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Empréstimo Solicitado");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

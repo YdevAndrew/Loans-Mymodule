@@ -12,7 +12,6 @@ public class FormEntityMapper implements Mapper<FormEntity, FormEntityDto> {
     public FormEntityDto mapTo(FormEntity formEntity) {
         return FormEntityDto.builder()
                 .id(formEntity.getId())
-                .documentPhoto(formEntity.getDocumentPhoto())
                 .income(formEntity.getIncome())
                 .proofOfIncome(formEntity.getProofOfIncome())
                 .maximumAmount(formEntity.getMaximumAmount())
@@ -23,7 +22,6 @@ public class FormEntityMapper implements Mapper<FormEntity, FormEntityDto> {
     public FormEntity mapFrom(FormEntityDto formEntityDto) {
         return FormEntity.builder()
                 .id(formEntityDto.getId())
-                .documentPhoto(formEntityDto.getDocumentPhoto())
                 .income(formEntityDto.getIncome())
                 .proofOfIncome(formEntityDto.getProofOfIncome())
                 .maximumAmount(formEntityDto.getMaximumAmount())

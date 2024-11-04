@@ -28,9 +28,6 @@ public class FormEntity implements BaseEntity<UUID> {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Lob
-    @Column(name = "document_photo")
-    private byte[] documentPhoto;
 
     @Column(name = "income")
     private Double income;
@@ -47,8 +44,8 @@ public class FormEntity implements BaseEntity<UUID> {
         calculateMaximumAmount();
     }
 
-    public FormEntity(byte[] documentPhoto, Double income, byte[] proofOfIncome) {
-        this.documentPhoto = documentPhoto;
+    public FormEntity(Double income, byte[] proofOfIncome) {
+
         this.income = income;
         this.proofOfIncome = proofOfIncome;
         calculateMaximumAmount();
