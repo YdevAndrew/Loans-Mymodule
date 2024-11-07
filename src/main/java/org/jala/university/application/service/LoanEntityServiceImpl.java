@@ -3,7 +3,6 @@ package org.jala.university.application.service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jala.university.application.dto.FormEntityDto;
@@ -14,20 +13,24 @@ import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.domain.repository.LoanEntityRepository;
-import org.jala.university.infrastructure.persistance.RepositoryFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoanEntityServiceImpl implements LoanEntityService {
-    private final LoanEntityRepository loanEntityRepository;
+
+    @Autowired
+    private LoanEntityRepository loanEntityRepository;
     private final LoanEntityMapper loanEntityMapper;
     private final FormEntityMapper formEntityMapper;
     private final TaskScheduler taskScheduler;
 
-    public LoanEntityServiceImpl(RepositoryFactory factory, LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper, TaskScheduler taskScheduler) {
-        this.loanEntityRepository = factory.createLoanEntityRepository();
+    @Autowired
+    private FormEntityService formEntityService;
+
+    public LoanEntityServiceImpl(LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper, TaskScheduler taskScheduler) {
         this.loanEntityMapper = loanEntityMapper;
         this.formEntityMapper = formEntityMapper;
         this.taskScheduler = taskScheduler;
@@ -35,8 +38,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Override
     @Transactional(readOnly = true)
-    public LoanEntityDto findById(UUID id) {
-        LoanEntity entity = loanEntityRepository.findById(id);
+    public LoanEntityDto findById(Integer id) {
+        LoanEntity entity = loanEntityRepository.findById(id).orElse(null);
 
         if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
@@ -59,6 +62,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         entity.recalculate();
         entity.generateInstallments();
         entity.generateAndSetDate();
+        entity.setForm(formEntityService.findEntityById(entity.getForm().getId()));
         //Quando juntar com o módulo Account
         //entity.setAccount(getLoggedAccount());
         if (entity.getStatus() == null) {
@@ -75,8 +79,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Override
     @Transactional
-    public void deleteById(UUID id) {
-        LoanEntity entity = loanEntityRepository.findById(id);
+    public void deleteById(Integer id) {
+        LoanEntity entity = loanEntityRepository.findById(id).orElse(null);
 
         if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
@@ -99,8 +103,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Override
     @Transactional
-    public LoanEntityDto update(UUID id, LoanEntityDto entityDto) {
-        LoanEntity existingEntity = loanEntityRepository.findById(id);
+    public LoanEntityDto update(Integer id, LoanEntityDto entityDto) {
+        LoanEntity existingEntity = loanEntityRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
@@ -114,14 +118,14 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     }
 
     //Recebe o id da conta e retorna os empréstimos da mesma.
-    @Override
+    /*@Override
     public List<LoanEntityDto> findLoansByAccountId() {
-        UUID id = UUID.randomUUID();/*retirar quando juntar os módulos */
-        List<LoanEntity> loans = loanEntityRepository.findLoansByAccountId(/*getLoggedAccount().get*/id);/*Ajustar quando juntar módulos */
+        Integer id = 54354325;//retirar quando juntar os módulos 
+        List<LoanEntity> loans = loanEntityRepository.findByAccountId(getLoggedAccount().getid);//Ajustar quando juntar módulos
         return loans.stream()
                 .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
                 .toList();
-    }  
+    }  */
 
     /*Recebe o FormDto e retorna o LoanEntity com o form associado, use ele
      * se estiver salvando o empréstimo no banco pela primeira vez, exemplo: 
@@ -168,5 +172,11 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     public long getPaidInstallments(LoanEntityDto dto) {
         LoanEntity entity = loanEntityMapper.mapFrom(dto);
         return entity.getNumberOfPaidInstallments();
+    }
+
+    @Override
+    public List<LoanEntityDto> findLoansByAccountId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findLoansByAccountId'");
     }
 }

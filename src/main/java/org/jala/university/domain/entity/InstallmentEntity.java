@@ -1,7 +1,6 @@
 package org.jala.university.domain.entity;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import java.time.format.DateTimeFormatter;
 
 import org.jala.university.commons.domain.BaseEntity;
@@ -25,11 +24,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "INSTALLMENT")
-public class InstallmentEntity implements BaseEntity<UUID> {
+public class InstallmentEntity implements BaseEntity<Integer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "amount")
     private Double amount;

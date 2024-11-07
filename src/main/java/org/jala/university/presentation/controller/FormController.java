@@ -1,22 +1,24 @@
 package org.jala.university.presentation.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Base64;
+
 import org.jala.university.application.dto.FormEntityDto;
+import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
-import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Base64;
-import java.util.UUID;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 @Controller
 public class FormController {
@@ -24,6 +26,8 @@ public class FormController {
     @Qualifier("formEntityServiceImpl")
     @Autowired
     private FormEntityService formService;
+
+    FormEntityMapper mapper = new FormEntityMapper();
 
     @Autowired
     private SpringFXMLLoader springFXMLLoader;
@@ -88,14 +92,8 @@ public class FormController {
 
                 FormEntityDto savedFormDto = formService.save(formDto);
 
-                // Verificação do ID salvo
-                if (savedFormDto.getId() != null) {
-                    System.out.println("ID do FormEntity salvo: " + savedFormDto.getId());
-                } else {
-                    System.out.println("Falha ao capturar o ID do FormEntity.");
-                }
-
                 showSuccessPopup("Solicitação enviada com sucesso!");
+                
                 PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
             } catch (Exception e) {

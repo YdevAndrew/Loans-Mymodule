@@ -1,5 +1,8 @@
 package org.jala.university.domain.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PaymentMethod {
 
     DEBIT_ACCOUNT(1),
@@ -9,10 +12,6 @@ public enum PaymentMethod {
 
     private PaymentMethod(int code) {
         this.code = code;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public static PaymentMethod valueOf(int code) {

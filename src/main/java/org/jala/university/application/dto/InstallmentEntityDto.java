@@ -1,7 +1,6 @@
 package org.jala.university.application.dto;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import lombok.Builder;
 import lombok.Value;
@@ -10,7 +9,7 @@ import lombok.Value;
 @Value
 public class InstallmentEntityDto {
 
-    UUID id;
+    Integer id;
     Double amount;
     Boolean paid;
     LocalDate paymentDate;

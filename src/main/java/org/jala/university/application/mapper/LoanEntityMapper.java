@@ -21,6 +21,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .issueDate(loanEntity.getIssueDate())
                 .installmentsDueDay(loanEntity.getInstallmentsDueDay())
                 .loanDueDate(loanEntity.getLoanDueDate())
+                .form(loanEntity.getForm())
                 .build();
     }
 
@@ -37,6 +38,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .issueDate(loanEntityDto.getIssueDate())
                 .installmentsDueDay(loanEntityDto.getInstallmentsDueDay())
                 .loanDueDate(loanEntityDto.getLoanDueDate())
+                .form(loanEntityDto.getForm())
                 .build();
     }
 }

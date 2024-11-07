@@ -1,38 +1,53 @@
 package org.jala.university.application.service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.repository.FormEntityRepository;
-import org.jala.university.infrastructure.persistance.RepositoryFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service
 public class FormEntityServiceImpl implements FormEntityService {
 
-    private final FormEntityRepository formEntityRepository;
+    @Autowired
+    private FormEntityRepository formEntityRepository;
     private final FormEntityMapper formEntityMapper;
 
-    public FormEntityServiceImpl(RepositoryFactory factory, FormEntityMapper formEntityMapper) {
-        this.formEntityRepository = factory.createFormEntityRepository();
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public FormEntityServiceImpl(FormEntityMapper formEntityMapper) {
         this.formEntityMapper = formEntityMapper;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public FormEntityDto findById(UUID id) {
-        FormEntity entity = formEntityRepository.findById(id);
+    public FormEntityDto findById(Integer id) {
+        FormEntity entity = formEntityRepository.findById(id).orElse(null);
 
         if (entity == null) {
             throw new IllegalArgumentException("FormEntity not found with ID: " + id);
         }
 
         return formEntityMapper.mapTo(entity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FormEntity findEntityById(Integer id) {
+        FormEntity entity = formEntityRepository.findById(id).orElse(null);
+        if (entity == null) {
+            throw new IllegalArgumentException("FormEntity not found with ID: " + id);
+        }
+        return entityManager.merge(entity);
     }
 
     @Override
@@ -50,18 +65,17 @@ public class FormEntityServiceImpl implements FormEntityService {
         FormEntity formEntity = formEntityMapper.mapFrom(formEntityDto);
         formEntity.calculateMaximumAmount();
 
-        // Salva a entidade e captura o UUID gerado automaticamente
+        // Salva a entidade e captura o Integer gerado automaticamente
         FormEntity savedEntity = formEntityRepository.save(formEntity);
 
-        // Mapeia a entidade salva de volta para o DTO, agora com o UUID incluído
+        // Mapeia a entidade salva de volta para o DTO, agora com o Integer incluído
         return formEntityMapper.mapTo(savedEntity);
     }
 
-
     @Override
     @Transactional
-    public void deleteById(UUID id) {
-        FormEntity entity = formEntityRepository.findById(id);
+    public void deleteById(Integer id) {
+        FormEntity entity = formEntityRepository.findById(id).orElse(null);
 
         if (entity == null) {
             throw new IllegalArgumentException("FormEntity not found with ID: " + id);
@@ -77,7 +91,7 @@ public class FormEntityServiceImpl implements FormEntityService {
             throw new IllegalArgumentException("Invalid FormEntityDto: ID must not be null.");
         }
 
-        FormEntity entity = formEntityRepository.findById(formEntityDto.getId());
+        FormEntity entity = formEntityRepository.findById(formEntityDto.getId()).orElse(null);
         if (entity == null) {
             throw new IllegalArgumentException("FormEntity not found with ID: " + formEntityDto.getId());
         }
@@ -87,8 +101,8 @@ public class FormEntityServiceImpl implements FormEntityService {
 
     @Override
     @Transactional
-    public FormEntityDto update(UUID id, FormEntityDto formEntityDto) {
-        FormEntity existingEntity = formEntityRepository.findById(id);
+    public FormEntityDto update(Integer id, FormEntityDto formEntityDto) {
+        FormEntity existingEntity = formEntityRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
             throw new IllegalArgumentException("FormEntity not found with ID: " + id);
@@ -100,5 +114,4 @@ public class FormEntityServiceImpl implements FormEntityService {
         FormEntity savedEntity = formEntityRepository.save(updatedEntity);
         return formEntityMapper.mapTo(savedEntity);
     }
-    
 }

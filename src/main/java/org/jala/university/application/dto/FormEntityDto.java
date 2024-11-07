@@ -1,7 +1,5 @@
 package org.jala.university.application.dto;
 
-import java.util.UUID;
-
 import lombok.Builder;
 import lombok.Value;
 
@@ -9,7 +7,7 @@ import lombok.Value;
 @Value
 public class FormEntityDto {
 
-    UUID id;
+    Integer id;
     Double income;
     byte[] proofOfIncome;
     Double maximumAmount;
