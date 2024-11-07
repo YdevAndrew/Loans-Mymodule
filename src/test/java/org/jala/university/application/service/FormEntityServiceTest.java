@@ -157,7 +157,6 @@ class FormEntityServiceTest {
         FormEntityDto dto = FormEntityDto.builder()
                 .id(id)
                 .income(5000.00)
-                .documentPhoto(new byte[0])
                 .proofOfIncome(new byte[0])
                 .build();
 
@@ -190,7 +189,6 @@ class FormEntityServiceTest {
         return FormEntityDto.builder()
                 .id(UUID.randomUUID())
                 .income(5000.00)
-                .documentPhoto(new byte[0])
                 .proofOfIncome(new byte[0])
                 .maximumAmount(100000.00)
                 .build();

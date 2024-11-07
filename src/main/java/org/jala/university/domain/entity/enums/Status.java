@@ -1,5 +1,8 @@
 package org.jala.university.domain.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Status {
 
     APPROVED(1),
@@ -11,10 +14,6 @@ public enum Status {
 
     private Status(int code) {
         this.code = code;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public static Status valueOf(int code) {

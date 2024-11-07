@@ -46,11 +46,17 @@ public class FormEntityServiceImpl implements FormEntityService {
     @Override
     @Transactional
     public FormEntityDto save(FormEntityDto formEntityDto) {
+        // Mapeia o DTO para a entidade
         FormEntity formEntity = formEntityMapper.mapFrom(formEntityDto);
         formEntity.calculateMaximumAmount();
+
+        // Salva a entidade e captura o UUID gerado automaticamente
         FormEntity savedEntity = formEntityRepository.save(formEntity);
+
+        // Mapeia a entidade salva de volta para o DTO, agora com o UUID incluído
         return formEntityMapper.mapTo(savedEntity);
     }
+
 
     @Override
     @Transactional
