@@ -1,7 +1,5 @@
 package org.jala.university.domain.entity;
 
-import java.util.UUID;
-
 import org.jala.university.commons.domain.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -22,11 +20,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "FORM")
-public class FormEntity implements BaseEntity<UUID> {
+public class FormEntity implements BaseEntity<Integer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
 
     @Column(name = "income")

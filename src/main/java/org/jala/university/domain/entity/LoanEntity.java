@@ -1,11 +1,10 @@
 package org.jala.university.domain.entity;
 
 import java.time.LocalDate;
-import java.util.Random;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 import org.jala.university.commons.domain.BaseEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
@@ -20,7 +19,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -35,11 +33,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "LOAN")
-public class LoanEntity implements BaseEntity<UUID> {
+public class LoanEntity implements BaseEntity<Integer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "amount_borrowed")
     private Double amountBorrowed;

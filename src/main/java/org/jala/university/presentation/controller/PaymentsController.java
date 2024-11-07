@@ -1,18 +1,20 @@
 package org.jala.university.presentation.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import org.jala.university.application.dto.LoanEntityDto;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import org.jala.university.application.dto.FormEntityDto;
+import org.jala.university.application.dto.LoanEntityDto;
+import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
+import org.jala.university.application.service.FormEntityServiceImpl;
 import org.jala.university.application.service.LoanEntityService;
 import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
+import org.jala.university.infrastructure.persistance.database.Connection;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.jala.university.utils.CalculationUtil;
 import org.jala.university.utils.DateFormmaterUtil;
@@ -20,11 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.UUID;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.Pane;
 
 @Controller
 public class PaymentsController {
@@ -51,13 +57,16 @@ public class PaymentsController {
     @Autowired
     private FormEntityService formService;
 
-    private FormEntityDto formEntityDto;
-
     @FXML
     private Pane mainPane;
 
     @Autowired
     private LoanEntityService loanService;
+
+    FormEntityDto formEntityDto;
+
+    @Autowired
+    FormEntityMapper formEntityMapper;
 
     private final DateFormmaterUtil dateFormatterUtil = new DateFormmaterUtil();
 
@@ -108,20 +117,19 @@ public class PaymentsController {
 
             String message = String.format(
                     "Your installment will be on the %d of each month.\nThe first installment will be due on %s.\nThe final due date will be %s.",
-                    dateFormatterUtil.DueDateDay(), firstInstallmentDueDate, finalDueDate
-            );
+                    dateFormatterUtil.DueDateDay(), firstInstallmentDueDate, finalDueDate);
 
             dueDateLabel.setText(message);
         }
     }
 
-    public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntity) {
+    public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntityDto) {
         try {
             FXMLLoader loader = springFXMLLoader.load("/Payments/payments.fxml");
             Pane paymentsPane = loader.load();
 
             PaymentsController controller = loader.getController();
-            controller.setFormEntity(formEntity);
+            controller.setFormEntity(formEntityDto);
 
             if (mainPane != null) {
                 mainPane.getChildren().clear();
@@ -148,19 +156,17 @@ public class PaymentsController {
                         "amountBorrowed, numberOfInstallments, ou paymentMethod.");
             }
 
-
-
             Double totalInterest;
             Double valueOfInstallments;
             try {
                 totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, (double) numberOfInstallments);
-                valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, (double) numberOfInstallments);
+                valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed,
+                        (double) numberOfInstallments);
             } catch (Exception e) {
                 System.err.println("Erro ao calcular juros ou parcelas: " + e.getMessage());
                 e.printStackTrace();
                 return;
             }
-
 
             LocalDate issueDate;
             LocalDate loanDueDate;
@@ -169,15 +175,13 @@ public class PaymentsController {
                 issueDate = LocalDate.parse(dateFormatterUtil.FormattedIssueDate(), formatter);
                 loanDueDate = LocalDate.parse(dateFormatterUtil.FormattedLoanDueDate(numberOfInstallments), formatter);
             } catch (DateTimeParseException e) {
-                System.err.println("Erro ao converter datas (issueDate ou loanDueDate) para o formato esperado: " + e.getMessage());
+                System.err.println("Erro ao converter datas (issueDate ou loanDueDate) para o formato esperado: "
+                        + e.getMessage());
                 e.printStackTrace();
                 return;
             }
-
-
-            FormEntity formEntity = new FormEntity();
+            
             LoanEntityDto loanDto = LoanEntityDto.builder()
-                    .id(UUID.randomUUID())
                     .amountBorrowed(amountBorrowed)
                     .totalInterest(totalInterest)
                     .numberOfInstallments(numberOfInstallments)
@@ -187,9 +191,8 @@ public class PaymentsController {
                     .issueDate(issueDate)
                     .installmentsDueDay(dateFormatterUtil.DueDateDay())
                     .loanDueDate(loanDueDate)
-                    .form(formEntity)
+                    .form(formEntityMapper.mapFrom(formEntityDto))
                     .build();
-
 
             try {
                 loanService.save(loanDto);
