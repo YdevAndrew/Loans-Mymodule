@@ -2,13 +2,9 @@ package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,11 +58,11 @@ public class MainViewController {
     @FXML
     private void startLoanSimulation() {
         try {
-            // Carrega o FXML do formulário como um Pane
+
             FXMLLoader loader = springFXMLLoader.load("/Form/form.fxml");
             Pane loanPane = loader.load();
 
-            // Limpa o mainPane e adiciona o formulário de empréstimo
+
             mainPane.getChildren().clear();
             mainPane.getChildren().add(loanPane);
         } catch (IOException e) {
@@ -77,10 +73,10 @@ public class MainViewController {
 
     @FXML
     private void goBackToMenu() {
-        // Restaura a tela inicial com o botão de empréstimo e imagens
+
         mainPane.getChildren().clear();
-        mainPane.getChildren().add(loanButton); // Recoloca o botão principal
-        toggleVisibility(true); // Reexibe as imagens da tela inicial
+        mainPane.getChildren().add(loanButton);
+        toggleVisibility(true);
     }
 
     private void toggleVisibility(boolean showInitial) {

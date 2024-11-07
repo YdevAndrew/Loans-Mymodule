@@ -7,13 +7,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.service.FormEntityService;
+import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.UUID;
@@ -33,9 +33,6 @@ public class FormController {
 
     @FXML
     private TextField salaryField;
-
-    @FXML
-    private Label errorMessage;
 
     @FXML
     private Button incomeProofButton;
@@ -85,16 +82,21 @@ public class FormController {
                 String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
 
                 FormEntityDto formDto = FormEntityDto.builder()
-                        .id(UUID.randomUUID())
                         .income(salary)
                         .proofOfIncome(incomeProofBase64.getBytes())
                         .build();
 
-                formService.save(formDto);
+                FormEntityDto savedFormDto = formService.save(formDto);
+
+                // Verificação do ID salvo
+                if (savedFormDto.getId() != null) {
+                    System.out.println("ID do FormEntity salvo: " + savedFormDto.getId());
+                } else {
+                    System.out.println("Falha ao capturar o ID do FormEntity.");
+                }
 
                 showSuccessPopup("Solicitação enviada com sucesso!");
-
-                PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader);
+                PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -102,6 +104,7 @@ public class FormController {
             }
         }
     }
+
 
     private boolean validateInputs(double salary) {
         if (incomeProofFile == null) {

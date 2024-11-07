@@ -25,4 +25,5 @@ public class LoanEntityDto {
     Integer installmentsDueDay;
     LocalDate loanDueDate;
     FormEntity form;
+    UUID formId;
 }
