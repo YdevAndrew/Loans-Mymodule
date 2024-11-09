@@ -17,16 +17,16 @@ import java.util.List;
 public class MainViewController {
 
     @Autowired
-    private SpringFXMLLoader springFXMLLoader;
+    public SpringFXMLLoader springFXMLLoader;
 
     @FXML
-    private Pane mainPane;
+    public Pane mainPane;
 
     @FXML
-    private Button loanButton;
+    public Button loanButton;
 
     @FXML
-    private List<ImageView> imageViews = new ArrayList<>();
+    public List<ImageView> imageViews = new ArrayList<>();
 
     @FXML
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8,
@@ -36,7 +36,7 @@ public class MainViewController {
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         imageViews.add(image1);
         imageViews.add(image2);
         imageViews.add(image3);
@@ -56,7 +56,7 @@ public class MainViewController {
     }
 
     @FXML
-    private void startLoanSimulation() {
+    public void startLoanSimulation() {
         try {
 
             FXMLLoader loader = springFXMLLoader.load("/Form/form.fxml");
@@ -72,14 +72,14 @@ public class MainViewController {
     }
 
     @FXML
-    private void goBackToMenu() {
+    public void goBackToMenu() {
 
         mainPane.getChildren().clear();
         mainPane.getChildren().add(loanButton);
         toggleVisibility(true);
     }
 
-    private void toggleVisibility(boolean showInitial) {
+    public void toggleVisibility(boolean showInitial) {
         loanButton.setVisible(showInitial);
         loanButton.setManaged(showInitial);
 
