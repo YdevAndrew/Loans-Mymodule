@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jala.university</groupId>
@@ -29,6 +29,28 @@
       <version>${commons.module.version}</version>
     </dependency>
 
+    <!-- Other modules Dependency -->
+    <dependency>
+      <groupId>org.jala.university</groupId>
+      <artifactId>account-module</artifactId>
+      <version>1.0-RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jala.university</groupId>
+      <artifactId>transaction-module</artifactId>
+      <version>1.0-RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jala.university</groupId>
+      <artifactId>credit-card-module</artifactId>
+      <version>1.0-RELEASE</version>
+    </dependency>
+    <!--<dependency>
+      <groupId>org.jala.university</groupId>
+      <artifactId>external-payment-module</artifactId>
+      <version>1.0-RELEASE</version>
+    </dependency> -->
+
     <!-- Spring Boot Dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -41,11 +63,12 @@
       <version>${spring.boot.version}</version>
     </dependency>
 
-    <!-- Logging Dependencies (Logback) -->
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.5</version>
+      <version>1.5.12</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- JavaFX Dependencies -->
