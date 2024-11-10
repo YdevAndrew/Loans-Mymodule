@@ -41,7 +41,7 @@ public class FormController {
     @FXML
     private Button incomeProofButton;
 
-    private File incomeProofFile;
+    public File incomeProofFile;
 
     @FXML
     private void initialize() {
@@ -70,7 +70,7 @@ public class FormController {
     }
 
     @FXML
-    private void submitLoanRequest() {
+    public void submitLoanRequest() {
         String salaryText = salaryField.getText();
         double salary;
 
@@ -93,7 +93,7 @@ public class FormController {
                 FormEntityDto savedFormDto = formService.save(formDto);
 
                 showSuccessPopup("Solicitação enviada com sucesso!");
-                
+
                 PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
             } catch (Exception e) {
@@ -104,7 +104,7 @@ public class FormController {
     }
 
 
-    private boolean validateInputs(double salary) {
+    public boolean validateInputs(double salary) {
         if (incomeProofFile == null) {
             showErrorPopup("Comprovante de renda não foi selecionado.");
             return false;
