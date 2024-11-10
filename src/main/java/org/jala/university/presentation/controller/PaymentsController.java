@@ -9,12 +9,9 @@ import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
-import org.jala.university.application.service.FormEntityServiceImpl;
 import org.jala.university.application.service.LoanEntityService;
-import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
-import org.jala.university.infrastructure.persistance.database.Connection;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.jala.university.utils.CalculationUtil;
 import org.jala.university.utils.DateFormmaterUtil;
@@ -189,7 +186,6 @@ public class PaymentsController {
                     .paymentMethod(paymentMethod)
                     .status(Status.REVIEW)
                     .issueDate(issueDate)
-                    .installmentsDueDay(dateFormatterUtil.DueDateDay())
                     .loanDueDate(loanDueDate)
                     .form(formEntityMapper.mapFrom(formEntityDto))
                     .build();

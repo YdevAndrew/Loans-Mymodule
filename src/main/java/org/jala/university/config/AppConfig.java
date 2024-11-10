@@ -2,17 +2,33 @@ package org.jala.university.config;
 
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
+import org.jala.university.application.mapper.PaymentHistoryMapper;
+import org.jala.university.application.service.FormEntityService;
 import org.jala.university.application.service.FormEntityServiceImpl;
+import org.jala.university.application.service.LoanEntityService;
 import org.jala.university.application.service.LoanEntityServiceImpl;
+import org.jala.university.application.service.LoanResultsService;
+import org.jala.university.application.service.LoanResultsServiceImpl;
+import org.jala.university.application.service.PaymentHistoryService;
+import org.jala.university.application.service.PaymentHistoryServiceImpl;
+import org.jala.university.domain.repository.AccountRepository;
+import org.jala.university.domain.repository.PaymentHistoryRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Configuration
 @ComponentScan(basePackages = "org.jala.university")
 public class AppConfig {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Bean
     public FormEntityMapper formEntityMapper() {
@@ -35,15 +51,44 @@ public class AppConfig {
     }
 
     @Bean
-    public FormEntityServiceImpl formEntityServiceImpl(FormEntityMapper formEntityMapper) {
+    public FormEntityService formEntityService(FormEntityMapper formEntityMapper) {
         // Injeta os beans RepositoryFactory e FormEntityMapper em FormEntityServiceImpl
         return new FormEntityServiceImpl(formEntityMapper);
     }
 
     @Bean
-    public LoanEntityServiceImpl loanEntityServiceImpl(LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper,TaskScheduler taskScheduler) {
+    public LoanEntityService loanEntityService(LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper,TaskScheduler taskScheduler) {
         // Injeta os beans RepositoryFactory, LoanEntityMapper e TaskScheduler em LoanEntityServiceImpl
         return new LoanEntityServiceImpl(loanEntityMapper, formEntityMapper, taskScheduler);
     }
 
+    @Bean
+    public JpaRepositoryFactory jpaRepositoryFactory() {
+        return new JpaRepositoryFactory(entityManager);
+    }
+
+    @Bean
+    public AccountRepository accountRepository(JpaRepositoryFactory factory) {
+        return factory.getRepository(AccountRepository.class);
+    }
+
+    @Bean
+    public PaymentHistoryRepository paymentHistoryRepository(JpaRepositoryFactory factory) {
+        return factory.getRepository(PaymentHistoryRepository.class);
+    }
+
+    @Bean
+    public PaymentHistoryMapper paymentHistoryMapper() {
+        return new PaymentHistoryMapper();
+    }
+
+    @Bean
+    public PaymentHistoryService paymentHistoryService(PaymentHistoryRepository paymentHistoryRepository, AccountRepository accountRepository, PaymentHistoryMapper paymentHistoryMapper) {
+        return new PaymentHistoryServiceImpl(paymentHistoryRepository, accountRepository, paymentHistoryMapper);
+    }
+
+    @Bean
+    public LoanResultsService loanResultsService() {
+        return new LoanResultsServiceImpl();
+    }
 }
