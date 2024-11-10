@@ -14,10 +14,10 @@ public interface LoanEntityRepository extends JpaRepository<LoanEntity, Integer>
     List<LoanEntity> findByAccountId(@Param("accountId") Integer accountId);
 
     @Query("SELECT COUNT(p) FROM PaymentHistoryEntity p WHERE p.scheduledPaymentId = :scheduledPaymentId")
-    long countPaymentsForScheduledPaymentId(@Param("scheduledPaymentId") Integer scheduledPaymentId);
+    long countPaymentsForLoan(@Param("scheduledPaymentId") Integer scheduledPaymentId);
 
     @Query("SELECT COUNT(p) FROM PaymentHistoryEntity p WHERE p.scheduledPaymentId = :scheduledPaymentId AND p.accountReceiver = 'BANCO'")
-    long countPaymentsForScheduledPaymentIdWithReceiverBanco(@Param("scheduledPaymentId") Integer scheduledPaymentId);
+    long countPaymentsForLoanToAccount(@Param("scheduledPaymentId") Integer scheduledPaymentId);
 
     @Query("SELECT l FROM LoanEntity l WHERE l.status = :status AND l.paymentMethod = :paymentMethod")
     List<LoanEntity> findLoansScheduled(@Param("status") Integer status, @Param("paymentMethod") Integer paymentMethod);
