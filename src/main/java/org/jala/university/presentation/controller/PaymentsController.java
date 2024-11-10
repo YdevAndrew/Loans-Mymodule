@@ -80,7 +80,7 @@ public class PaymentsController {
         initializePaymentMethods();
         installmentsComboBox.setOnAction(event -> {
             updateDueDate();
-            updateInstallmentValue(); // Atualiza valor da parcela quando o número de parcelas muda
+            updateInstallmentValue();  // Atualiza valor da parcela quando o número de parcelas muda
         });
         submitButton.setOnAction(event -> saveLoanToDatabase());
     }
@@ -109,7 +109,7 @@ public class PaymentsController {
 
             loanAmountSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 loanAmountLabel.setText(String.format("R$ %.2f", newValue.doubleValue()));
-                updateInstallmentValue(); // Atualiza valor da parcela quando o valor do empréstimo muda
+                updateInstallmentValue(); //Fabi // Atualiza valor da parcela quando o valor do empréstimo muda
             });
         }
     }
