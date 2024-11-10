@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 public class LoanResultsServiceImplTest {
 
     @InjectMocks
-    private LoanResultsServiceImpl loanResultsService;
+    private LoanResultsService loanResultsService;
 
     @Mock
     private PaymentHistoryService paymentHistoryService;
