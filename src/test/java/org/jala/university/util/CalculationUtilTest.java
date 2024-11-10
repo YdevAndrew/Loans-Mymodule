@@ -8,6 +8,7 @@ public class CalculationUtilTest {
 
     @Test
     public void testGetTotalPayable() {
+        
         // Valores de teste
         Double amountBorrowed = 1000.0;
         Double numberOfInstallments = 12.0;
@@ -20,5 +21,6 @@ public class CalculationUtilTest {
         
         // Verifica se o valor retornado é igual ao valor esperado
         assertEquals(expectedTotalPayable, actualTotalPayable, 0.01);
+
     }
 }
