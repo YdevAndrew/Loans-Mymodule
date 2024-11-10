@@ -94,7 +94,7 @@ public class FormController {
                 FormEntityDto savedFormDto = formService.save(formDto);
 
                 showSuccessPopup("Solicitação enviada com sucesso!");
-                
+
                 PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
             } catch (Exception e) {

@@ -57,6 +57,10 @@ public class PaymentsController {
     @Autowired
     private FormEntityService formService;
 
+
+    @FXML
+    private Label installmentValueLabel;
+
     @FXML
     private Pane mainPane;
 
@@ -74,7 +78,10 @@ public class PaymentsController {
     public void initialize() {
         initializeDueDate();
         initializePaymentMethods();
-        installmentsComboBox.setOnAction(event -> updateDueDate());
+        installmentsComboBox.setOnAction(event -> {
+            updateDueDate();
+            updateInstallmentValue();  // Atualiza valor da parcela quando o número de parcelas muda
+        });
         submitButton.setOnAction(event -> saveLoanToDatabase());
     }
 
@@ -100,12 +107,22 @@ public class PaymentsController {
 
             loanAmountLabel.setText(String.format("R$ %.2f", income));
 
-            loanAmountSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    loanAmountLabel.setText(String.format("R$ %.2f", newValue.doubleValue()));
-                }
+            loanAmountSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                loanAmountLabel.setText(String.format("R$ %.2f", newValue.doubleValue()));
+                updateInstallmentValue(); //Fabi // Atualiza valor da parcela quando o valor do empréstimo muda
             });
+        }
+    }
+
+    private void updateInstallmentValue() {
+        Double amountBorrowed = loanAmountSlider.getValue();
+        Integer numberOfInstallments = installmentsComboBox.getValue();
+
+        if (amountBorrowed != null && numberOfInstallments != null && numberOfInstallments > 0) {
+            Double valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, (double) numberOfInstallments);
+            installmentValueLabel.setText(String.format("R$ %.2f por parcela", valueOfInstallments));
+        } else {
+            installmentValueLabel.setText("Selecione o número de parcelas");
         }
     }
 
