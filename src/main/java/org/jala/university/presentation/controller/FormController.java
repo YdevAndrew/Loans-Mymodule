@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Base64;
 
+import javafx.application.Platform;
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
@@ -25,7 +26,7 @@ public class FormController {
 
     @Qualifier("formEntityServiceImpl")
     @Autowired
-    private FormEntityService formService;
+    public FormEntityService formService;
 
     FormEntityMapper mapper = new FormEntityMapper();
 
@@ -36,12 +37,12 @@ public class FormController {
     private Pane mainPane;
 
     @FXML
-    private TextField salaryField;
+    public TextField salaryField;
 
     @FXML
-    private Button incomeProofButton;
+    public Button incomeProofButton;
 
-    private File incomeProofFile;
+    public File incomeProofFile;
 
     @FXML
     private void initialize() {
@@ -70,7 +71,7 @@ public class FormController {
     }
 
     @FXML
-    private void submitLoanRequest() {
+    public void submitLoanRequest() {
         String salaryText = salaryField.getText();
         double salary;
 
@@ -104,7 +105,7 @@ public class FormController {
     }
 
 
-    private boolean validateInputs(double salary) {
+    public boolean validateInputs(double salary) {
         if (incomeProofFile == null) {
             showErrorPopup("Comprovante de renda não foi selecionado.");
             return false;
@@ -117,18 +118,24 @@ public class FormController {
     }
 
     private void showErrorPopup(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Atenção!");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Atenção!");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 
+
     private void showSuccessPopup(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Empréstimo Solicitado");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Empréstimo Solicitado");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }
+
