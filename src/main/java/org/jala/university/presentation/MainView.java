@@ -38,7 +38,7 @@ public class MainView extends Application {
         primaryStage.setTitle("Loans Module Application");
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setMaximized(true); // Expande a janela para tela cheia
+        primaryStage.setMaximized(true);// Expand the window to full screen
         primaryStage.show();
     }
 

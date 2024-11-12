@@ -122,16 +122,16 @@ public class PaymentsController {
         Integer numberOfInstallments = installmentsComboBox.getValue();
 
         if (amountBorrowed != null && numberOfInstallments != null && numberOfInstallments > 0) {
-            // Calcule o totalPayable usando CalculationUtil, conforme o cálculo de LoanEntity
+            // Calculate the totalPayable using CalculationUtil, as per LoanEntity calculation
             Double totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
 
-            // Calcule o valor da parcela de forma consistente
+            // Calculate the installment value consistently
             this.valueOfInstallments = totalPayable / numberOfInstallments;
 
-            // Atualiza o rótulo com o valor calculado
-            installmentValueLabel.setText(String.format("R$ %.2f por parcela", valueOfInstallments));
+            // Update the label with the calculated value
+            installmentValueLabel.setText(String.format("R$ %.2f per installment", valueOfInstallments));
         } else {
-            installmentValueLabel.setText("Selecione o número de parcelas");
+            installmentValueLabel.setText("Select the number of installments");
         }
     }
 
@@ -161,10 +161,10 @@ public class PaymentsController {
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(paymentsPane);
             } else {
-                System.err.println("Erro: mainPane não foi inicializado no FormController.");
+                System.err.println("Erro:mainPane was not initialized in FormController.");
             }
         } catch (IOException e) {
-            System.err.println("Erro ao carregar Payments.fxml: " + e.getMessage());
+            System.err.println("Error loading Payments.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -180,10 +180,10 @@ public class PaymentsController {
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(myLoansPane);
             } else {
-                System.err.println("Erro: mainPane não foi inicializado no PaymentsController.");
+                System.err.println("Erro: mainPane was not initialized in PaymentsController.");
             }
         } catch (IOException e) {
-            System.err.println("Erro ao carregar MyLoans.fxml: " + e.getMessage());
+            System.err.println("Error loading MyLoans.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }

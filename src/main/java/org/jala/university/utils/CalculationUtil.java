@@ -5,9 +5,9 @@ public class CalculationUtil {
     public static Double getTotalPayable(Double amountBorrowed, Double numberOfInstallments) {
         Double totalPayable;
         double monthlyInterestRate = 0.02;
-        // (1 + 0.02)^n (cálculo de juros compostos)
+        // (1 + 0.02)^n (compound interest calculation)
         double factor = Math.pow(1 + monthlyInterestRate, numberOfInstallments);
-        // Valor total a pagar com juros compostos
+        // Total amount payable with compound interest
         totalPayable = amountBorrowed * factor;
         return totalPayable;
     }

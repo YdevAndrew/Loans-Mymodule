@@ -1,0 +1,69 @@
+image: maven:3.8-openjdk-17
+
+# Define as etapas do pipeline
+stages:
+  - lint
+  - test
+  - coverage
+  - package
+
+# Etapa de análise estática (linter)
+linter:
+  stage: lint
+  script:
+    - mvn checkstyle:check  # Usa Checkstyle para análise estática de código
+  only:
+    - dev  # Executa esta etapa apenas na branch de desenvolvimento
+  allow_failure: true  # Não falha o pipeline em caso de erro de lint
+  artifacts:
+    paths:
+      - target/checkstyle-result.xml  # Gera o relatório de análise estática
+
+# Etapa de testes unitários
+test:
+  stage: test
+  script:
+    - mvn test  # Executa os testes unitários
+  only:
+    - dev  # Executa esta etapa apenas na branch de desenvolvimento
+  artifacts:
+    paths:
+      - target/surefire-reports/  # Armazena relatórios de testes
+  allow_failure: false
+
+# Etapa de cobertura de código
+coverage:
+  stage: coverage
+  script:
+    - mvn jacoco:prepare-agent test jacoco:report  # Gera relatório de cobertura
+  only:
+    - dev  # Executa esta etapa apenas na branch de desenvolvimento
+  artifacts:
+    paths:
+      - target/site/jacoco/  # Armazena relatórios de cobertura de código
+  allow_failure: false
+
+# Etapa de empacotamento (gera o arquivo .jar)
+package:
+  stage: package
+  script:
+    - mvn package  # Empacota o projeto em um arquivo JAR
+  only:
+    - dev  # Executa esta etapa apenas na branch de desenvolvimento
+  artifacts:
+    paths:
+      - target/*.jar  # Armazena o JAR gerado
+  allow_failure: false
+
+# Etapa de deploy para branch principal
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Iniciando deploy em produção"
+   # - scp target/*.jar user@production-server:/path/to/deployment  # Comando de deploy
+  only:
+    - main  # Executa esta etapa apenas na branch principal
+  environment:
+    name: production
+    url: https://gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/Capstone/loans-module/-/tree/dev?ref_type=heads
+  allow_failure: false
