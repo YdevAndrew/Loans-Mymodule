@@ -1,67 +1,53 @@
 image: maven:3.8.5-openjdk-17
 
 stages:
-  - setup
   - build
   - test
   - coverage
   - deploy
 
-# Clona os repositórios dos módulos antes de iniciar a instalação
-before_script:
- - git clone https://oauth2:glpat-ayrd6GjjzmrgfPn2MP3w@gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/Capstone/commons-module.git ../commons-module
-  - git clone https://oauth2:glpat-ayrd6GjjzmrgfPn2MP3w@gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/Capstone/account-module.git ../account-module
-  - git clone https://oauth2:glpat-ayrd6GjjzmrgfPn2MP3w@gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/Capstone/credit-card-module.git ../credit-card-module
-  - git clone https://oauth2:glpat-ayrd6GjjzmrgfPn2MP3w@gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/Capstone/transaction-module.git ../transaction-module
-
-install-dependencies:
-  stage: setup
-  script:
-    - echo "Instalando módulos internos..."
-    - mvn -f ../commons-module/pom.xml clean install
-    - mvn -f ../account-module/pom.xml clean install
-    - mvn -f ../credit-card-module/pom.xml clean install
-    - mvn -f ../transaction-module/pom.xml clean install
-
 build-job:
   stage: build
   script:
     - echo "Compilando o código com Maven..."
-    - mvn -f loans-module/pom.xml clean compile
+    - mvn clean compile
     - echo "Compilação concluída."
   artifacts:
     paths:
-      - loans-module/target/
+      - target/
 
 lint-test-job:
   stage: test
   script:
     - echo "Executando análise estática de código (linter)..."
-    - mvn -f loans-module/pom.xml checkstyle:check
+    - mvn checkstyle:check
+    - echo "Análise de lint concluída."
   allow_failure: true
 
 unit-test-job:
   stage: test
   script:
     - echo "Executando testes unitários com Maven..."
-    - mvn -f loans-module/pom.xml test
+    - mvn test
+    - echo "Testes unitários concluídos."
   artifacts:
     paths:
-      - loans-module/target/surefire-reports/
+      - target/surefire-reports/
 
 coverage-job:
   stage: coverage
   script:
     - echo "Gerando relatório de cobertura de código com Maven..."
-    - mvn -f loans-module/pom.xml clean verify jacoco:report
+    - mvn clean verify jacoco:report
+    - echo "Relatório de cobertura gerado."
   artifacts:
     paths:
-      - loans-module/target/site/jacoco/
+      - target/site/jacoco/
 
 deploy-job:
   stage: deploy
   environment: production
   script:
     - echo "Realizando deploy da aplicação..."
-    - mvn -f loans-module/pom.xml clean package
+    - mvn clean package
     - echo "Aplicação empacotada e pronta para deploy."
