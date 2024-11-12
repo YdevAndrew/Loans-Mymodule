@@ -6,6 +6,7 @@ stages:
   - test
   - coverage
   - package
+  - deploy
 
 # Etapa de análise estática (linter)
 linter:
