@@ -6,8 +6,18 @@ stages:
   - coverage
   - deploy
 
+# Job para inicializar submódulos antes da construção
+init-submodules:
+  stage: build
+  script:
+    - echo "Inicializando submódulos do Git..."
+    - git submodule init
+    - git submodule update
+    - echo "Submódulos inicializados."
+
 build-job:
   stage: build
+  needs: [init-submodules] # Garante que os submódulos sejam inicializados antes de compilar
   script:
     - echo "Compilando o código com Maven..."
     - mvn clean compile
@@ -18,6 +28,7 @@ build-job:
 
 lint-test-job:
   stage: test
+  needs: [build-job]
   script:
     - echo "Executando análise estática de código (linter)..."
     - mvn checkstyle:check
@@ -26,6 +37,7 @@ lint-test-job:
 
 unit-test-job:
   stage: test
+  needs: [build-job]
   script:
     - echo "Executando testes unitários com Maven..."
     - mvn test
@@ -36,6 +48,7 @@ unit-test-job:
 
 coverage-job:
   stage: coverage
+  needs: [unit-test-job]
   script:
     - echo "Gerando relatório de cobertura de código com Maven..."
     - mvn clean verify jacoco:report
@@ -47,6 +60,7 @@ coverage-job:
 deploy-job:
   stage: deploy
   environment: production
+  needs: [coverage-job]
   script:
     - echo "Realizando deploy da aplicação..."
     - mvn clean package
