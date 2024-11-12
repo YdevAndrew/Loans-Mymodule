@@ -35,11 +35,11 @@
       <artifactId>account-module</artifactId>
       <version>1.0-RELEASE</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>transaction-module</artifactId>
       <version>1.0-RELEASE</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>credit-card-module</artifactId>
@@ -133,6 +133,13 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>2.0.16</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -2,17 +2,12 @@ package org.jala.university.config;
 
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
-import org.jala.university.application.mapper.PaymentHistoryMapper;
 import org.jala.university.application.service.FormEntityService;
 import org.jala.university.application.service.FormEntityServiceImpl;
 import org.jala.university.application.service.LoanEntityService;
 import org.jala.university.application.service.LoanEntityServiceImpl;
 import org.jala.university.application.service.LoanResultsService;
 import org.jala.university.application.service.LoanResultsServiceImpl;
-import org.jala.university.application.service.PaymentHistoryService;
-import org.jala.university.application.service.PaymentHistoryServiceImpl;
-import org.jala.university.domain.repository.AccountRepository;
-import org.jala.university.domain.repository.PaymentHistoryRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -62,30 +57,25 @@ public class AppConfig {
         return new LoanEntityServiceImpl(loanEntityMapper, formEntityMapper, taskScheduler);
     }
 
-    @Bean
-    public JpaRepositoryFactory jpaRepositoryFactory() {
-        return new JpaRepositoryFactory(entityManager);
-    }
+    // @Bean
+    // public JpaRepositoryFactory jpaRepositoryFactory() {
+    //     return new JpaRepositoryFactory(entityManager);
+    // }
 
-    @Bean
-    public AccountRepository accountRepository(JpaRepositoryFactory factory) {
-        return factory.getRepository(AccountRepository.class);
-    }
+    // @Bean
+    // public AccountRepository accountRepository(JpaRepositoryFactory factory) {
+    //     return factory.getRepository(AccountRepository.class);
+    // }
 
-    @Bean
-    public PaymentHistoryRepository paymentHistoryRepository(JpaRepositoryFactory factory) {
-        return factory.getRepository(PaymentHistoryRepository.class);
-    }
+    // @Bean
+    // public PaymentHistoryMapper paymentHistoryMapper() {
+    //     return new PaymentHistoryMapper();
+    // }
 
-    @Bean
-    public PaymentHistoryMapper paymentHistoryMapper() {
-        return new PaymentHistoryMapper();
-    }
-
-    @Bean
-    public PaymentHistoryService paymentHistoryService(PaymentHistoryRepository paymentHistoryRepository, AccountRepository accountRepository, PaymentHistoryMapper paymentHistoryMapper) {
-        return new PaymentHistoryServiceImpl(paymentHistoryRepository, accountRepository, paymentHistoryMapper);
-    }
+    // @Bean
+    // public PaymentHistoryService paymentHistoryService(PaymentHistoryRepository paymentHistoryRepository, AccountRepository accountRepository, PaymentHistoryMapper paymentHistoryMapper, AccountMapper accountMapper) {
+    //     return new PaymentHistoryServiceImpl(paymentHistoryRepository, accountRepository, paymentHistoryMapper, accountMapper);
+    // }
 
     @Bean
     public LoanResultsService loanResultsService() {

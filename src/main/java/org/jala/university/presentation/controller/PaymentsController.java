@@ -58,6 +58,7 @@ public class PaymentsController {
     private Pane mainPane;
 
     @Autowired
+    @Qualifier("loanEntityService")
     private LoanEntityService loanService;
 
     FormEntityDto formEntityDto;

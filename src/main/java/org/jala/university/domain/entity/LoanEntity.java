@@ -71,16 +71,18 @@ public class LoanEntity implements BaseEntity<Integer> {
     @JoinColumn(name = "form_id", nullable = true)
     private FormEntity form;
 
-    @OneToOne
-    @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
+    // @OneToOne
+    // @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
+    // private Integer scheduledPaymentId;
+
     private Integer scheduledPaymentId;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "account_id", nullable = true)
-    private Account account;
+    // @ManyToOne
+    // @JoinColumn(name = "account_id", nullable = true)
+    // private Account account;
     
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
             PaymentMethod paymentMethod) {

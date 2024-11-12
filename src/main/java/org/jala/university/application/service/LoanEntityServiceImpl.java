@@ -136,9 +136,10 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Override
     @Transactional(readOnly = true)
     public List<LoanEntityDto> findLoansByAccountId() {
-        Integer id = 1526654;//retirar quando juntar os módulos
-        List<LoanEntity> loans = loanEntityRepository.findByAccountId(id); //Ajustar quando juntar módulos para o id da conta logada
-        loans.forEach(LoanEntity::updateStatusFinished);
+        // Integer id = 1526654;//retirar quando juntar os módulos
+        // List<LoanEntity> loans = loanEntityRepository.findByAccountId(id); //Ajustar quando juntar módulos para o id da conta logada
+        // loans.forEach(LoanEntity::updateStatusFinished);
+        List<LoanEntity> loans = null;
         return loans.stream()
                 .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
                 .toList();
@@ -148,11 +149,11 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional
     public boolean payInstallmentManually(LoanEntityDto dto) {
         LoanEntity entity = findEntityById(dto.getId());
-        if (loanResultsService.payInstallment(entity) != null) {
-            entity.markAsPaid();
-            loanEntityRepository.save(entity);
-            return true;
-        }
+        // if (loanResultsService.payInstallment(entity) != null) {
+        //     entity.markAsPaid();
+        //     loanEntityRepository.save(entity);
+        //     return true;
+        // }
         return false;
     }
 
@@ -166,10 +167,10 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     private void changeStatusRandomly(LoanEntity loanEntity) {
         LoanEntity entity = findEntityById(loanEntity.getId());
         Status newStatus = entity.generateStatus();
-        if (newStatus == Status.APPROVED) {
-            loanResultsService.sendAmountAccount(entity);
-            loanResultsService.verifyIfScheduled(entity);
-        }
+        // if (newStatus == Status.APPROVED) {
+        //     loanResultsService.sendAmountAccount(entity);
+        //     loanResultsService.verifyIfScheduled(entity);
+        // }
 
         entity.setStatus(newStatus);
         loanEntityRepository.save(entity);
