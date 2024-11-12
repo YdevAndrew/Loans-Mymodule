@@ -199,13 +199,13 @@ public class LoanEntity implements BaseEntity<Integer> {
     }
 
     public void recalculate() {
-        // Calcule totalPayable com base no montante emprestado e no número de parcelas
+        // Calculate totalPayable based on the amount borrowed and the number of installments
         this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
 
-        // Calcule o valor de cada parcela
+        // Calculate the value of each installment
         this.valueOfInstallments = totalPayable / numberOfInstallments;
 
-        // Calcule o total de juros com base no montante emprestado
+        // Calculate the total interest based on the amount borrowed
         this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
     }
 

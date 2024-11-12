@@ -91,7 +91,7 @@ public class Dashboard {
     @FXML
     public void loadMainView() {
         try {
-            System.out.println("Tentando carregar o main-view.fxml...");
+            System.out.println("Trying to load main-view.fxml...");
 
             FXMLLoader loader = springFXMLLoader.load("/main-view.fxml");
             Node mainViewContent = loader.load();
@@ -99,12 +99,12 @@ public class Dashboard {
             mainViewContainer.getChildren().clear();
             mainViewContainer.getChildren().add(mainViewContent);
 
-            System.out.println("main-view.fxml carregado com sucesso!");
+            System.out.println("main-view.fxml loaded successfully!");
         } catch (IOException e) {
-            System.err.println("Erro ao carregar main-view.fxml: " + e.getMessage());
+            System.err.println("Error loading main-view.fxml: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Erro inesperado: " + e.getMessage());
+            System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }

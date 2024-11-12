@@ -6,22 +6,22 @@ import java.time.LocalDate;
 public class DateFormmaterUtil {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // Retorna a data inicial em formato brasileiro
+    // Returns the starting date in Brazilian format
     public String FormattedIssueDate() {
         return LocalDate.now().format(formatter);
     }
 
-    // Retorna a data final do empréstimo em formato brasileiro
+    // Returns the end date of the loan in Brazilian format
     public String FormattedLoanDueDate(int numberOfInstallments) {
         return LocalDate.now().plusMonths(numberOfInstallments).format(formatter);
     }
 
-    // Retorna a data de vencimento da primeira parcela
+    // Returns the due date of the first installment
     public String FirstInstallmentDueDate() {
         return LocalDate.now().plusMonths(1).format(formatter);
     }
 
-    // Retorna o dia de vencimento
+    // Returns the due date
     public int DueDateDay() {
         return LocalDate.now().getDayOfMonth();
     }

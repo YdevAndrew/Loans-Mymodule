@@ -26,20 +26,20 @@ public class MyLoans {
     private VBox loansContainer;
 
     public void loadLoanDetails() {
-        // Busca todos os empréstimos
+        // Search all loans
         List<LoanEntityDto> loans = loanService.findAll();
 
-        // Verifica se há empréstimos
+        // Checks for loans
         if (loans != null && !loans.isEmpty()) {
             loansContainer.getChildren().clear();
 
             for (LoanEntityDto loan : loans) {
 
-                // Formatação simplificada do valor da parcela com duas casas decimais
+                // Simplified formatting of the installment value with two decimal places
                 String installmentValueFormatted = String.format("R$ %.2f", loan.getValueOfInstallments());
 
                 Label loanLabel = new Label(String.format(
-                        "Empréstimo ID: %d | Valor: R$ %.2f | Parcelas: %d | Valor da Parcela: %s | Status: %s",
+                        "Loan ID: %d | Amount: R$ %.2f | Installments: %d | Installment Amount: %s | Status: %s",
                         loan.getId(),
                         loan.getAmountBorrowed(),
                         loan.getNumberOfInstallments(),
@@ -50,7 +50,7 @@ public class MyLoans {
                 loansContainer.getChildren().add(loanLabel);
             }
         } else {
-            Label noLoanLabel = new Label("Nenhum empréstimo encontrado.");
+            Label noLoanLabel = new Label("No loans found.");
             loansContainer.getChildren().add(noLoanLabel);
         }
     }

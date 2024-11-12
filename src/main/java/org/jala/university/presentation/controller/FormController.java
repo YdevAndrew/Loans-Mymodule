@@ -78,7 +78,7 @@ public class FormController {
         try {
             salary = Double.parseDouble(salaryText);
         } catch (NumberFormatException e) {
-            showErrorPopup("Erro: Salário inválido.");
+            showErrorPopup("Erro: Invalid salary.");
             return;
         }
 
@@ -93,13 +93,13 @@ public class FormController {
 
                 FormEntityDto savedFormDto = formService.save(formDto);
 
-                showSuccessPopup("Solicitação enviada com sucesso!");
+                showSuccessPopup("Request sent successfully!");
 
                 PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                showErrorPopup("Erro ao processar o arquivo. Tente novamente.");
+                showErrorPopup("Error processing the file. Please try again.");
             }
         }
     }
@@ -107,11 +107,11 @@ public class FormController {
 
     public boolean validateInputs(double salary) {
         if (incomeProofFile == null) {
-            showErrorPopup("Comprovante de renda não foi selecionado.");
+            showErrorPopup("Proof of income was not selected.");
             return false;
         }
         if (salary < 1600) {
-            showErrorPopup("Você não é qualificado para o empréstimo.");
+            showErrorPopup("You are not qualified for the loan.");
             return false;
         }
         return true;
@@ -120,7 +120,7 @@ public class FormController {
     private void showErrorPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Atenção!");
+            alert.setTitle("Attention!");
             alert.setHeaderText(null);
             alert.setContentText(message);
             alert.showAndWait();
@@ -131,7 +131,7 @@ public class FormController {
     private void showSuccessPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Empréstimo Solicitado");
+            alert.setTitle("Loan Requested");
             alert.setHeaderText(null);
             alert.setContentText(message);
             alert.showAndWait();
