@@ -4,50 +4,50 @@ stages:
   - coverage
   - deploy
 
-# Job to build the application
+# Job para compilar/buildar o código
 build-job:
   stage: build
   script:
-    - echo "Compiling the code..."
-    - make build  # Assuming a Makefile with a build target
-    - echo "Compile complete."
+    - echo "Compilando o código..."
+    - # Insira os comandos reais de build aqui, como npm install, bundle install, etc.
+    - echo "Compilação concluída."
   artifacts:
     paths:
-      - build/  # Assuming the compiled code is in the build directory
+      - build/  # Armazene os arquivos compilados, se necessário
 
-# Job to run static code analysis with a linter
+# Job para análise estática de código com linter
 lint-test-job:
   stage: test
   script:
-    - echo "Linting code..."
-    - npm run lint  # Replace with the actual linter command used in the project (e.g., ESLint for JavaScript)
-  allow_failure: true  # Lint issues should not block the pipeline if non-critical
+    - echo "Executando análise de lint..."
+    - npm run lint  # Substitua pelo comando de linter real usado no projeto (ex.: ESLint para JavaScript)
+  allow_failure: true  # Permite que erros de lint não bloqueiem o pipeline se não forem críticos
 
-# Job to run unit tests
+# Job para executar testes unitários
 unit-test-job:
   stage: test
   script:
-    - echo "Running unit tests..."
-    - npm test  # Replace with the actual command to run unit tests
+    - echo "Executando testes unitários..."
+    - npm test  # Substitua pelo comando real para rodar os testes unitários
   artifacts:
     paths:
-      - test-reports/  # Store test reports for further analysis
+      - test-reports/  # Armazena relatórios de testes para análise futura
 
-# Job to generate and save the code coverage report
+# Job para gerar e salvar o relatório de cobertura de código
 coverage-job:
   stage: coverage
   script:
-    - echo "Generating code coverage report..."
-    - npm run coverage  # Replace with the actual command for coverage, like Jest with coverage flag
+    - echo "Gerando relatório de cobertura de código..."
+    - npm run coverage  # Substitua pelo comando real para cobertura, como Jest com o flag de cobertura
   artifacts:
     paths:
-      - coverage/  # Store the coverage report directory as an artifact
+      - coverage/  # Armazene o diretório de cobertura como um artefato
 
-# Job to deploy the application
+# Job para deploy da aplicação
 deploy-job:
   stage: deploy
   environment: production
   script:
-    - echo "Deploying application..."
-    - ./deploy.sh  # Replace with the actual deployment script or command
-    - echo "Application successfully deployed."
+    - echo "Realizando deploy da aplicação..."
+    - ./deploy.sh  # Substitua pelo script ou comando real de deploy
+    - echo "Aplicação implantada com sucesso."
