@@ -1,6 +1,7 @@
 package org.jala.university.domain.entity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,7 +19,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -64,6 +64,9 @@ public class LoanEntity implements BaseEntity<Integer> {
     @CreatedDate
     LocalDate issueDate;
 
+    @Column(name = "installments_due_day")
+    Integer installmentsDueDay;
+
     @Column(name = "loan_due_date")
     LocalDate loanDueDate;
 
@@ -71,19 +74,19 @@ public class LoanEntity implements BaseEntity<Integer> {
     @JoinColumn(name = "form_id", nullable = true)
     private FormEntity form;
 
-    // @OneToOne
-    // @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
-    // private Integer scheduledPaymentId;
-
-    private Integer scheduledPaymentId;
-
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 
-    // @ManyToOne
-    // @JoinColumn(name = "account_id", nullable = true)
-    // private Account account;
-    
+    /*@ManyToOne(optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountEntity account;*/
+
+    /*
+     * @ManyToOne
+     *
+     * @JoinColumn(name = "account_id", nullable = false)
+     * private Account account;
+     */
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
             PaymentMethod paymentMethod) {
 
@@ -92,6 +95,7 @@ public class LoanEntity implements BaseEntity<Integer> {
         this.form = form;
         setPaymentMethod(paymentMethod);
         this.issueDate = LocalDate.now();
+        this.installmentsDueDay = issueDate.getDayOfMonth();
         this.loanDueDate = this.issueDate.plusMonths(this.numberOfInstallments);
         setStatus(Status.REVIEW);
         recalculate();
@@ -124,7 +128,7 @@ public class LoanEntity implements BaseEntity<Integer> {
         generateInstallments();
     }
 
-    public void setAmountBorrowed(Double amount) {
+    public void setamountBorrowed(Double amount) {
         this.amountBorrowed = amount;
         recalculate();
         generateInstallments();
@@ -133,6 +137,28 @@ public class LoanEntity implements BaseEntity<Integer> {
     /*
      * Para o Front:
      */
+    // Retorna a data inicial em formato brasileiro
+    public String getFormattedIssueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.issueDate.format(formatter);
+    }
+
+    // Retorna a data final do empréstimo em formato brasileiro
+    public String getFormattedLoanDueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.loanDueDate.format(formatter);
+    }
+
+    // Retorna a data de vencimento da primeira parcela
+    public String getFirstInstallmentDueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.issueDate.plusMonths(1).format(formatter);
+    }
+
+    // Retorna o dia da data
+    public int getDueDateDay() {
+        return this.issueDate.getDayOfMonth();
+    }
 
     // Retorna a primeira parcela não paga da lista
     public InstallmentEntity getFirstUnpaidInstallment() {
@@ -157,7 +183,7 @@ public class LoanEntity implements BaseEntity<Integer> {
     public Status generateStatus() {
         Status status = this.getStatus();
 
-        if (status == null) {
+        if (/* requisitos para mudança de status */status == null) {
             status = Status.REVIEW;
 
         } else if (status == Status.REVIEW) {
@@ -168,6 +194,7 @@ public class LoanEntity implements BaseEntity<Integer> {
 
     public void generateAndSetDate() {
         this.issueDate = LocalDate.now();
+        this.installmentsDueDay = issueDate.getDayOfMonth();
         this.loanDueDate = issueDate.plusMonths(numberOfInstallments);
     }
 
@@ -180,6 +207,12 @@ public class LoanEntity implements BaseEntity<Integer> {
 
         // Calculate the total interest based on the amount borrowed
         this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
+    }
+
+    public void setAmountBorrowed(Double amount) {
+        this.amountBorrowed = amount;
+        recalculate();
+        generateInstallments();
     }
 
     public void generateInstallments() {
@@ -200,15 +233,10 @@ public class LoanEntity implements BaseEntity<Integer> {
             this.installments.add(installment);
         }
     }
-    
-    public void markInstallmentsAsPaid(long toMarkAsPaid) {
-        for (int i=0; i<toMarkAsPaid; i++) {
-            markAsPaid();
-        }
-    }
 
     // Coloca a primeira parcela não paga da lista como paga
     public void markAsPaid() {
+        // if (metododetransacao()) {
         for (InstallmentEntity installment : installments) {
             if (!installment.getPaid()) {
                 installment.setPaid(true);
@@ -217,22 +245,27 @@ public class LoanEntity implements BaseEntity<Integer> {
                 break;
             }
         }
+        /*
+         * } else {
+         * System.out.println("Payment failed.");
+         * }
+         */
     }
 
     /*
      * Verifica se todas as parcelas foram pagas,
      * se sim, define o empréstimo como FINISHED
      */
-    public void updateStatusFinished() {
+    private void updateStatusFinished() {
         if (installments.stream().allMatch(InstallmentEntity::getPaid)) {
             setStatus(Status.FINISHED);
         }
     }
 
-    //Se for receber resposta do pagamentos externos.
-    /*public void verifyIfItsPaid() {
-        if (método que retorna se o pagamento agendado foi feito == true) {
-            this.markAsPaid();
+    // Para pagamento automático
+    public void paymentMethodLogic() {
+        if (paymentMethod == PaymentMethod.DEBIT_ACCOUNT.getCode()) {
+            // Chamar lógica de agendamento do pagamentos externos.
         }
-    }*/
+    }
 }

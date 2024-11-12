@@ -48,8 +48,8 @@ public class PaymentsController {
     @FXML
     private Label loanAmountLabel;
 
-    @Autowired
     @Qualifier("formEntityServiceImpl")
+    @Autowired
     private FormEntityService formService;
 
     @FXML
@@ -62,7 +62,6 @@ public class PaymentsController {
     private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
-    @Qualifier("loanEntityService")
     private LoanEntityService loanService;
 
     FormEntityDto formEntityDto;
@@ -219,6 +218,7 @@ public class PaymentsController {
                     .paymentMethod(paymentMethod)
                     .status(Status.REVIEW)
                     .issueDate(issueDate)
+                    .installmentsDueDay(dateFormatterUtil.DueDateDay())
                     .loanDueDate(loanDueDate)
                     .form(formEntityMapper.mapFrom(formEntityDto))
                     .build();

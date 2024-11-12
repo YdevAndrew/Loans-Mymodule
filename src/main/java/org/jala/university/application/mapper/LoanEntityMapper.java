@@ -16,14 +16,12 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .totalInterest(loanEntity.getTotalInterest())
                 .numberOfInstallments(loanEntity.getNumberOfInstallments())
                 .valueOfInstallments(loanEntity.getValueOfInstallments())
-                .totalPayable(loanEntity.getTotalPayable())
                 .paymentMethod(loanEntity.getPaymentMethod())
                 .status(loanEntity.getStatus())
                 .issueDate(loanEntity.getIssueDate())
+                .installmentsDueDay(loanEntity.getInstallmentsDueDay())
                 .loanDueDate(loanEntity.getLoanDueDate())
                 .form(loanEntity.getForm())
-                .scheduledPaymentId(loanEntity.getScheduledPaymentId())
-                //.account(loanEntity.getAccount())
                 .build();
     }
 
@@ -35,14 +33,12 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .totalInterest(loanEntityDto.getTotalInterest())
                 .numberOfInstallments(loanEntityDto.getNumberOfInstallments())
                 .valueOfInstallments(loanEntityDto.getValueOfInstallments())
-                .totalPayable(loanEntityDto.getTotalPayable())
                 .paymentMethod(loanEntityDto.getPaymentMethod().getCode())
                 .status(loanEntityDto.getStatus().getCode())
                 .issueDate(loanEntityDto.getIssueDate())
+                .installmentsDueDay(loanEntityDto.getInstallmentsDueDay())
                 .loanDueDate(loanEntityDto.getLoanDueDate())
                 .form(loanEntityDto.getForm())
-                .scheduledPaymentId(loanEntityDto.getScheduledPaymentId())
-                //.account(loanEntityDto.getAccount())
                 .build();
     }
 }

@@ -5,9 +5,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
+import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.domain.repository.LoanEntityRepository;
@@ -16,27 +18,21 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityManager;
-
 @Service
 public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Autowired
     private LoanEntityRepository loanEntityRepository;
     private final LoanEntityMapper loanEntityMapper;
+    private final FormEntityMapper formEntityMapper;
     private final TaskScheduler taskScheduler;
-
-    @Autowired
-    LoanResultsService loanResultsService;
 
     @Autowired
     private FormEntityService formEntityService;
 
-    @Autowired
-    private EntityManager entityManager;
-
     public LoanEntityServiceImpl(LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper, TaskScheduler taskScheduler) {
         this.loanEntityMapper = loanEntityMapper;
+        this.formEntityMapper = formEntityMapper;
         this.taskScheduler = taskScheduler;
     }
 
@@ -49,16 +45,6 @@ public class LoanEntityServiceImpl implements LoanEntityService {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
         }
         return loanEntityMapper.mapTo(entity);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public LoanEntity findEntityById(Integer id) {
-        LoanEntity entity = loanEntityRepository.findById(id).orElse(null);
-        if (entity == null) {
-            throw new IllegalArgumentException("FormEntity not found with ID: " + id);
-        }
-        return entityManager.merge(entity);
     }
 
     @Override
@@ -77,9 +63,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         entity.generateInstallments();
         entity.generateAndSetDate();
         entity.setForm(formEntityService.findEntityById(entity.getForm().getId()));
-        loanResultsService.verifyIfScheduled(entity);
         //Quando juntar com o módulo Account
-        //entity.setAccount(accountService.findById(getLoggedAccount().getId()));
+        //entity.setAccount(getLoggedAccount());
         if (entity.getStatus() == null) {
             entity.setStatus(entity.generateStatus());
         }
@@ -118,43 +103,41 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Override
     @Transactional
-    public LoanEntityDto update(LoanEntityDto entityDto) {
-        LoanEntity existingEntity = loanEntityRepository.findById(entityDto.getId()).orElse(null);
+    public LoanEntityDto update(Integer id, LoanEntityDto entityDto) {
+        LoanEntity existingEntity = loanEntityRepository.findById(id).orElse(null);
 
         if (existingEntity == null) {
-            throw new IllegalArgumentException("Entity with ID " + entityDto.getId() + " not found.");
+            throw new IllegalArgumentException("Entity with ID " + id + " not found.");
         }
 
         LoanEntity updatedEntity = loanEntityMapper.mapFrom(entityDto);
-        updatedEntity.setId(entityDto.getId());
+        updatedEntity.setId(id);
 
         LoanEntity savedEntity = loanEntityRepository.save(updatedEntity);
         return loanEntityMapper.mapTo(savedEntity);
     }
 
     //Recebe o id da conta e retorna os empréstimos da mesma.
-    @Override
-    @Transactional(readOnly = true)
+    /*@Override
     public List<LoanEntityDto> findLoansByAccountId() {
-        // Integer id = 1526654;//retirar quando juntar os módulos
-        // List<LoanEntity> loans = loanEntityRepository.findByAccountId(id); //Ajustar quando juntar módulos para o id da conta logada
-        // loans.forEach(LoanEntity::updateStatusFinished);
-        List<LoanEntity> loans = null;
+        Integer id = 54354325;//retirar quando juntar os módulos 
+        List<LoanEntity> loans = loanEntityRepository.findByAccountId(getLoggedAccount().getid);//Ajustar quando juntar módulos
         return loans.stream()
                 .map(loanEntityMapper::mapTo) // Converte cada entidade para DTO
                 .toList();
-    }
+    }  */
 
+    /*Recebe o FormDto e retorna o LoanEntity com o form associado, use ele
+     * se estiver salvando o empréstimo no banco pela primeira vez, exemplo: 
+     * loanWithForm = associateForm(loanEntityDto, formEntityDto);
+     * loanEntityService.save(loanWithForm).
+     */
     @Override
-    @Transactional
-    public boolean payInstallmentManually(LoanEntityDto dto) {
-        LoanEntity entity = findEntityById(dto.getId());
-        // if (loanResultsService.payInstallment(entity) != null) {
-        //     entity.markAsPaid();
-        //     loanEntityRepository.save(entity);
-        //     return true;
-        // }
-        return false;
+    public LoanEntity associateForm(LoanEntityDto loanDto, FormEntityDto formdto) {
+        LoanEntity loanEntity = loanEntityMapper.mapFrom(loanDto);
+        FormEntity formEntity = formEntityMapper.mapFrom(formdto);
+        loanEntity.setForm(formEntity);
+        return loanEntity;
     }
 
     private void scheduleStatusChange(LoanEntity loanEntity) {
@@ -163,16 +146,25 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         taskScheduler.schedule(() -> changeStatusRandomly(loanEntity), startTime);
     }
 
-    @Transactional
     private void changeStatusRandomly(LoanEntity loanEntity) {
-        LoanEntity entity = findEntityById(loanEntity.getId());
-        Status newStatus = entity.generateStatus();
-        // if (newStatus == Status.APPROVED) {
-        //     loanResultsService.sendAmountAccount(entity);
-        //     loanResultsService.verifyIfScheduled(entity);
-        // }
+        Status newStatus = loanEntity.generateStatus();
+        if (newStatus == Status.APPROVED) {
+            sendAmountAccount();
+            loanEntity.paymentMethodLogic();
+        }
 
-        entity.setStatus(newStatus);
+        loanEntity.setStatus(newStatus);
+        loanEntityRepository.save(loanEntity);  // Atualiza o status no banco
+    }
+
+    private void sendAmountAccount() {
+        //Lógica de transação para mandar o dinheiro para a conta
+    }
+    
+    @Override
+    public void markInstallmentAsPaid(LoanEntityDto dto) {
+        LoanEntity entity = loanEntityMapper.mapFrom(dto);
+        entity.markAsPaid();
         loanEntityRepository.save(entity);
     }
 
@@ -180,5 +172,11 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     public long getPaidInstallments(LoanEntityDto dto) {
         LoanEntity entity = loanEntityMapper.mapFrom(dto);
         return entity.getNumberOfPaidInstallments();
+    }
+
+    @Override
+    public List<LoanEntityDto> findLoansByAccountId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findLoansByAccountId'");
     }
 }

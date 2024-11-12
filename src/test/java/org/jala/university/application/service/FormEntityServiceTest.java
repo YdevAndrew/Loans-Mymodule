@@ -1,5 +1,4 @@
 /*package org.jala.university.application.service;
-/*package org.jala.university.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
