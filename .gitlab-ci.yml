@@ -1,28 +1,39 @@
-image: maven:3.8.5-openjdk-17  # Usando uma imagem Maven com JDK 17
+image: maven:3.8.5-openjdk-17  # Usando Maven com JDK 17
 
 stages:
+  - setup
   - build
   - test
   - coverage
   - deploy
 
-# Job para compilar o código
+# Job para instalar dependências dos módulos internos
+install-dependencies:
+  stage: setup
+  script:
+    - echo "Instalando módulos internos..."
+    - mvn -f ../commons-module/pom.xml clean install
+    - mvn -f ../account-module/pom.xml clean install
+    - mvn -f ../credit-card-module/pom.xml clean install
+    - mvn -f ../transaction-module/pom.xml clean install
+
+# Job para compilar o código do módulo loans
 build-job:
   stage: build
   script:
     - echo "Compilando o código com Maven..."
-    - mvn clean compile  # Comando Maven para compilar o código
+    - mvn -f loans-module/pom.xml clean compile  # Compila o loans-module
     - echo "Compilação concluída."
   artifacts:
     paths:
-      - target/  # Diretório onde os arquivos compilados serão armazenados
+      - loans-module/target/  # Diretório onde os arquivos compilados serão armazenados
 
 # Job para análise estática de código (linter)
 lint-test-job:
   stage: test
   script:
     - echo "Executando análise estática de código (linter)..."
-    - mvn checkstyle:check  # Executa o plugin Checkstyle para análise de código
+    - mvn -f loans-module/pom.xml checkstyle:check  # Executa o plugin Checkstyle no loans-module
   allow_failure: true  # Permite que erros de lint não bloqueiem o pipeline se não forem críticos
 
 # Job para executar testes unitários
@@ -30,20 +41,20 @@ unit-test-job:
   stage: test
   script:
     - echo "Executando testes unitários com Maven..."
-    - mvn test  # Executa os testes unitários
+    - mvn -f loans-module/pom.xml test  # Executa os testes unitários no loans-module
   artifacts:
     paths:
-      - target/surefire-reports/  # Diretório onde os relatórios de testes são armazenados
+      - loans-module/target/surefire-reports/  # Diretório onde os relatórios de testes são armazenados
 
 # Job para gerar e salvar o relatório de cobertura de código
 coverage-job:
   stage: coverage
   script:
     - echo "Gerando relatório de cobertura de código com Maven..."
-    - mvn clean verify jacoco:report  # Executa o plugin JaCoCo para gerar o relatório de cobertura
+    - mvn -f loans-module/pom.xml clean verify jacoco:report  # Gera o relatório de cobertura no loans-module
   artifacts:
     paths:
-      - target/site/jacoco/  # Diretório onde o relatório de cobertura é armazenado
+      - loans-module/target/site/jacoco/  # Diretório onde o relatório de cobertura é armazenado
 
 # Job para deploy da aplicação
 deploy-job:
@@ -51,6 +62,6 @@ deploy-job:
   environment: production
   script:
     - echo "Realizando deploy da aplicação..."
-    - mvn clean package  # Cria o pacote final para deploy (por exemplo, um arquivo JAR)
+    - mvn -f loans-module/pom.xml clean package  # Cria o pacote final para deploy do loans-module
     - echo "Aplicação empacotada e pronta para deploy."
     # Adicione o comando real de deploy aqui, como upload para um servidor ou execução do JAR
