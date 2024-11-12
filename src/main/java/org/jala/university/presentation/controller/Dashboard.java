@@ -108,4 +108,19 @@ public class Dashboard {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void loadLoansView() {
+        try {
+            FXMLLoader loader = springFXMLLoader.load("/Loans/myloans.fxml");
+            Node loansView = loader.load();
+
+            MyLoans controller = loader.getController();
+            controller.loadLoanDetails();
+
+            mainViewContainer.getChildren().setAll(loansView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

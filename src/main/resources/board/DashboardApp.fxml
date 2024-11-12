@@ -184,7 +184,17 @@
                         <content>
                             <VBox prefHeight="51.0" prefWidth="288.0" style="-fx-background-color: transparent;">
                                 <children>
-                                    <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-font-family: Roboto Light; -fx-font-size: 18;" text="My Loans">
+                                    <Button mnemonicParsing="false"
+                                            style="-fx-background-color: transparent; -fx-font-family: Roboto Light; -fx-font-size: 18;"
+                                            text="My Loans"
+                                            onAction="#loadLoansView">
+                                        <graphic>
+                                            <ImageView fitHeight="13.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@/images/Ellipse 314.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
                                         <graphic>
                                             <ImageView fitHeight="13.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                 <image>

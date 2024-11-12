@@ -199,9 +199,20 @@ public class LoanEntity implements BaseEntity<Integer> {
     }
 
     public void recalculate() {
-        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, valueOfInstallments);
-        this.valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, valueOfInstallments);
-        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, valueOfInstallments);
+        // Calcule totalPayable com base no montante emprestado e no número de parcelas
+        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
+
+        // Calcule o valor de cada parcela
+        this.valueOfInstallments = totalPayable / numberOfInstallments;
+
+        // Calcule o total de juros com base no montante emprestado
+        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
+    }
+
+    public void setAmountBorrowed(Double amount) {
+        this.amountBorrowed = amount;
+        recalculate();
+        generateInstallments();
     }
 
     public void generateInstallments() {

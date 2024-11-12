@@ -25,7 +25,7 @@
       <Label fx:id="loanAmountLabel" layoutX="727.0" layoutY="108.0" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="R$ 0" />
       <Label layoutX="494.0" layoutY="105.0" style="-fx-text-fill: White; -fx-font-size: 20px; -fx-font-weight: bold;" text="Pre-Approved amount:" />
 
-      <Label fx:id="installmentValueLabel" layoutX="611.0" layoutY="267.0" style="-fx-font-size: 11px; -fx-text-fill: Black; -fx-font-weight: bold; -fx-background-color: white;" text="R$ 0.00  by installments" />
+      <Label fx:id="installmentValueLabel" layoutX="590.0" layoutY="257.0" style="-fx-font-size: 11px; -fx-text-fill: Black; -fx-font-weight: bold; -fx-background-color: white;" text="R$ 0.00  by installments" />
 
       <ComboBox fx:id="installmentsComboBox" layoutX="835.0" layoutY="257.0" prefHeight="35.0" prefWidth="242.0" promptText="Select installments">
          <items>
@@ -60,6 +60,6 @@
       <Button fx:id="submitButton" layoutX="835.0" layoutY="520.0" prefHeight="50.0" prefWidth="242.0" style="-fx-font-size: 16px; -fx-background-color: #1E5DBE; -fx-text-fill: #FFFFFF; -fx-padding: 10 20;" text="Submit" />
       <Label layoutX="811.0" layoutY="494.0" style="-fx-text-fill: red; -fx-font-size: 12px;" />
       <Label layoutX="424.0" layoutY="150.0" style="-fx-text-fill: White;" text="Choose the amount" />
-      <Label layoutX="601.0" layoutY="226.0" prefHeight="30.0" prefWidth="143.0" style="-fx-text-fill: blue; -fx-font-weight: bold; -fx-font-size: 14;" text="Value of installments" />
+      <Label layoutX="591.0" layoutY="225.0" prefHeight="30.0" prefWidth="143.0" style="-fx-text-fill: blue; -fx-font-weight: bold; -fx-font-size: 14;" text="Value of installments" />
    </children>
 </Pane>
