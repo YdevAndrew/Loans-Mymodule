@@ -6,7 +6,6 @@ stages:
   - coverage
   - deploy
 
-# Job para inicializar submódulos antes da construção
 init-submodules:
   stage: build
   script:
@@ -15,9 +14,19 @@ init-submodules:
     - git submodule update
     - echo "Submódulos inicializados."
 
+install-submodules:
+  stage: build
+  needs: [init-submodules]
+  script:
+    - echo "Instalando dependências dos submódulos no Maven local..."
+    - cd commons-module && mvn clean install && cd ..
+    - cd account-module && mvn clean install && cd ..
+    - cd credit-card-module && mvn clean install && cd ..
+    - echo "Instalação dos submódulos concluída."
+
 build-job:
   stage: build
-  needs: [init-submodules] # Garante que os submódulos sejam inicializados antes de compilar
+  needs: [install-submodules]
   script:
     - echo "Compilando o código com Maven..."
     - mvn clean compile
