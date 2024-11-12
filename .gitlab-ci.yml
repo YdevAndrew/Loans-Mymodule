@@ -1,46 +1,49 @@
+image: maven:3.8.8-openjdk-17  # Usando uma imagem Maven com JDK 17
+
 stages:
   - build
   - test
   - coverage
   - deploy
 
-# Job para compilar/buildar o código
+# Job para compilar o código
 build-job:
   stage: build
   script:
-    - echo "Compilando o código..."
-    - echo "Compile complete."  # Substitua esta linha pelos comandos reais necessários para compilar o projeto
+    - echo "Compilando o código com Maven..."
+    - mvn clean compile  # Comando Maven para compilar o código
+    - echo "Compilação concluída."
   artifacts:
     paths:
-      - build/  # Armazene os arquivos compilados, se necessário
+      - target/  # Diretório onde os arquivos compilados serão armazenados
 
-# Job para análise estática de código com linter
+# Job para análise estática de código (linter)
 lint-test-job:
   stage: test
   script:
-    - echo "Executando análise de lint..."
-    - npm run lint  # Substitua pelo comando de linter real usado no projeto (ex.: ESLint para JavaScript)
+    - echo "Executando análise estática de código (linter)..."
+    - mvn checkstyle:check  # Executa o plugin Checkstyle para análise de código
   allow_failure: true  # Permite que erros de lint não bloqueiem o pipeline se não forem críticos
 
 # Job para executar testes unitários
 unit-test-job:
   stage: test
   script:
-    - echo "Executando testes unitários..."
-    - npm test  # Substitua pelo comando real para rodar os testes unitários
+    - echo "Executando testes unitários com Maven..."
+    - mvn test  # Executa os testes unitários
   artifacts:
     paths:
-      - test-reports/  # Armazena relatórios de testes para análise futura
+      - target/surefire-reports/  # Diretório onde os relatórios de testes são armazenados
 
 # Job para gerar e salvar o relatório de cobertura de código
 coverage-job:
   stage: coverage
   script:
-    - echo "Gerando relatório de cobertura de código..."
-    - npm run coverage  # Substitua pelo comando real para cobertura, como Jest com o flag de cobertura
+    - echo "Gerando relatório de cobertura de código com Maven..."
+    - mvn clean verify jacoco:report  # Executa o plugin JaCoCo para gerar o relatório de cobertura
   artifacts:
     paths:
-      - coverage/  # Armazene o diretório de cobertura como um artefato
+      - target/site/jacoco/  # Diretório onde o relatório de cobertura é armazenado
 
 # Job para deploy da aplicação
 deploy-job:
@@ -48,5 +51,6 @@ deploy-job:
   environment: production
   script:
     - echo "Realizando deploy da aplicação..."
-    - ./deploy.sh  # Substitua pelo script ou comando real de deploy
-    - echo "Aplicação implantada com sucesso."
+    - mvn clean package  # Cria o pacote final para deploy (por exemplo, um arquivo JAR)
+    - echo "Aplicação empacotada e pronta para deploy."
+    # Adicione o comando real de deploy aqui, como upload para um servidor ou execução do JAR
