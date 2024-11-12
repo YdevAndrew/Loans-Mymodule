@@ -33,7 +33,7 @@ unit-test-job:
     paths:
       - test-reports/  # Store test reports for further analysis
 
-# Job to generate and report code coverage
+# Job to generate and save the code coverage report
 coverage-job:
   stage: coverage
   script:
@@ -41,9 +41,7 @@ coverage-job:
     - npm run coverage  # Replace with the actual command for coverage, like Jest with coverage flag
   artifacts:
     paths:
-      - coverage/  # Assuming coverage reports are stored in the coverage directory
-  reports:
-    cobertura: coverage/cobertura-coverage.xml  # Example for Cobertura XML report format
+      - coverage/  # Store the coverage report directory as an artifact
 
 # Job to deploy the application
 deploy-job:
