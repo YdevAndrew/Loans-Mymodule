@@ -48,8 +48,8 @@ public class PaymentsController {
     @FXML
     private Label loanAmountLabel;
 
-    @Qualifier("formEntityServiceImpl")
     @Autowired
+    @Qualifier("formEntityServiceImpl")
     private FormEntityService formService;
 
     @FXML
@@ -62,6 +62,7 @@ public class PaymentsController {
     private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
+    @Qualifier("loanEntityService")
     private LoanEntityService loanService;
 
     FormEntityDto formEntityDto;

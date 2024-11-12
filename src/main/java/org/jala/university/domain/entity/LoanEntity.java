@@ -182,12 +182,6 @@ public class LoanEntity implements BaseEntity<Integer> {
         this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
     }
 
-    public void setAmountBorrowed(Double amount) {
-        this.amountBorrowed = amount;
-        recalculate();
-        generateInstallments();
-    }
-
     public void generateInstallments() {
         this.installments.clear(); // Limpa a lista anterior, se houver
 
