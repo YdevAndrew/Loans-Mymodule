@@ -9,12 +9,9 @@ import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
-import org.jala.university.application.service.FormEntityServiceImpl;
 import org.jala.university.application.service.LoanEntityService;
-import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
-import org.jala.university.infrastructure.persistance.database.Connection;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.jala.university.utils.CalculationUtil;
 import org.jala.university.utils.DateFormmaterUtil;
@@ -22,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -63,6 +58,9 @@ public class PaymentsController {
 
     @FXML
     private Pane mainPane;
+
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
     private LoanEntityService loanService;
@@ -120,9 +118,9 @@ public class PaymentsController {
 
         if (amountBorrowed != null && numberOfInstallments != null && numberOfInstallments > 0) {
             Double valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, (double) numberOfInstallments);
-            installmentValueLabel.setText(String.format("R$ %.2f por parcela", valueOfInstallments));
+            installmentValueLabel.setText(String.format("R$ %.2f By installments", valueOfInstallments));
         } else {
-            installmentValueLabel.setText("Selecione o número de parcelas");
+            installmentValueLabel.setText("Select the number of installments");
         }
     }
 
@@ -159,6 +157,25 @@ public class PaymentsController {
             e.printStackTrace();
         }
 
+    }
+
+    private void loadMyLoansPane() {
+        try {
+            FXMLLoader loader = springFXMLLoader.load("/Loans/myloans.fxml");
+            Pane myLoansPane = loader.load();
+            MyLoans controller = loader.getController();
+            controller.loadLoanDetails();
+
+            if (mainPane != null) {
+                mainPane.getChildren().clear();
+                mainPane.getChildren().add(myLoansPane);
+            } else {
+                System.err.println("Erro: mainPane não foi inicializado no PaymentsController.");
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar MyLoans.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void saveLoanToDatabase() {
@@ -214,6 +231,7 @@ public class PaymentsController {
             try {
                 loanService.save(loanDto);
                 System.out.println("Dados do empréstimo salvos com sucesso.");
+                loadMyLoansPane();
             } catch (Exception e) {
                 System.err.println("Erro ao salvar o LoanEntityDto no serviço: " + e.getMessage());
                 e.printStackTrace();
