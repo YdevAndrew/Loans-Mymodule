@@ -9,8 +9,7 @@ build-job:
   stage: build
   script:
     - echo "Compilando o código..."
-    - # Insira os comandos reais de build aqui, como npm install, bundle install, etc.
-    - echo "Compilação concluída."
+    - echo "Compile complete."  # Substitua esta linha pelos comandos reais necessários para compilar o projeto
   artifacts:
     paths:
       - build/  # Armazene os arquivos compilados, se necessário
