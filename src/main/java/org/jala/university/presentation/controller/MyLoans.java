@@ -35,11 +35,15 @@ public class MyLoans {
 
             for (LoanEntityDto loan : loans) {
 
-                Label loanLabel = new Label(String.format("Empréstimo ID: %d | Valor: R$ %.2f | Parcelas: %d | Valor da Parcela: R$ %.2f | Status: %s",
+                // Formatação simplificada do valor da parcela com duas casas decimais
+                String installmentValueFormatted = String.format("R$ %.2f", loan.getValueOfInstallments());
+
+                Label loanLabel = new Label(String.format(
+                        "Empréstimo ID: %d | Valor: R$ %.2f | Parcelas: %d | Valor da Parcela: %s | Status: %s",
                         loan.getId(),
                         loan.getAmountBorrowed(),
                         loan.getNumberOfInstallments(),
-                        loan.getValueOfInstallments(),
+                        installmentValueFormatted,
                         loan.getStatus().name()
                 ));
 
