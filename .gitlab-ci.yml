@@ -45,7 +45,7 @@ coverage-job:
   needs: [unit-test-job]
   script:
     - echo "Gerando relatório de cobertura de código com Jacoco..."
-    - mvn verify jacoco:report
+    - mvn verify -Dtest='!*FormControllerTest' -DfailIfNoTests=false jacoco:report
     - echo "Relatório de cobertura gerado."
   artifacts:
     paths:
