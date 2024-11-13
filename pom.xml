@@ -23,10 +23,12 @@
 
   <dependencies>
     <!-- Local Dependency -->
-    <dependency>
+   <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>commons-module</artifactId>
       <version>${commons.module.version}</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/commons-module-1.0-SNAPSHOT.jar</systemPath>
     </dependency>
 
     <!-- Other modules Dependency -->
@@ -34,6 +36,8 @@
       <groupId>org.jala.university</groupId>
       <artifactId>account-module</artifactId>
       <version>1.0-RELEASE</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/account-module-1.0-RELEASE.jar</systemPath>
     </dependency>
     <!-- <dependency>
       <groupId>org.jala.university</groupId>
@@ -44,6 +48,8 @@
       <groupId>org.jala.university</groupId>
       <artifactId>credit-card-module</artifactId>
       <version>1.0-RELEASE</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/credit-card-module-1.0-RELEASE.jar</systemPath>
     </dependency>
     <!--<dependency>
       <groupId>org.jala.university</groupId>
