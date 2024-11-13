@@ -1,57 +1,63 @@
 image: maven:3.8.5-openjdk-17
 
+
 stages:
+  - lint
   - build
   - test
   - coverage
-  - deploy
+  - package
+
+
+lint-job:
+  stage: lint
+  script:
+    - echo "Executando linter para análise estática do código..."
+    - mvn checkstyle:check
+    - echo "Análise estática de código concluída."
+  allow_failure: true 
 
 build-job:
   stage: build
   script:
-    - echo "Compilando o código com Maven..."
-    - mvn clean compile
+    - echo "Compilando o código-fonte..."
+    - mvn clean compile -DskipTests
     - echo "Compilação concluída."
   artifacts:
     paths:
       - target/
 
-lint-test-job:
-  stage: test
-  needs: [build-job]
-  script:
-    - echo "Executando análise estática de código (linter)..."
-    - mvn checkstyle:check
-    - echo "Análise de lint concluída."
-  allow_failure: true
 
 unit-test-job:
   stage: test
-  needs: [build-job]
   script:
-    - echo "Executando testes unitários com Maven..."
+    - echo "Executando testes unitários..."
     - mvn test
     - echo "Testes unitários concluídos."
   artifacts:
     paths:
       - target/surefire-reports/
 
+
 coverage-job:
   stage: coverage
   needs: [unit-test-job]
   script:
-    - echo "Gerando relatório de cobertura de código com Maven..."
-    - mvn clean verify jacoco:report
+    - echo "Gerando relatório de cobertura de código com Jacoco..."
+    - mvn jacoco:prepare-agent test jacoco:report
     - echo "Relatório de cobertura gerado."
   artifacts:
     paths:
       - target/site/jacoco/
 
-deploy-job:
-  stage: deploy
-  environment: production
+
+package-job:
+  stage: package
   needs: [coverage-job]
   script:
-    - echo "Realizando deploy da aplicação..."
-    - mvn clean package
-    - echo "Aplicação empacotada e pronta para deploy."
+    - echo "Empacotando a aplicação..."
+    - mvn clean package -DskipTests
+    - echo "Aplicação empacotada."
+  artifacts:
+    paths:
+      - target/*.jar 
