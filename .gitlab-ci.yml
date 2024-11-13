@@ -1,0 +1,59 @@
+image: maven:3.8.5-openjdk-17
+
+stages:
+  - lint
+  - build
+  - test
+  - coverage
+  - package
+
+lint-job:
+  stage: lint
+  script:
+    - echo "Executando linter para análise estática do código..."
+    - mvn checkstyle:check
+    - echo "Análise estática de código concluída."
+  allow_failure: true 
+
+build-job:
+  stage: build
+  script:
+    - echo "Compilando o código-fonte..."
+    - mvn clean compile -DskipTests
+    - echo "Compilação concluída."
+  artifacts:
+    paths:
+      - target/classes
+
+unit-test-job:
+  stage: test
+  needs: [build-job]
+  script:
+    - echo "Executando testes unitários..."
+    - mvn test
+    - echo "Testes unitários concluídos."
+  artifacts:
+    paths:
+      - target/surefire-reports/
+
+coverage-job:
+  stage: coverage
+  needs: [unit-test-job]
+  script:
+    - echo "Gerando relatório de cobertura de código com Jacoco..."
+    - mvn verify jacoco:report
+    - echo "Relatório de cobertura gerado."
+  artifacts:
+    paths:
+      - target/site/jacoco/
+
+package-job:
+  stage: package
+  needs: [coverage-job]
+  script:
+    - echo "Empacotando a aplicação..."
+    - mvn clean package -DskipTests
+    - echo "Aplicação empacotada."
+  artifacts:
+    paths:
+      - target/*.jar
