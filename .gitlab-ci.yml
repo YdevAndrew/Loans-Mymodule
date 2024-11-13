@@ -18,9 +18,8 @@ lint-job:
 build-job:
   stage: build
   script:
-    
-    - echo "Compilando o código-fonte..."
-    - mvn clean install -DskipTests
+    - echo "Compilando o código-fonte sem verificar dependências..."
+    - mvn clean install -DskipTests -o
     - echo "Compilação concluída."
   artifacts:
     paths:
@@ -52,8 +51,8 @@ package-job:
   stage: package
   needs: [coverage-job]
   script:
-    - echo "Empacotando a aplicação..."
-    - mvn clean package -DskipTests
+    - echo "Empacotando a aplicação sem verificar dependências..."
+    - mvn clean package -DskipTests -o
     - echo "Aplicação empacotada."
   artifacts:
     paths:
