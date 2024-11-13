@@ -9,6 +9,8 @@ import org.jala.university.application.service.LoanEntityServiceImpl;
 import org.jala.university.application.service.LoanResultsService;
 import org.jala.university.application.service.LoanResultsServiceImpl;
 import org.springframework.context.annotation.Bean;
+import org.jala.university.presentation.SpringFXMLLoader;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
@@ -56,6 +58,12 @@ public class AppConfig {
         // Injeta os beans RepositoryFactory, LoanEntityMapper e TaskScheduler em LoanEntityServiceImpl
         return new LoanEntityServiceImpl(loanEntityMapper, formEntityMapper, taskScheduler);
     }
+
+     @Bean
+    public SpringFXMLLoader springFXMLLoader(ApplicationContext context) {
+        return new SpringFXMLLoader(context);
+    }
+
 
     // @Bean
     // public JpaRepositoryFactory jpaRepositoryFactory() {
