@@ -143,6 +143,14 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+        <id>local-libs</id>
+        <url>file://${project.basedir}/libs</url>
+        <layout>default</layout>
+    </repository>
+</repositories>
+
   <build>
     <plugins>
       <plugin>
