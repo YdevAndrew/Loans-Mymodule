@@ -56,63 +56,57 @@ public class FormControllerTest {
 
     @BeforeAll
     public static void initToolkit() {
+        // Inicia o JavaFX toolkit antes de qualquer teste
         Platform.startup(() -> {});
     }
 
     @BeforeEach
     public void setUp() throws Exception {
-        // Inicializando os mocks
         MockitoAnnotations.openMocks(this);
-        when(loader.load()).thenReturn(new Pane());
 
-        // Criando um arquivo temporário como prova de renda
+        
+        when(loader.load()).thenReturn(new Pane());
+        when(salaryField.getText()).thenReturn("2000");
+
+       
         incomeProofFile = File.createTempFile("incomeProof", ".pdf");
         Files.write(incomeProofFile.toPath(), "sample content".getBytes());
 
-        // Configurando o campo de salário com valor simulado
-        when(salaryField.getText()).thenReturn("2000");
-
-        // Configurando o arquivo de prova de renda diretamente no formController
         formController.incomeProofFile = incomeProofFile;
 
-        // Injetando o mock de formService no formController usando reflexões
-        Field field = formController.getClass().getDeclaredField("formService");
-        field.setAccessible(true);
-        field.set(formController, formService);
+        Field salaryFieldField = formController.getClass().getDeclaredField("salaryField");
+        salaryFieldField.setAccessible(true);
+        salaryFieldField.set(formController, salaryField);
+
+        Field formServiceField = formController.getClass().getDeclaredField("formService");
+        formServiceField.setAccessible(true);
+        formServiceField.set(formController, formService);
     }
 
     @Test
     public void testSubmitLoanRequestWithInvalidSalary() {
-        // Configurando um valor inválido para o campo de salário
         when(salaryField.getText()).thenReturn("invalid_salary");
 
-        // Executando o método de envio da solicitação de empréstimo
         Platform.runLater(() -> formController.submitLoanRequest());
         WaitForAsyncUtils.waitForFxEvents();
 
-        // Verificando que o método save não foi chamado devido ao salário inválido
         verify(formService, times(0)).save(any(FormEntityDto.class));
     }
 
     @Test
     public void testSubmitLoanRequestWithoutIncomeProof() {
-        // Removendo a prova de renda para este teste
         formController.incomeProofFile = null;
 
-        // Executando o método de envio da solicitação de empréstimo
         Platform.runLater(() -> formController.submitLoanRequest());
         WaitForAsyncUtils.waitForFxEvents();
 
-        // Verificando que o método save não foi chamado devido à falta de prova de renda
         verify(formService, times(0)).save(any(FormEntityDto.class));
     }
 
     @Test
     public void testValidateInputsWithLowSalary() {
-        // Configurando um salário baixo para teste de validação
         when(salaryField.getText()).thenReturn("1500");
 
-        // Validando os inputs
         Platform.runLater(() -> {
             boolean isValid = formController.validateInputs(1500);
             assertFalse(isValid, "Expected validation to fail due to low salary");
