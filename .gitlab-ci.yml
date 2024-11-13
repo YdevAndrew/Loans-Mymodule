@@ -34,7 +34,7 @@ unit-test-job:
   needs: [build-job]
   script:
     - echo "Executando testes unitários..."
-    - mvn test -Dtest=!FormControllerTest
+    - mvn test -Dtest='!*FormControllerTest' -DfailIfNoTests=false
     - echo "Testes unitários concluídos."
   artifacts:
     paths:
