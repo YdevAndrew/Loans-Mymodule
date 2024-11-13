@@ -1,13 +1,11 @@
 image: maven:3.8.5-openjdk-17
 
-
 stages:
   - lint
   - build
   - test
   - coverage
   - package
-
 
 lint-job:
   stage: lint
@@ -20,16 +18,17 @@ lint-job:
 build-job:
   stage: build
   script:
+    
     - echo "Compilando o código-fonte..."
-    - mvn clean compile -DskipTests
+    - mvn clean install -DskipTests
     - echo "Compilação concluída."
   artifacts:
     paths:
-      - target/
-
+      - target/*.jar
 
 unit-test-job:
   stage: test
+  needs: [build-job]
   script:
     - echo "Executando testes unitários..."
     - mvn test
@@ -38,18 +37,16 @@ unit-test-job:
     paths:
       - target/surefire-reports/
 
-
 coverage-job:
   stage: coverage
   needs: [unit-test-job]
   script:
     - echo "Gerando relatório de cobertura de código com Jacoco..."
-    - mvn jacoco:prepare-agent test jacoco:report
+    - mvn verify jacoco:report
     - echo "Relatório de cobertura gerado."
   artifacts:
     paths:
       - target/site/jacoco/
-
 
 package-job:
   stage: package
@@ -60,4 +57,4 @@ package-job:
     - echo "Aplicação empacotada."
   artifacts:
     paths:
-      - target/*.jar 
+      - target/*.jar
