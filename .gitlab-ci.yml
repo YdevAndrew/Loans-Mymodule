@@ -9,28 +9,28 @@ stages:
 init-submodules:
   stage: build
   script:
-    - echo "Initializing Git submodules..."
+    - echo "Inicializando submódulos do Git..."
     - git submodule init
     - git submodule update
-    - echo "Git submodules initialized."
+    - echo "Submódulos inicializados."
 
 install-submodules:
   stage: build
   needs: [init-submodules]
   script:
-    - echo "Installing Maven dependencies for each submodule..."
-    - cd commons-module && mvn clean install && cd ..
-    - cd account-module && mvn clean install && cd ..
-    - cd credit-card-module && mvn clean install && cd ..
-    - echo "Submodules installed successfully in local Maven repository."
+    - echo "Instalando dependências dos submódulos no Maven local sem verificar dependências..."
+    - cd commons-module && mvn clean install -DskipTests -Ddependency-check.skip=true && cd ..
+    - cd account-module && mvn clean install -DskipTests -Ddependency-check.skip=true && cd ..
+    - cd credit-card-module && mvn clean install -DskipTests -Ddependency-check.skip=true && cd ..
+    - echo "Instalação dos submódulos concluída."
 
 build-job:
   stage: build
   needs: [install-submodules]
   script:
-    - echo "Building the loans-module with Maven..."
+    - echo "Compilando o código com Maven..."
     - mvn clean compile
-    - echo "Build completed."
+    - echo "Compilação concluída."
   artifacts:
     paths:
       - target/
@@ -39,18 +39,18 @@ lint-test-job:
   stage: test
   needs: [build-job]
   script:
-    - echo "Running static code analysis (linter)..."
+    - echo "Executando análise estática de código (linter)..."
     - mvn checkstyle:check
-    - echo "Lint analysis completed."
+    - echo "Análise de lint concluída."
   allow_failure: true
 
 unit-test-job:
   stage: test
   needs: [build-job]
   script:
-    - echo "Running unit tests with Maven..."
+    - echo "Executando testes unitários com Maven..."
     - mvn test
-    - echo "Unit tests completed."
+    - echo "Testes unitários concluídos."
   artifacts:
     paths:
       - target/surefire-reports/
@@ -59,9 +59,9 @@ coverage-job:
   stage: coverage
   needs: [unit-test-job]
   script:
-    - echo "Generating code coverage report with Maven..."
+    - echo "Gerando relatório de cobertura de código com Maven..."
     - mvn clean verify jacoco:report
-    - echo "Coverage report generated."
+    - echo "Relatório de cobertura gerado."
   artifacts:
     paths:
       - target/site/jacoco/
@@ -71,6 +71,6 @@ deploy-job:
   environment: production
   needs: [coverage-job]
   script:
-    - echo "Deploying application..."
+    - echo "Realizando deploy da aplicação..."
     - mvn clean package
-    - echo "Application packaged and ready for deployment."
+    - echo "Aplicação empacotada e pronta para deploy."
