@@ -8,23 +8,23 @@ stages:
   - package
 
 before_script:
-  # Certifica-se de que o diretório libs e os JARs fictícios estão disponíveis
-  - echo "Iniciando o pipeline com JARs fictícios no diretório libs..."
+ 
+  -echo "Starting pipeline with dummy JARs in libs directory"
 
 lint-job:
   stage: lint
   script:
-    - echo "Executando linter para análise estática do código..."
+    -echo "Running linter for static code analysis"
     - mvn checkstyle:check
-    - echo "Análise estática de código concluída."
-  allow_failure: true  # Permite que o pipeline continue mesmo que o lint falhe
+    - echo "Static code analysis completed"
+  allow_failure: true  #Allows the pipeline to continue even if the lint fails
 
 build-job:
   stage: build
   script:
-    - echo "Compilando o código-fonte com dependências fictícias..."
+    - echo "Compiling source code with dummy dependencies"
     - mvn clean compile -DskipTests -Dmaven.test.skip=true
-    - echo "Compilação concluída."
+    - echo "Compilation completed."
   artifacts:
     paths:
       - target/classes
@@ -33,9 +33,9 @@ unit-test-job:
   stage: test
   needs: [build-job]
   script:
-    - echo "Executando testes unitários..."
+    - echo "Running unit tests"
     - mvn test -Dtest='!*FormControllerTest' -DfailIfNoTests=false
-    - echo "Testes unitários concluídos."
+    - echo "Unit tests completed."
   artifacts:
     paths:
       - target/surefire-reports/
@@ -44,9 +44,9 @@ coverage-job:
   stage: coverage
   needs: [unit-test-job]
   script:
-    - echo "Gerando relatório de cobertura de código com Jacoco..."
+    - echo "Generating code coverage report with Jacoco"
     - mvn verify -Dtest='!*FormControllerTest' -DfailIfNoTests=false jacoco:report
-    - echo "Relatório de cobertura gerado."
+    - echo "Coverage report generated."
   artifacts:
     paths:
       - target/site/jacoco/
@@ -55,9 +55,9 @@ package-job:
   stage: package
   needs: [coverage-job]
   script:
-    - echo "Empacotando a aplicação com dependências fictícias..."
+    - echo "Packaging the application with dummy dependencies"
     - mvn clean package -DskipTests -Dmaven.test.skip=true
-    - echo "Aplicação empacotada."
+    - echo "Packaged application."
   artifacts:
     paths:
       - target/*.jar
