@@ -8,16 +8,15 @@ stages:
   - package
 
 before_script:
- 
-  -echo "Starting pipeline with dummy JARs in libs directory"
+  - echo "Starting pipeline with dummy JARs in libs directory"
 
 lint-job:
   stage: lint
   script:
-    -echo "Running linter for static code analysis"
+    - echo "Running linter for static code analysis"
     - mvn checkstyle:check
     - echo "Static code analysis completed"
-  allow_failure: true  #Allows the pipeline to continue even if the lint fails
+  allow_failure: true
 
 build-job:
   stage: build
