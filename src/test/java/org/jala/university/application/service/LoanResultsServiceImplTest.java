@@ -136,7 +136,7 @@
 //     void testVerifyAndUpdatePaidInstallments_SuccessfulProcess() {
 //         LoanEntity loan1 = createTestLoanEntity();
 //         LoanEntity loan2 = createTestLoanEntity();
-//         when(loanEntityRepository.findLoansScheduled(1, 1))
+//         when(loanEntityRepository.findByStatusPaymentMethod(1, 1))
 //                 .thenReturn(Arrays.asList(loan1, loan2));
 
 //         loanResultsService.verifyAndUpdatePaidInstallments();

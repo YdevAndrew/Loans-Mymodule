@@ -2,17 +2,22 @@ package org.jala.university.application.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
+import org.jala.university.domain.entity.InstallmentEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.domain.repository.LoanEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -165,20 +170,46 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Transactional
     private void changeStatusRandomly(LoanEntity loanEntity) {
-        LoanEntity entity = findEntityById(loanEntity.getId());
-        Status newStatus = entity.generateStatus();
+        Status newStatus = loanEntity.generateStatus();
         // if (newStatus == Status.APPROVED) {
-        //     loanResultsService.sendAmountAccount(entity);
-        //     loanResultsService.verifyIfScheduled(entity);
+        //     loanResultsService.sendAmountAccount(loanEntity);
+        //     loanResultsService.verifyIfScheduled(loanEntity);
         // }
 
-        entity.setStatus(newStatus);
-        loanEntityRepository.save(entity);
+        loanEntity.setStatus(newStatus);
+        loanEntityRepository.save(loanEntity);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Executa diariamente à meia-noite
+    @Transactional
+    void adjustOverdueInstallments() {
+        List<LoanEntity> loans = loanEntityRepository.findByStatusPaymentMethod(1, 2);
+        
+        for (LoanEntity loan : loans) {
+            for (InstallmentEntity installment : loan.getInstallments()) {
+                
+                if (installment.getDueDate().isBefore(LocalDate.now()) && !installment.getPaid()) {
+                    
+                    long daysOverdue = ChronoUnit.DAYS.between(installment.getDueDate(), LocalDate.now());
+                    double originalAmount = loan.getValueOfInstallments();
+                    double updatedAmount = originalAmount + (originalAmount * 0.01 * daysOverdue); //1% per day
+                    
+                    installment.setAmount(updatedAmount);
+                }
+            }
+        }
+        
+        loanEntityRepository.saveAll(loans);
     }
 
     @Override
     public long getPaidInstallments(LoanEntityDto dto) {
         LoanEntity entity = loanEntityMapper.mapFrom(dto);
         return entity.getNumberOfPaidInstallments();
+    }
+
+    // Retorna o quanto falta a pagar (Outstanding Balance)
+    public Double getOutstandingBalance(Integer loanId) {
+        return loanEntityRepository.getOutstandingBalance(loanId);
     }
 }
