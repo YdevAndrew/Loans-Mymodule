@@ -120,7 +120,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     // Agendamento da verificação a cada 24 horas
     @Scheduled(fixedRate = 86400000)
     void verifyAndUpdatePaidInstallments() {
-        List<LoanEntity> loansInReview = loanEntityRepository.findLoansScheduled(1, 1);
+        List<LoanEntity> loansInReview = loanEntityRepository.findByStatusPaymentMethod(1, 1);
 
         for (LoanEntity loan : loansInReview) {
             processLoanWithRetry(loan, 3);
