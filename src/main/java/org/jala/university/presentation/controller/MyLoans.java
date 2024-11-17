@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Controller responsible for managing and displaying the user's loan details.
+ */
 @Controller
 public class MyLoans {
 
@@ -24,8 +27,11 @@ public class MyLoans {
     @FXML
     private VBox loansContainer;
 
-    private Label noLoanLabel; // Label "No loans found"
+    private Label noLoanLabel; // Label to display when no loans are found.
 
+    /**
+     * Initializes the controller and sets up the "No loans found" label.
+     */
     public void initialize() {
         // Initialize the "No loans found" label
         noLoanLabel = new Label("No loans found.");
@@ -33,6 +39,10 @@ public class MyLoans {
         loansContainer.getChildren().add(noLoanLabel); // Add initially
     }
 
+    /**
+     * Loads loan details and displays them in the user interface.
+     * Fetches data from the service and dynamically updates the container with loan information.
+     */
     public void loadLoanDetails() {
         // Fetch all loans
         List<LoanEntityDto> loans = loanService.findAll();
@@ -41,18 +51,18 @@ public class MyLoans {
         loansContainer.getChildren().clear();
 
         if (loans != null && !loans.isEmpty()) {
-            // Define um formatter para a data
+            // Define a formatter for the date
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             for (LoanEntityDto loan : loans) {
                 // Status indicator row
                 HBox statusRow = new HBox(10);
 
-                // Label para o status com estilo de borda colorida
+                // Label for loan status with custom styling
                 Label statusLabel = new Label(" Request Status: " + loan.getStatus().name());
                 statusLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5 10; -fx-border-radius: 10; -fx-background-radius: 10;");
 
-                // Define a cor do status
+                // Set color and style based on status
                 switch (loan.getStatus().name()) {
                     case "APPROVED":
                         statusLabel.setStyle(statusLabel.getStyle() + "-fx-background-color: #E6F4EA; -fx-border-color: green; -fx-text-fill: green;");
@@ -71,19 +81,19 @@ public class MyLoans {
                         break;
                 }
 
-                // Adiciona o Label de status
+                // Add the status label to the row
                 statusRow.getChildren().add(statusLabel);
 
-                // Adiciona o statusRow ao loansContainer
+                // Add the status row to the loans container
                 loansContainer.getChildren().add(statusRow);
 
-                // Separator para o status
+                // Add a separator for the status
                 loansContainer.getChildren().add(new Separator());
 
-                // Formata a data de emissão
+                // Format the issue date
                 String formattedIssueDate = loan.getIssueDate().format(dateFormatter);
 
-                // Criação das linhas de detalhes alinhadas à direita
+                // Create rows for each loan detail and add them to the container
                 loansContainer.getChildren().add(createDetailRow("Date of Request:", formattedIssueDate));
                 loansContainer.getChildren().add(createDetailRow("Amount Borrowed:", String.format("R$ %.2f", loan.getAmountBorrowed())));
                 loansContainer.getChildren().add(createDetailRow("Installment Amount:", String.format("R$ %.2f", loan.getValueOfInstallments())));
@@ -91,21 +101,25 @@ public class MyLoans {
                 loansContainer.getChildren().add(createDetailRow("Total Amount + Interest:", String.format("R$ %.2f", loan.getAmountBorrowed() + loan.getTotalInterest())));
                 loansContainer.getChildren().add(createDetailRow("Payment Method:", loan.getPaymentMethod().name()));
 
-                // Exibir o número de parcelas pagas
+                // Display the number of paid installments
                 long paidInstallments = loanService.getPaidInstallments(loan);
                 loansContainer.getChildren().add(createDetailRow("Paid Installments:", String.format("%d / %d", paidInstallments, loan.getNumberOfInstallments())));
 
-                // Adiciona um separator após os detalhes do empréstimo
+                // Add a separator after the loan details
                 loansContainer.getChildren().add(new Separator());
             }
         } else {
-            // Se não houver empréstimos, exibe o label "No loans found"
+            // If no loans are found, display the "No loans found" label
             loansContainer.getChildren().add(noLoanLabel);
         }
     }
 
     /**
-     * Cria uma linha de detalhe alinhada com rótulo à esquerda e valor à direita.
+     * Creates a detail row with a label on the left and a value aligned to the right.
+     *
+     * @param label the label text
+     * @param value the value text
+     * @return an HBox containing the detail row
      */
     private HBox createDetailRow(String label, String value) {
         HBox detailRow = new HBox();
@@ -117,7 +131,7 @@ public class MyLoans {
         Label valueRight = new Label(value);
         valueRight.setStyle("-fx-font-size: 14;");
 
-        // Alinha o valor à direita
+        // Align the value to the right
         HBox.setHgrow(valueRight, javafx.scene.layout.Priority.ALWAYS);
         valueRight.setMaxWidth(Double.MAX_VALUE);
         valueRight.setStyle("-fx-alignment: center-right;");
