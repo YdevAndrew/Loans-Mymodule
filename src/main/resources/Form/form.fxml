@@ -3,21 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" prefHeight="400.0" prefWidth="400.0" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.FormController">
+<Pane fx:id="mainPane" prefHeight="586.0" prefWidth="657.0" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.FormController">
     <!-- Título do formulário -->
     <Label layoutX="20.0" layoutY="24.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" text=" Fill out the form" />
     <Label layoutX="27.0" layoutY="51.0" style="-fx-font-size: 12px; -fx-text-fill: #888;" text="*All information is mandatory " />
 
     <!-- Campo de Salário -->
-    <Label layoutX="516.0" layoutY="219.0" style="-fx-font-size: 16px;" text="Salary" textFill="#4f38e2" />
-    <TextField fx:id="salaryField" layoutX="400.0" layoutY="244.0" promptText="R$0.000,00" style="-fx-pref-width: 300px; -fx-padding: 10;" />
+    <Label layoutX="476.0" layoutY="236.0" style="-fx-font-size: 16px;" text="Salary" textFill="#4f38e2" />
+    <TextField fx:id="salaryField" layoutX="347.0" layoutY="269.0" promptText="R$0.000,00" style="-fx-pref-width: 300px; -fx-padding: 10;" />
 
     <!-- Botão de Comprovante de Renda -->
-    <Label layoutX="487.0" layoutY="289.0" prefHeight="35.0" prefWidth="126.0" style="-fx-font-size: 16px;" text="Proof of income" textFill="#4937e8" />
-    <Button fx:id="incomeProofButton" layoutX="450.0" layoutY="324.0" onAction="#chooseIncomeProof" prefHeight="61.0" prefWidth="206.0" style="-fx-background-color: #004BD6; -fx-text-fill: white; -fx-pref-width: 200px; -fx-font-size: 14px; -fx-padding: 10;" text="Attach document" />
+    <Label layoutX="434.0" layoutY="307.0" prefHeight="35.0" prefWidth="126.0" style="-fx-font-size: 16px;" text="Proof of income" textFill="#4937e8" />
+    <Button fx:id="incomeProofButton" layoutX="397.0" layoutY="352.0" onAction="#chooseIncomeProof" prefHeight="61.0" prefWidth="206.0" style="-fx-background-color: #004BD6; -fx-text-fill: white; -fx-pref-width: 200px; -fx-font-size: 14px; -fx-padding: 10;" text="Attach document" />
 
     <!-- Botão de Envio -->
-    <Button fx:id="submitLoanButton" layoutX="450.0" layoutY="400.0" onAction="#submitLoanRequest" prefHeight="25.0" prefWidth="135.0" style="-fx-background-color: #004BD6; -fx-text-fill: white; -fx-pref-width: 200px; -fx-font-size: 14px; -fx-padding: 10;" text="Submit data" />
+    <Button fx:id="submitLoanButton" layoutX="397.0" layoutY="433.0" onAction="#submitLoanRequest" prefHeight="25.0" prefWidth="135.0" style="-fx-background-color: #004BD6; -fx-text-fill: white; -fx-pref-width: 200px; -fx-font-size: 14px; -fx-padding: 10;" text="Submit data" />
 
     <!-- Mensagem de Erro -->
     <Label fx:id="errorMessage" layoutX="20" layoutY="280" prefHeight="17.0" prefWidth="0.0" style="-fx-font-size: 12px;" textFill="red" />

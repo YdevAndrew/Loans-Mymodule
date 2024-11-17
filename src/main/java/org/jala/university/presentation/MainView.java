@@ -36,9 +36,8 @@ public class MainView extends Application {
         ViewSwitcher.setup(primaryStage, scene);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Loans Module Application");
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(600);
-        primaryStage.setMaximized(true);// Expand the window to full screen
+        primaryStage.setMinWidth(1280);
+        primaryStage.setMinHeight(720);
         primaryStage.show();
     }
 
