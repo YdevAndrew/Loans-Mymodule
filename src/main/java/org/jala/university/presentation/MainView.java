@@ -37,7 +37,7 @@ public class MainView extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Loans Module Application");
         primaryStage.setMinWidth(1280);
-        primaryStage.setMinHeight(920);
+        primaryStage.setMinHeight(720);
         primaryStage.show();
     }
 
