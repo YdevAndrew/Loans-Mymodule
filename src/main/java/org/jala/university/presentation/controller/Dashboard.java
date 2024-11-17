@@ -17,11 +17,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/**
+ * Dashboard controller responsible for managing the main view of the application.
+ */
 @Controller
 public class Dashboard {
 
     private final SpringFXMLLoader springFXMLLoader;
 
+    /**
+     * Constructor for the Dashboard controller.
+     *
+     * @param springFXMLLoader an instance of SpringFXMLLoader used to load FXML views.
+     */
     public Dashboard(SpringFXMLLoader springFXMLLoader) {
         this.springFXMLLoader = springFXMLLoader;
     }
@@ -44,16 +52,17 @@ public class Dashboard {
     @FXML
     public ImageView eyeIcon;
 
-
     @FXML
     public Label dateLabel;
 
     private boolean isBalanceVisible = false;
     private double balance = 1234.56;
 
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     */
     @FXML
     public void initialize() {
-
         toggleButton.setOnAction(event -> toggleBalanceVisibility());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM, dd", Locale.ENGLISH);
@@ -61,7 +70,10 @@ public class Dashboard {
         dateLabel.getStyleClass().add("balance-date");
     }
 
-
+    /**
+     * Handles the click event for the "My Cards" button.
+     * Toggles the visibility of the MyCards VBox and adjusts the other buttons accordingly.
+     */
     @FXML
     public void handleMyCardsClick() {
         boolean isVisible = myCardsVBox.isVisible();
@@ -75,19 +87,25 @@ public class Dashboard {
         }
     }
 
+    /**
+     * Toggles the visibility of the account balance.
+     * Updates the balance label and changes the eye icon image accordingly.
+     */
     @FXML
     public void toggleBalanceVisibility() {
         if (balanceLabel.getText().equals("R$ ********")) {
-
             balanceLabel.setText(String.format("R$ %.2f", balance));
             eyeIcon.setImage(new Image(getClass().getResource("/images/eye_open.png").toExternalForm()));
         } else {
-
             balanceLabel.setText("R$ ********");
             eyeIcon.setImage(new Image(getClass().getResource("/images/eye.png").toExternalForm()));
         }
     }
 
+    /**
+     * Loads the main view into the container.
+     * Prints debug messages in case of errors during the process.
+     */
     @FXML
     public void loadMainView() {
         try {
@@ -109,6 +127,9 @@ public class Dashboard {
         }
     }
 
+    /**
+     * Loads the Loans view into the container and initializes its controller.
+     */
     @FXML
     private void loadLoansView() {
         try {
