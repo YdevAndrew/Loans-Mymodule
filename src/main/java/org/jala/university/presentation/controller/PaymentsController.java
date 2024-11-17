@@ -9,12 +9,9 @@ import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
-import org.jala.university.application.service.FormEntityServiceImpl;
 import org.jala.university.application.service.LoanEntityService;
-import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
-import org.jala.university.infrastructure.persistance.database.Connection;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.jala.university.utils.CalculationUtil;
 import org.jala.university.utils.DateFormmaterUtil;
@@ -32,6 +29,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 
+/**
+ * Controller responsible for handling the payments process.
+ * Manages loan-related calculations, form submissions, and navigation between views.
+ */
 @Controller
 public class PaymentsController {
 
@@ -48,7 +49,7 @@ public class PaymentsController {
     private ComboBox<Integer> installmentsComboBox;
 
     @FXML
-    private ComboBox<PaymentMethod> paymentMethodComboBox; // Alterado para usar enum PaymentMethod
+    private ComboBox<PaymentMethod> paymentMethodComboBox;
 
     @FXML
     private Label loanAmountLabel;
@@ -63,13 +64,17 @@ public class PaymentsController {
     @Autowired
     private LoanEntityService loanService;
 
-    FormEntityDto formEntityDto;
+    private FormEntityDto formEntityDto;
 
     @Autowired
-    FormEntityMapper formEntityMapper;
+    private FormEntityMapper formEntityMapper;
 
     private final DateFormmaterUtil dateFormatterUtil = new DateFormmaterUtil();
 
+    /**
+     * Initializes the controller after the FXML file is loaded.
+     * Sets up the due date, payment methods, and event handlers for UI components.
+     */
     @FXML
     public void initialize() {
         initializeDueDate();
@@ -78,15 +83,27 @@ public class PaymentsController {
         submitButton.setOnAction(event -> saveLoanToDatabase());
     }
 
+    /**
+     * Sets the initial due date for the first installment.
+     * Populates the due date label with the formatted date.
+     */
     private void initializeDueDate() {
         String firstInstallmentDate = dateFormatterUtil.FirstInstallmentDueDate();
         dueDateLabel.setText(firstInstallmentDate);
     }
 
+    /**
+     * Populates the payment method combo box with available payment methods.
+     */
     private void initializePaymentMethods() {
-        paymentMethodComboBox.getItems().setAll(PaymentMethod.values()); // Adiciona todos os métodos de pagamento
+        paymentMethodComboBox.getItems().setAll(PaymentMethod.values());
     }
 
+    /**
+     * Configures the form entity and initializes the loan amount slider and label.
+     *
+     * @param formEntityDto the form entity containing user-provided data.
+     */
     public void setFormEntity(FormEntityDto formEntityDto) {
         if (formEntityDto != null) {
             this.formEntityDto = formEntityDto;
@@ -109,6 +126,10 @@ public class PaymentsController {
         }
     }
 
+    /**
+     * Updates the due date label based on the selected number of installments.
+     * Displays detailed information about the first and final due dates.
+     */
     private void updateDueDate() {
         Integer selectedInstallments = installmentsComboBox.getValue();
         if (selectedInstallments != null) {
@@ -123,6 +144,13 @@ public class PaymentsController {
         }
     }
 
+    /**
+     * Loads the payments pane and displays it in the main pane.
+     *
+     * @param mainPane the main pane to hold the payments view.
+     * @param springFXMLLoader the loader to load the payments FXML file.
+     * @param formEntityDto the form entity with user-provided data.
+     */
     public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntityDto) {
         try {
             FXMLLoader loader = springFXMLLoader.load("/Payments/payments.fxml");
@@ -135,35 +163,35 @@ public class PaymentsController {
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(paymentsPane);
             } else {
-                System.err.println("Erro: mainPane não foi inicializado no FormController.");
+                System.err.println("Error: mainPane is not initialized in FormController.");
             }
         } catch (IOException e) {
-            System.err.println("Erro ao carregar Payments.fxml: " + e.getMessage());
+            System.err.println("Error loading Payments.fxml: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
+    /**
+     * Saves the loan details to the database.
+     * Performs input validation, calculates interest and installment values, and creates a LoanEntityDto.
+     */
     private void saveLoanToDatabase() {
         try {
-
             Double amountBorrowed = loanAmountSlider.getValue();
             Integer numberOfInstallments = installmentsComboBox.getValue();
             PaymentMethod paymentMethod = paymentMethodComboBox.getValue();
 
             if (amountBorrowed == null || numberOfInstallments == null || paymentMethod == null) {
-                throw new IllegalArgumentException("Um ou mais campos obrigatórios estão vazios: " +
-                        "amountBorrowed, numberOfInstallments, ou paymentMethod.");
+                throw new IllegalArgumentException("One or more required fields are empty: amountBorrowed, numberOfInstallments, or paymentMethod.");
             }
 
             Double totalInterest;
             Double valueOfInstallments;
             try {
                 totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, (double) numberOfInstallments);
-                valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed,
-                        (double) numberOfInstallments);
+                valueOfInstallments = CalculationUtil.getValueOfInstallments(amountBorrowed, (double) numberOfInstallments);
             } catch (Exception e) {
-                System.err.println("Erro ao calcular juros ou parcelas: " + e.getMessage());
+                System.err.println("Error calculating interest or installments: " + e.getMessage());
                 e.printStackTrace();
                 return;
             }
@@ -175,12 +203,11 @@ public class PaymentsController {
                 issueDate = LocalDate.parse(dateFormatterUtil.FormattedIssueDate(), formatter);
                 loanDueDate = LocalDate.parse(dateFormatterUtil.FormattedLoanDueDate(numberOfInstallments), formatter);
             } catch (DateTimeParseException e) {
-                System.err.println("Erro ao converter datas (issueDate ou loanDueDate) para o formato esperado: "
-                        + e.getMessage());
+                System.err.println("Error parsing dates (issueDate or loanDueDate): " + e.getMessage());
                 e.printStackTrace();
                 return;
             }
-            
+
             LoanEntityDto loanDto = LoanEntityDto.builder()
                     .amountBorrowed(amountBorrowed)
                     .totalInterest(totalInterest)
@@ -196,17 +223,17 @@ public class PaymentsController {
 
             try {
                 loanService.save(loanDto);
-                System.out.println("Dados do empréstimo salvos com sucesso.");
+                System.out.println("Loan data saved successfully.");
             } catch (Exception e) {
-                System.err.println("Erro ao salvar o LoanEntityDto no serviço: " + e.getMessage());
+                System.err.println("Error saving LoanEntityDto to service: " + e.getMessage());
                 e.printStackTrace();
             }
 
         } catch (IllegalArgumentException | IllegalStateException e) {
-            System.err.println("Erro de validação: " + e.getMessage());
+            System.err.println("Validation error: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Erro inesperado ao salvar dados do empréstimo: " + e.getMessage());
+            System.err.println("Unexpected error saving loan data: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -17,11 +17,20 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/**
+ * Controller responsible for managing the logic and event handling in the Dashboard.
+ * It handles UI elements such as component visibility and displaying information.
+ */
 @Controller
 public class Dashboard {
 
     private final SpringFXMLLoader springFXMLLoader;
 
+    /**
+     * Constructor for the Dashboard.
+     *
+     * @param springFXMLLoader Spring loader to load FXML files.
+     */
     public Dashboard(SpringFXMLLoader springFXMLLoader) {
         this.springFXMLLoader = springFXMLLoader;
     }
@@ -44,16 +53,18 @@ public class Dashboard {
     @FXML
     public ImageView eyeIcon;
 
-
     @FXML
     public Label dateLabel;
 
     private boolean isBalanceVisible = false;
     private double balance = 1234.56;
 
+    /**
+     * Initialization method automatically called after the FXML is loaded.
+     * Sets up initial events and adjusts the interface according to the initial state.
+     */
     @FXML
     public void initialize() {
-
         toggleButton.setOnAction(event -> toggleBalanceVisibility());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM, dd", Locale.ENGLISH);
@@ -61,7 +72,10 @@ public class Dashboard {
         dateLabel.getStyleClass().add("balance-date");
     }
 
-
+    /**
+     * Handles the click event on the "My Cards" button.
+     * Toggles the visibility of the cards section and adjusts the layout accordingly.
+     */
     @FXML
     public void handleMyCardsClick() {
         boolean isVisible = myCardsVBox.isVisible();
@@ -75,23 +89,29 @@ public class Dashboard {
         }
     }
 
+    /**
+     * Toggles the visibility of the displayed account balance in the UI.
+     * Either shows or hides the balance value and updates the corresponding eye icon.
+     */
     @FXML
     public void toggleBalanceVisibility() {
         if (balanceLabel.getText().equals("R$ ********")) {
-
             balanceLabel.setText(String.format("R$ %.2f", balance));
             eyeIcon.setImage(new Image(getClass().getResource("/images/eye_open.png").toExternalForm()));
         } else {
-
             balanceLabel.setText("R$ ********");
             eyeIcon.setImage(new Image(getClass().getResource("/images/eye.png").toExternalForm()));
         }
     }
 
+    /**
+     * Loads the main view content from the "main-view.fxml" file.
+     * Replaces the current container content with the newly loaded view.
+     */
     @FXML
     public void loadMainView() {
         try {
-            System.out.println("Tentando carregar o main-view.fxml...");
+            System.out.println("Attempting to load main-view.fxml...");
 
             FXMLLoader loader = springFXMLLoader.load("/main-view.fxml");
             Node mainViewContent = loader.load();
@@ -99,12 +119,12 @@ public class Dashboard {
             mainViewContainer.getChildren().clear();
             mainViewContainer.getChildren().add(mainViewContent);
 
-            System.out.println("main-view.fxml carregado com sucesso!");
+            System.out.println("main-view.fxml loaded successfully!");
         } catch (IOException e) {
-            System.err.println("Erro ao carregar main-view.fxml: " + e.getMessage());
+            System.err.println("Error loading main-view.fxml: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Erro inesperado: " + e.getMessage());
+            System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }
