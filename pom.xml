@@ -32,18 +32,18 @@
     </dependency>
 
     <!-- Other modules Dependency -->
-    <dependency>
+    <!-- <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>account-module</artifactId>
       <version>1.0-RELEASE</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/account-module-1.0-RELEASE.jar</systemPath>
     </dependency>
-    <!-- <dependency>
+    <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>transaction-module</artifactId>
       <version>1.0-RELEASE</version>
-    </dependency> -->
+    </dependency>
     <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>credit-card-module</artifactId>
@@ -51,7 +51,7 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/credit-card-module-1.0-RELEASE.jar</systemPath>
     </dependency>
-    <!--<dependency>
+    <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>external-payment-module</artifactId>
       <version>1.0-RELEASE</version>

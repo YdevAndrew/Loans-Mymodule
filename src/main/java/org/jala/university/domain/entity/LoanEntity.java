@@ -18,7 +18,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -73,7 +72,7 @@ public class LoanEntity implements BaseEntity<Integer> {
 
     // @OneToOne
     // @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
-    // private Integer scheduledPaymentId;
+    // private ScheduledPayment scheduledPayment;
 
     private Integer scheduledPaymentId;
 
@@ -147,11 +146,6 @@ public class LoanEntity implements BaseEntity<Integer> {
         return installments.stream()
                 .filter(InstallmentEntity::getPaid)
                 .count();
-    }
-
-    // Retorna o quanto falta a pagar (Outstanding Balance)
-    public Double getOutstandingBalance() {
-        return totalPayable - getNumberOfPaidInstallments() * valueOfInstallments;
     }
 
     public Status generateStatus() {
