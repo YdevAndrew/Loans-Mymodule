@@ -21,6 +21,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+/**
+ * Controller for managing the loan request form.
+ */
 @Controller
 public class FormController {
 
@@ -44,6 +47,9 @@ public class FormController {
 
     public File incomeProofFile;
 
+    /**
+     * Initializes the controller after its root element has been loaded.
+     */
     @FXML
     private void initialize() {
         if (mainPane == null) {
@@ -51,11 +57,21 @@ public class FormController {
         }
     }
 
+    /**
+     * Opens a file chooser for selecting proof of income.
+     */
     @FXML
     private void chooseIncomeProof() {
         incomeProofFile = openFileChooser("Choose Proof of Income", incomeProofButton);
     }
 
+    /**
+     * Opens a file chooser dialog with specified title and updates the button text.
+     *
+     * @param title  the title of the file chooser dialog
+     * @param button the button to update with the selected file's name
+     * @return the selected file, or null if no file was chosen
+     */
     private File openFileChooser(String title, Button button) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -70,6 +86,9 @@ public class FormController {
         return file;
     }
 
+    /**
+     * Submits the loan request by validating inputs and sending the data to the service layer.
+     */
     @FXML
     public void submitLoanRequest() {
         String salaryText = salaryField.getText();
@@ -104,7 +123,12 @@ public class FormController {
         }
     }
 
-
+    /**
+     * Validates the inputs for the loan request.
+     *
+     * @param salary the salary input to validate
+     * @return true if inputs are valid, false otherwise
+     */
     public boolean validateInputs(double salary) {
         if (incomeProofFile == null) {
             showErrorPopup("Proof of income was not selected.");
@@ -117,6 +141,11 @@ public class FormController {
         return true;
     }
 
+    /**
+     * Displays an error popup with the specified message.
+     *
+     * @param message the error message to display
+     */
     private void showErrorPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -127,7 +156,11 @@ public class FormController {
         });
     }
 
-
+    /**
+     * Displays a success popup with the specified message.
+     *
+     * @param message the success message to display
+     */
     private void showSuccessPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -138,4 +171,3 @@ public class FormController {
         });
     }
 }
-

@@ -27,6 +27,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 
+/**
+ * Controller responsible for managing the payment flow for loans.
+ */
 @Controller
 public class PaymentsController {
 
@@ -65,38 +68,51 @@ public class PaymentsController {
     @Qualifier("loanEntityService")
     private LoanEntityService loanService;
 
-    FormEntityDto formEntityDto;
+    private FormEntityDto formEntityDto;
 
     @Autowired
-    FormEntityMapper formEntityMapper;
+    private FormEntityMapper formEntityMapper;
 
     private final DateFormmaterUtil dateFormatterUtil = new DateFormmaterUtil();
 
-    // Variable to hold the installment value
     private Double valueOfInstallments;
 
     private Double totalInterest;
 
+    /**
+     * Initializes the controller, setting up event listeners and default values.
+     */
     @FXML
     public void initialize() {
         initializeDueDate();
         initializePaymentMethods();
         installmentsComboBox.setOnAction(event -> {
             updateDueDate();
-            updateInstallmentValue();  // Updates installment value when number of installments changes
+            updateInstallmentValue();
         });
         submitButton.setOnAction(event -> saveLoanToDatabase());
     }
 
+    /**
+     * Initializes the due date for the first installment.
+     */
     private void initializeDueDate() {
         String firstInstallmentDate = dateFormatterUtil.FirstInstallmentDueDate();
         dueDateLabel.setText(firstInstallmentDate);
     }
 
+    /**
+     * Populates the payment method combo box with available options.
+     */
     private void initializePaymentMethods() {
         paymentMethodComboBox.getItems().setAll(PaymentMethod.values());
     }
 
+    /**
+     * Sets the form entity data to configure the payment options.
+     *
+     * @param formEntityDto the form entity containing loan-related data
+     */
     public void setFormEntity(FormEntityDto formEntityDto) {
         if (formEntityDto != null) {
             this.formEntityDto = formEntityDto;
@@ -112,30 +128,32 @@ public class PaymentsController {
 
             loanAmountSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 loanAmountLabel.setText(String.format("R$ %.2f", newValue.doubleValue()));
-                updateInstallmentValue(); // Updates installment value when loan amount changes
+                updateInstallmentValue();
             });
         }
     }
 
+    /**
+     * Updates the installment value based on the loan amount and the number of installments.
+     */
     @FXML
     private void updateInstallmentValue() {
         Double amountBorrowed = loanAmountSlider.getValue();
         Integer numberOfInstallments = installmentsComboBox.getValue();
 
         if (amountBorrowed != null && numberOfInstallments != null && numberOfInstallments > 0) {
-            // Calculate the totalPayable using CalculationUtil, as per LoanEntity calculation
             Double totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
-
-            // Calculate the installment value consistently
             this.valueOfInstallments = totalPayable / numberOfInstallments;
 
-            // Update the label with the calculated value
             installmentValueLabel.setText(String.format("R$ %.2f per installment", valueOfInstallments));
         } else {
             installmentValueLabel.setText("Select the number of installments");
         }
     }
 
+    /**
+     * Updates the due date details based on the selected number of installments.
+     */
     private void updateDueDate() {
         Integer selectedInstallments = installmentsComboBox.getValue();
         if (selectedInstallments != null) {
@@ -150,6 +168,13 @@ public class PaymentsController {
         }
     }
 
+    /**
+     * Loads the payments pane into the specified main pane.
+     *
+     * @param mainPane       the main pane where the payments pane will be loaded
+     * @param springFXMLLoader the loader used to load the FXML file
+     * @param formEntityDto  the form entity containing loan-related data
+     */
     public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntityDto) {
         try {
             FXMLLoader loader = springFXMLLoader.load("/Payments/payments.fxml");
@@ -170,6 +195,9 @@ public class PaymentsController {
         }
     }
 
+    /**
+     * Loads the "My Loans" pane into the main pane.
+     */
     private void loadMyLoansPane() {
         try {
             FXMLLoader loader = springFXMLLoader.load("/Loans/myloans.fxml");
@@ -189,6 +217,10 @@ public class PaymentsController {
         }
     }
 
+    /**
+     * Saves the loan data to the database.
+     * Validates input fields and formats dates before saving.
+     */
     private void saveLoanToDatabase() {
         try {
             Double amountBorrowed = loanAmountSlider.getValue();
