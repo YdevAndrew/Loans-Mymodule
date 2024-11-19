@@ -32,12 +32,12 @@ public class MyLoans {
     public AnchorPane mainContainer;
 
     @FXML
-    private FlowPane loansContainer; // Alterado de HBox para FlowPane
+    private FlowPane loansContainer; 
 
     @FXML
     private ComboBox<String> statusFilterComboBox;
 
-    private double currentOffset = 0; // Armazena o deslocamento atual da rolagem
+    private double currentOffset = 0; 
 
     @Autowired
     @Qualifier("loanEntityService")
@@ -57,7 +57,7 @@ public class MyLoans {
         mainContainer.setOnScroll(this::handleScroll);
 
 
-        // Configurar o ComboBox para filtrar por status
+        
         statusFilterComboBox.setItems(statuses);
         statusFilterComboBox.setValue("ALL");
         statusFilterComboBox.setOnAction(event -> loadLoanDetails());
@@ -69,13 +69,12 @@ public class MyLoans {
      * @param event ScrollEvent triggered by the user.
      */
     private void handleScroll(ScrollEvent event) {
-        // Incremento do deslocamento: ajusta a velocidade
+       
         double deltaY = event.getDeltaY() * 0.5;
 
-        // Calcula o novo deslocamento
         double newOffset = currentOffset - deltaY;
 
-        // Garante que o deslocamento não ultrapasse os limites
+     
         double maxOffset = loansContainer.getHeight() - mainContainer.getPrefHeight();
         if (newOffset < 0) {
             newOffset = 0;
@@ -83,11 +82,11 @@ public class MyLoans {
             newOffset = maxOffset;
         }
 
-        // Aplica o deslocamento
+       
         loansContainer.setLayoutY(-newOffset);
         currentOffset = newOffset;
 
-        event.consume(); // Previne propagação do evento
+        event.consume();
     }
 
     /**
@@ -115,7 +114,7 @@ public class MyLoans {
 
             for (LoanEntityDto loan : loans) {
                 VBox loanBox = createLoanBox(loan, dateFormatter);
-                loansContainer.getChildren().add(loanBox); // Adiciona os VBox ao FlowPane
+                loansContainer.getChildren().add(loanBox); 
             }
         } else {
             loansContainer.getChildren().add(noLoanLabel);
