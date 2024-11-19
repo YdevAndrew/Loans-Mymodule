@@ -142,7 +142,7 @@ public class PaymentsController {
         Integer numberOfInstallments = installmentsComboBox.getValue();
 
         if (amountBorrowed != null && numberOfInstallments != null && numberOfInstallments > 0) {
-            Double totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
+            Double totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, numberOfInstallments);
             this.valueOfInstallments = totalPayable / numberOfInstallments;
 
             installmentValueLabel.setText(String.format("R$ %.2f per installment", valueOfInstallments));
