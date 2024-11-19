@@ -132,7 +132,7 @@ public class MyLoans {
     private VBox createLoanBox(LoanEntityDto loan, DateTimeFormatter dateFormatter) {
         VBox loanBox = new VBox();
         loanBox.setSpacing(10);
-        loanBox.setPrefSize(300, 600);
+        loanBox.setPrefSize(350, 600);
         loanBox.setStyle("-fx-padding: 20; -fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 15; -fx-background-radius: 15; -fx-background-color: #ffffff;");
 
         Label statusLabel = createStatusLabel(loan);
