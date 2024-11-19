@@ -3,11 +3,14 @@ package org.jala.university.presentation.controller;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.List;
 
 import javafx.application.Platform;
 import org.jala.university.application.dto.FormEntityDto;
+import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
+import org.jala.university.application.service.LoanEntityService;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +36,10 @@ public class FormController {
 
     FormEntityMapper mapper = new FormEntityMapper();
 
+    @Qualifier("loanEntityServiceImpl")
+    @Autowired
+    private LoanEntityService loanService;
+
     @Autowired
     private SpringFXMLLoader springFXMLLoader;
 
@@ -55,6 +62,44 @@ public class FormController {
         if (mainPane == null) {
             System.err.println("Warning: mainPane is not loaded properly.");
         }
+        checkExistingApprovedLoan();
+    }
+
+    /**
+     * Checks if the user has an approved loan and disables the loan request functionality if true.
+     */
+    private void checkExistingApprovedLoan() {
+        try {
+            // Busca todos os empréstimos do usuário (exemplo: usando um ID ou login do usuário logado)
+            List<LoanEntityDto> userLoans = loanService.findAll();// Mudar depois para filtrar por usuarios logados
+
+            // Verifica se existe algum empréstimo aprovado
+            boolean hasApprovedLoan = userLoans.stream()
+                    .anyMatch(loan -> "APPROVED".equalsIgnoreCase(String.valueOf(loan.getStatus())));
+
+            if (hasApprovedLoan) {
+                // Bloqueia a solicitação de empréstimo
+                disableLoanRequestButton("You already have an approved loan and cannot request another.");
+            }
+        } catch (Exception e) {
+            showErrorPopup("An error occurred while checking loan status. Please try again.");
+        }
+    }
+
+    /**
+     * Disables the loan request button and shows an informational popup.
+     *
+     * @param message the message to display in the popup
+     */
+    private void disableLoanRequestButton(String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Request Blocked");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+        incomeProofButton.setDisable(true); // Desabilita o botão de solicitação
     }
 
     /**
@@ -87,13 +132,15 @@ public class FormController {
     }
 
     /**
-     * Submits the loan request by validating inputs and sending the data to the service layer.
+     * Submits the loan request by validating inputs, ensuring a file is linked,
+     * and sending the data to the service layer.
      */
     @FXML
     public void submitLoanRequest() {
         String salaryText = salaryField.getText();
         double salary;
 
+        // Validate salary input
         try {
             salary = Double.parseDouble(salaryText);
         } catch (NumberFormatException e) {
@@ -101,8 +148,10 @@ public class FormController {
             return;
         }
 
-        if (validateInputs(salary)) {
+        // Check if a document is linked
+        if (validateInputs(salary) && incomeProofFile != null && incomeProofFile.exists()) {
             try {
+                // Encode the selected file to Base64
                 String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
 
                 FormEntityDto formDto = FormEntityDto.builder()
@@ -110,17 +159,37 @@ public class FormController {
                         .proofOfIncome(incomeProofBase64.getBytes())
                         .build();
 
+                // Save the form DTO through the service layer
                 FormEntityDto savedFormDto = formService.save(formDto);
 
+                // Show success popup
                 showSuccessPopup("Request sent successfully!");
 
+                // Load payments pane with the saved form details
                 PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
+
+                // Reset file and UI after successful submission
+                resetFormState();
 
             } catch (Exception e) {
                 e.printStackTrace();
                 showErrorPopup("Error processing the file. Please try again.");
             }
+        } else {
+            // Show error if no file is linked
+            if (incomeProofFile == null || !incomeProofFile.exists()) {
+                showErrorPopup("Erro: Please attach a valid income proof document.");
+            }
         }
+    }
+
+    /**
+     * Resets the form state, clearing temporary variables and UI components.
+     */
+    private void resetFormState() {
+        incomeProofFile = null; // Reset the linked file
+        salaryField.clear(); // Clear the salary input field
+        incomeProofButton.setText("No files selected"); // Reset the button text
     }
 
     /**

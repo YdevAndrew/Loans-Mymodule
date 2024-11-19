@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane focusTraversable="true" prefHeight="745.0" prefWidth="1019.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MyLoans">
+<AnchorPane fx:id="mainContainer" focusTraversable="true" prefHeight="745.0" prefWidth="1019.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MyLoans">
     <children>
         <ImageView fitHeight="766.0" fitWidth="1019.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="false" smooth="true">
             <image>
                 <Image url="@/images/fundo (2).png" />
             </image>
         </ImageView>
-        <VBox fx:id="loansContainer" layoutX="20.0" layoutY="20.0" prefHeight="555.0" prefWidth="306.0" spacing="10.0" style="-fx-padding: 20;                      -fx-background-color: #ffffff;                      -fx-border-color: #dcdcdc;                      -fx-border-width: 1;                      -fx-border-radius: 15;                      -fx-background-radius: 15;">
-        </VBox>
+        <HBox fx:id="filterBar" layoutY="10.0" spacing="10.0" style="-fx-padding: 10; -fx-background-color: transparent;" />
+        <FlowPane fx:id="loansContainer" hgap="20.0" layoutX="22.0" layoutY="47.0" prefWidth="975.0" style="-fx-padding: 20; -fx-background-color: transparent;" vgap="20.0" />
+         <ComboBox fx:id="statusFilterComboBox" layoutX="694.0" layoutY="16.0" promptText="Filter by status" />
     </children>
 </AnchorPane>
