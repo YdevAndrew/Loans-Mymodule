@@ -70,15 +70,15 @@ public class FormController {
      */
     private void checkExistingApprovedLoan() {
         try {
-            // Busca todos os empréstimos do usuário (exemplo: usando um ID ou login do usuário logado)
+            
             List<LoanEntityDto> userLoans = loanService.findAll();// Mudar depois para filtrar por usuarios logados
 
-            // Verifica se existe algum empréstimo aprovado
+            
             boolean hasApprovedLoan = userLoans.stream()
                     .anyMatch(loan -> "APPROVED".equalsIgnoreCase(String.valueOf(loan.getStatus())));
 
             if (hasApprovedLoan) {
-                // Bloqueia a solicitação de empréstimo
+               
                 disableLoanRequestButton("You already have an approved loan and cannot request another.");
             }
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class FormController {
             alert.setContentText(message);
             alert.showAndWait();
         });
-        incomeProofButton.setDisable(true); // Desabilita o botão de solicitação
+        incomeProofButton.setDisable(true); 
     }
 
     /**
