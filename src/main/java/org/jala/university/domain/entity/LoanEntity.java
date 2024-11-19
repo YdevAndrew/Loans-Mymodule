@@ -82,7 +82,7 @@ public class LoanEntity implements BaseEntity<Integer> {
     // @ManyToOne
     // @JoinColumn(name = "account_id", nullable = true)
     // private Account account;
-    
+
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
             PaymentMethod paymentMethod) {
 
@@ -155,7 +155,16 @@ public class LoanEntity implements BaseEntity<Integer> {
             status = Status.REVIEW;
 
         } else if (status == Status.REVIEW) {
-            status = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
+            double feeCommitment = valueOfInstallments / form.getIncome();
+            double incomeAnnual = form.getIncome() * 12;
+            double proportionLoan = amountBorrowed / incomeAnnual;
+
+            if (feeCommitment > 0.30 || proportionLoan > 0.50) {
+                status = Status.REJECTED;   
+
+            } else {
+                status = Status.APPROVED;
+            }
         }
         return status;
     }
@@ -166,14 +175,15 @@ public class LoanEntity implements BaseEntity<Integer> {
     }
 
     public void recalculate() {
-        // Calculate totalPayable based on the amount borrowed and the number of installments
-        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
+        // Calculate totalPayable based on the amount borrowed and the number of
+        // installments
+        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, numberOfInstallments);
 
         // Calculate the value of each installment
         this.valueOfInstallments = totalPayable / numberOfInstallments;
 
         // Calculate the total interest based on the amount borrowed
-        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
+        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, numberOfInstallments);
     }
 
     public void generateInstallments() {
@@ -194,9 +204,9 @@ public class LoanEntity implements BaseEntity<Integer> {
             this.installments.add(installment);
         }
     }
-    
+
     public void markInstallmentsAsPaid(long toMarkAsPaid) {
-        for (int i=0; i<toMarkAsPaid; i++) {
+        for (int i = 0; i < toMarkAsPaid; i++) {
             markAsPaid();
         }
     }
@@ -223,10 +233,12 @@ public class LoanEntity implements BaseEntity<Integer> {
         }
     }
 
-    //Se for receber resposta do pagamentos externos.
-    /*public void verifyIfItsPaid() {
-        if (método que retorna se o pagamento agendado foi feito == true) {
-            this.markAsPaid();
-        }
-    }*/
+    // Se for receber resposta do pagamentos externos.
+    /*
+     * public void verifyIfItsPaid() {
+     * if (método que retorna se o pagamento agendado foi feito == true) {
+     * this.markAsPaid();
+     * }
+     * }
+     */
 }
