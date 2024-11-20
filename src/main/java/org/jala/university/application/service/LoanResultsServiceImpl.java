@@ -1,7 +1,12 @@
 package org.jala.university.application.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
+// import org.jala.university.application.dto.AccountDto;
+// import org.jala.university.application.dto.PaymentHistoryDTO;
+// import org.jala.university.domain.entity.AccountStatus;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.repository.LoanEntityRepository;
@@ -33,7 +38,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     // @Override
     // public PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity) {
 
-    //     Integer bankId = 12345;
+    //     Integer bankId = 1;
     //     AccountDto accountBank = accountService.getAccount(bankId);
     //     if (accountBank == null) {
     //         AccountDto accountDto = AccountDto.builder()
@@ -47,17 +52,15 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     //     }
 
     //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .accountId(AccountMapper.toEntity(accountBank))
     //             .amount(BigDecimal.valueOf(loanEntity.getAmountBorrowed()))
-    //             .accountReceiver(loanEntity.getAccount().getAccountNumber())
     //             .transactionDate(LocalDateTime.now())
     //             .agencyReceiver("This")
+    //             .accountReceiver(loanEntity.getAccount().getAccountNumber())
     //             .nameReceiver("Loan applicant")
     //             .bankNameReceiver("This")
     //             .build();
 
     //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    //     return null;
     // }
 
     // // Chama o método de transferir e guardar histórico do módulo de transferência.
@@ -65,7 +68,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     // @Override
     // public PaymentHistoryDTO payInstallment(LoanEntity loanEntity) {
 
-    //     Integer bankId = 12345;
+    //     Integer bankId = 1;
     //     AccountDto accountBank = accountService.getAccount(bankId);
     //     if (accountBank == null) {
     //         AccountDto accountDto = AccountDto.builder()
@@ -79,17 +82,15 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     //     }
 
     //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .accountId(loanEntity.getAccount())
     //             .amount(BigDecimal.valueOf(loanEntity.getValueOfInstallments()))
-    //             .accountReceiver(accountBank.getAccountNumber())
     //             .transactionDate(LocalDateTime.now())
     //             .agencyReceiver("This")
+    //             .accountReceiver(accountBank.getAccountNumber())
     //             .nameReceiver("Loan applicant")
     //             .bankNameReceiver("This")
     //             .build();
 
     //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    //     return null;
     // }
 
     // Verifica se o método de pagamento é o automático e chama o agendamento.

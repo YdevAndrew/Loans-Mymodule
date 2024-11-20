@@ -23,7 +23,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .loanDueDate(loanEntity.getLoanDueDate())
                 .form(loanEntity.getForm())
                 .scheduledPaymentId(loanEntity.getScheduledPaymentId())
-                //.account(loanEntity.getAccount())
+                .account(loanEntity.getAccount())
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .loanDueDate(loanEntityDto.getLoanDueDate())
                 .form(loanEntityDto.getForm())
                 .scheduledPaymentId(loanEntityDto.getScheduledPaymentId())
-                //.account(loanEntityDto.getAccount())
+                .account(loanEntityDto.getAccount())
                 .build();
     }
 }
