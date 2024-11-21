@@ -77,8 +77,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional(readOnly = true)
     public List<LoanEntityDto> findAll() {
         return loanEntityRepository.findAll().stream()
-               .map(loanEntityMapper::mapTo)
-               .collect(Collectors.toList());
+                .map(loanEntityMapper::mapTo)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
         if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
-        } 
+        }
 
         loanEntityRepository.delete(entity);
     }
@@ -191,21 +191,21 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional
     void adjustOverdueInstallments() {
         List<LoanEntity> loans = loanEntityRepository.findByStatusPaymentMethod(1, 2);
-        
+
         for (LoanEntity loan : loans) {
             for (InstallmentEntity installment : loan.getInstallments()) {
-                
+
                 if (installment.getDueDate().isBefore(LocalDate.now()) && !installment.getPaid()) {
-                    
+
                     long daysOverdue = ChronoUnit.DAYS.between(installment.getDueDate(), LocalDate.now());
                     double originalAmount = loan.getValueOfInstallments();
                     double updatedAmount = originalAmount + (originalAmount * 0.01 * daysOverdue); //1% per day
-                    
+
                     installment.setAmount(updatedAmount);
                 }
             }
         }
-        
+
         loanEntityRepository.saveAll(loans);
     }
 
