@@ -1,6 +1,7 @@
 package org.jala.university.config;
 
 import org.jala.university.application.mapper.FormEntityMapper;
+import org.jala.university.application.mapper.InstallmentEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
 import org.jala.university.application.service.FormEntityService;
 import org.jala.university.application.service.FormEntityServiceImpl;
@@ -41,6 +42,12 @@ public class LoansAppConfig {
     }
 
     @Bean
+    public InstallmentEntityMapper installmentEntityMapper() {
+        // Retorna uma instância de InstallmentEntityMapper
+        return new InstallmentEntityMapper();
+    }
+
+    @Bean
     public LoanEntityMapper loanEntityMapper() {
         // Retorna uma instância de LoanEntityMapper
         return new LoanEntityMapper();
@@ -61,11 +68,11 @@ public class LoansAppConfig {
     }
 
     @Bean
-    public LoanEntityService loanEntityService(LoanEntityMapper loanEntityMapper, FormEntityMapper formEntityMapper,
+    public LoanEntityService loanEntityService(LoanEntityMapper loanEntityMapper, InstallmentEntityMapper installmentEntityMapper, FormEntityMapper formEntityMapper,
             TaskScheduler taskScheduler) {
         // Injeta os beans RepositoryFactory, LoanEntityMapper e TaskScheduler em
         // LoanEntityServiceImpl
-        return new LoanEntityServiceImpl(loanEntityMapper, formEntityMapper, taskScheduler);
+        return new LoanEntityServiceImpl(loanEntityMapper,installmentEntityMapper, formEntityMapper, taskScheduler);
     }
 
     @Bean
