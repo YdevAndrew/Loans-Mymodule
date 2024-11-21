@@ -1,9 +1,13 @@
 package org.jala.university.application.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.jala.university.ServiceFactory;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
+import org.jala.university.domain.repository.AccountRepository;
 import org.jala.university.domain.repository.LoanEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -25,73 +29,36 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     @Lazy
     private LoanEntityService loanEntityService;
 
-    // @Autowired
-    // private AccountService accountService;
+    private AccountService accountService = ServiceFactory.accountService();
 
-    // Chama o método de transferir e guardar histórico do módulo de transferência.
-    // Para mandar o dinheiro emprestado para a conta.
-    // @Override
-    // public PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity) {
+    @Autowired
+    private AccountRepository accountRepository;
 
-    //     Integer bankId = 12345;
-    //     AccountDto accountBank = accountService.getAccount(bankId);
-    //     if (accountBank == null) {
-    //         AccountDto accountDto = AccountDto.builder()
-    //                 .id(bankId)
-    //                 .accountNumber("12345")
-    //                 .balance(BigDecimal.valueOf(9999999999999999L))
-    //                 .status(AccountStatus.ACTIVE)
-    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
-    //                 .build();
-    //         accountBank = accountService.createAccount(accountDto);
-    //     }
+    @Override
+    public Account sendAmountAccount(LoanEntity loanEntity) {
 
-    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .accountId(AccountMapper.toEntity(accountBank))
-    //             .amount(BigDecimal.valueOf(loanEntity.getAmountBorrowed()))
-    //             .accountReceiver(loanEntity.getAccount().getAccountNumber())
-    //             .transactionDate(LocalDateTime.now())
-    //             .agencyReceiver("This")
-    //             .nameReceiver("Loan applicant")
-    //             .bankNameReceiver("This")
-    //             .build();
+        Account account = accountRepository.findById(1 /*colocar o método que pega a conta logada */).orElse(null);
+        Account savedAccount;
+        if (account == null) {
+            return null;
+        }
+        account.setBalance(account.getBalance().add(BigDecimal.valueOf(loanEntity.getAmountBorrowed())));
+        savedAccount = accountRepository.save(account);
+        return savedAccount;
+    }
 
-    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    //     return null;
-    // }
-
-    // // Chama o método de transferir e guardar histórico do módulo de transferência.
-    // // Para pagar a parcela manualmente.
-    // @Override
-    // public PaymentHistoryDTO payInstallment(LoanEntity loanEntity) {
-
-    //     Integer bankId = 12345;
-    //     AccountDto accountBank = accountService.getAccount(bankId);
-    //     if (accountBank == null) {
-    //         AccountDto accountDto = AccountDto.builder()
-    //                 .id(bankId)
-    //                 .accountNumber("12345")
-    //                 .balance(BigDecimal.valueOf(9999999999999999L))
-    //                 .status(AccountStatus.ACTIVE)
-    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
-    //                 .build();
-    //         accountBank = accountService.createAccount(accountDto);
-    //     }
-
-    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .accountId(loanEntity.getAccount())
-    //             .amount(BigDecimal.valueOf(loanEntity.getValueOfInstallments()))
-    //             .accountReceiver(accountBank.getAccountNumber())
-    //             .transactionDate(LocalDateTime.now())
-    //             .agencyReceiver("This")
-    //             .nameReceiver("Loan applicant")
-    //             .bankNameReceiver("This")
-    //             .build();
-
-    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    //     return null;
-    // }
-
+    @Override
+    public Account payInstallment(LoanEntity loanEntity) {
+        Account account = accountRepository.findById(1 /*colocar o método que pega a conta logada */).orElse(null);
+        Account savedAccount;
+        if (account == null) {
+            return null;
+        }
+        account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(loanEntity.getAmountBorrowed())));
+        savedAccount = accountRepository.save(account);
+        return savedAccount;
+    }
+    
     // Verifica se o método de pagamento é o automático e chama o agendamento.
     @Override
     public void verifyIfScheduled(LoanEntity loanEntity) {
@@ -157,4 +124,64 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         //     loanEntityRepository.save(loan);
         // }
     }
+
+    // Chama o método de transferir e guardar histórico do módulo de transferência.
+    // Para mandar o dinheiro emprestado para a conta.
+    // @Override
+    // public PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity) {
+
+    //     Integer bankId = 1;
+    //     AccountDto accountBank = accountService.getAccount(bankId);
+    //     if (accountBank == null) {
+    //         AccountDto accountDto = AccountDto.builder()
+    //                 .id(bankId)
+    //                 .accountNumber("12345")
+    //                 .balance(BigDecimal.valueOf(9999999999999999L))
+    //                 .status(AccountStatus.ACTIVE)
+    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
+    //                 .build();
+    //         accountBank = accountService.createAccount(accountDto);
+    //     }
+
+    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
+    //             .amount(BigDecimal.valueOf(loanEntity.getAmountBorrowed()))
+    //             .transactionDate(LocalDateTime.now())
+    //             .agencyReceiver("This")
+    //             .accountReceiver(loanEntity.getAccount().getAccountNumber())
+    //             .nameReceiver("Loan applicant")
+    //             .bankNameReceiver("This")
+    //             .build();
+
+    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
+    // }
+
+    // // Chama o método de transferir e guardar histórico do módulo de transferência.
+    // // Para pagar a parcela manualmente.
+    // @Override
+    // public PaymentHistoryDTO payInstallment(LoanEntity loanEntity) {
+
+    //     Integer bankId = 1;
+    //     AccountDto accountBank = accountService.getAccount(bankId);
+    //     if (accountBank == null) {
+    //         AccountDto accountDto = AccountDto.builder()
+    //                 .id(bankId)
+    //                 .accountNumber("12345")
+    //                 .balance(BigDecimal.valueOf(9999999999999999L))
+    //                 .status(AccountStatus.ACTIVE)
+    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
+    //                 .build();
+    //         accountBank = accountService.createAccount(accountDto);
+    //     }
+
+    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
+    //             .amount(BigDecimal.valueOf(loanEntity.getValueOfInstallments()))
+    //             .transactionDate(LocalDateTime.now())
+    //             .agencyReceiver("This")
+    //             .accountReceiver(accountBank.getAccountNumber())
+    //             .nameReceiver("Loan applicant")
+    //             .bankNameReceiver("This")
+    //             .build();
+
+    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
+    // }
 }

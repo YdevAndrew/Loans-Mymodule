@@ -21,7 +21,7 @@ public class InstallmentEntityServiceImpl {
     public List<InstallmentEntityDto> findByLoanId(Integer loanId) {
         List<InstallmentEntity> installments = installmentEntityRepository.findByLoanId(loanId);
         return installments.stream()
-                .map(mapper::mapTo) // Converte cada entidade para DTO
+                .map(mapper::mapTo)
                 .toList();
     }
 }

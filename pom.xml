@@ -23,7 +23,7 @@
 
   <dependencies>
     <!-- Local Dependency -->
-   <dependency>
+    <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>commons-module</artifactId>
       <version>${commons.module.version}</version>
@@ -32,26 +32,19 @@
     </dependency>
 
     <!-- Other modules Dependency -->
-    <!-- <dependency>
+    <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>account-module</artifactId>
       <version>1.0-RELEASE</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/account-module-1.0-RELEASE.jar</systemPath>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>transaction-module</artifactId>
       <version>1.0-RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jala.university</groupId>
-      <artifactId>credit-card-module</artifactId>
-      <version>1.0-RELEASE</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/credit-card-module-1.0-RELEASE.jar</systemPath>
-    </dependency>
-    <dependency>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>external-payment-module</artifactId>
       <version>1.0-RELEASE</version>
@@ -67,6 +60,22 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
       <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>3.2.4</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
@@ -151,11 +160,11 @@
 
   <repositories>
     <repository>
-        <id>local-libs</id>
-        <url>file://${project.basedir}/libs</url>
-        <layout>default</layout>
+      <id>local-libs</id>
+      <url>file://${project.basedir}/libs</url>
+      <layout>default</layout>
     </repository>
-</repositories>
+  </repositories>
 
   <build>
     <plugins>
@@ -170,7 +179,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.8</version> 
+        <version>0.8.8</version>
         <executions>
           <execution>
             <goals>
