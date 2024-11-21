@@ -1,5 +1,6 @@
 package org.jala.university.application.mapper;
 
+import org.hibernate.Hibernate;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.jala.university.domain.entity.LoanEntity;
@@ -10,6 +11,10 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
 
     @Override
     public LoanEntityDto mapTo(LoanEntity loanEntity) {
+        if (loanEntity.getInstallments() != null) {
+            Hibernate.initialize(loanEntity.getInstallments());
+        }
+
         return LoanEntityDto.builder()
                 .id(loanEntity.getId())
                 .amountBorrowed(loanEntity.getAmountBorrowed())
@@ -24,6 +29,7 @@ public class LoanEntityMapper implements Mapper<LoanEntity, LoanEntityDto> {
                 .form(loanEntity.getForm())
                 .scheduledPaymentId(loanEntity.getScheduledPaymentId())
                 .account(loanEntity.getAccount())
+                .installments(loanEntity.getInstallments()) // Coleção inicializada
                 .build();
     }
 

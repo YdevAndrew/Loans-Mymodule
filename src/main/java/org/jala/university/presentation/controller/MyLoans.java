@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -144,6 +145,10 @@ public class MyLoans {
         addDetailToVBox(loanBox, "Total Amount + Interest:", String.format("R$ %.2f", loan.getAmountBorrowed() + loan.getTotalInterest()));
         addDetailToVBox(loanBox, "Payment Method:", loan.getPaymentMethod().name());
 
+        // Call the new method to get the outstanding balance
+        Double outstandingBalance = getOutstandingBalance(loan.getId());
+        addDetailToVBox(loanBox, "Outstanding Balance:", String.format("R$ %.2f", outstandingBalance));
+
         long paidInstallments = loanService.getPaidInstallments(loan);
         addDetailToVBox(loanBox, "Paid Installments:", String.format("%d / %d", paidInstallments, loan.getNumberOfInstallments()));
 
@@ -155,6 +160,17 @@ public class MyLoans {
 
         return loanBox;
     }
+
+    /**
+     * Gets the outstanding balance of a loan.
+     *
+     * @param loanId The ID of the loan.
+     * @return The outstanding balance.
+     */
+    public Double getOutstandingBalance(Integer loanId) {
+        return loanService.getOutstandingBalance(loanId); // Assuming LoanEntityService has this method
+    }
+
 
     /**
      * Creates a payment section for an approved loan.
@@ -170,13 +186,21 @@ public class MyLoans {
         Label installmentLabel = new Label(String.format("Next Installment: R$ %.2f", loan.getValueOfInstallments()));
         installmentLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
 
-        // Pega a próxima parcela não paga
-        InstallmentEntity nextUnpaidInstallment = loan.getFirstUnpaidInstallment();
-        String dueDate = (nextUnpaidInstallment != null && nextUnpaidInstallment.getDueDate() != null)
-                ? nextUnpaidInstallment.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                : "N/A";
+        Label dueDateLabel;
+        try {
+            LocalDate nextDueDate = loanService.getFirstUnpaidInstallmentDate(loan);
+            if (nextDueDate != null) {
+                String formattedDate = nextDueDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                dueDateLabel = new Label("Due Date: " + formattedDate);
+            } else {
+                dueDateLabel = new Label("No unpaid installments.");
+            }
+        } catch (Exception e) {
 
-        Label dueDateLabel = new Label("Due Date: " + dueDate);
+            System.err.println("Error fetching next unpaid installment date: " + e.getMessage());
+            dueDateLabel = new Label("Error fetching due date.");
+        }
+
         dueDateLabel.setStyle("-fx-font-size: 14;");
 
         Button payButton = new Button("Pay Installment");
@@ -187,7 +211,6 @@ public class MyLoans {
 
         return paymentBox;
     }
-
     /**
      * Handles the "Pay Installment" button click.
      *
@@ -195,14 +218,12 @@ public class MyLoans {
      */
     private void handlePayInstallment(LoanEntityDto loan) {
         boolean success = loanService.payInstallmentManually(loan);
-
         if (success) {
-            // Display a success message (can be an alert or a label update)
-            System.out.println("Installment paid successfully.");
-            loadLoanDetails(); // Reload details to reflect updates
+            // Atualiza os detalhes do empréstimo após o pagamento
+            loadLoanDetails();
+            System.out.println("Installment paid successfully!");
         } else {
-            // Display an error message
-            System.out.println("Failed to pay installment. Please try again.");
+            System.err.println("Failed to pay the installment. Please try again.");
         }
     }
     /**
