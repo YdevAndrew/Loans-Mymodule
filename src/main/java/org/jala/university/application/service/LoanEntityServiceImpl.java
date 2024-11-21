@@ -77,8 +77,8 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional(readOnly = true)
     public List<LoanEntityDto> findAll() {
         return loanEntityRepository.findAll().stream()
-               .map(loanEntityMapper::mapTo)
-               .collect(Collectors.toList());
+                .map(loanEntityMapper::mapTo)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
         if (entity == null) {
             throw new IllegalArgumentException("Entity with ID " + id + " not found.");
-        } 
+        }
 
         loanEntityRepository.delete(entity);
     }
@@ -191,21 +191,21 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional
     void adjustOverdueInstallments() {
         List<LoanEntity> loans = loanEntityRepository.findByStatusPaymentMethod(1, 2);
-        
+
         for (LoanEntity loan : loans) {
             for (InstallmentEntity installment : loan.getInstallments()) {
-                
+
                 if (installment.getDueDate().isBefore(LocalDate.now()) && !installment.getPaid()) {
-                    
+
                     long daysOverdue = ChronoUnit.DAYS.between(installment.getDueDate(), LocalDate.now());
                     double originalAmount = loan.getValueOfInstallments();
                     double updatedAmount = originalAmount + (originalAmount * 0.01 * daysOverdue); //1% per day
-                    
+
                     installment.setAmount(updatedAmount);
                 }
             }
         }
-        
+
         loanEntityRepository.saveAll(loans);
     }
 
@@ -217,16 +217,49 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     // Retorna o quanto falta a pagar (Outstanding Balance)
     public Double getOutstandingBalance(Integer loanId) {
-        return loanEntityRepository.getOutstandingBalance(loanId);
+        System.out.println("Buscando o saldo devedor para o empréstimo ID: " + loanId);
+
+        Double outstandingBalance = loanEntityRepository.getOutstandingBalance(loanId);
+
+        if (outstandingBalance == null) {
+            System.out.println("Saldo devedor retornou como null para o empréstimo ID: " + loanId);
+        } else {
+            System.out.println("Saldo devedor para o empréstimo ID " + loanId + ": " + outstandingBalance);
+        }
+
+        return outstandingBalance;
     }
 
     public InstallmentEntityDto getFirstUnpaidInstallment(LoanEntityDto dto) {
         LoanEntity entity = loanEntityMapper.mapFrom(dto);
+        if (entity == null || entity.getFirstUnpaidInstallment() == null) {
+            return null; // Handle null case gracefully
+        }
         return installmentEntityMapper.mapTo(entity.getFirstUnpaidInstallment());
     }
 
-    public LocalDate getFirstUnpaidInstallmentDate(LoanEntityDto dto) {
-        LoanEntity entity = loanEntityMapper.mapFrom(dto);
-        return entity.getFirstUnpaidInstallment().getDueDate();
+
+    public LocalDate getFirstUnpaidInstallmentDate(LoanEntityDto loan) {
+        List<InstallmentEntity> installments = loan.getInstallments();
+
+        // Log para depuração
+        if (installments == null || installments.isEmpty()) {
+            System.out.println("Lista de parcelas está vazia ou nula para o empréstimo ID: " + loan.getId());
+        } else {
+            System.out.println("Parcelas carregadas para o empréstimo ID: " + loan.getId());
+            installments.forEach(installment -> System.out.println(
+                    "ID: " + installment.getId() +
+                            ", Valor: " + installment.getAmount() +
+                            ", Status de pagamento: " + (installment.getPaymentDate() == null ? "Não pago" : "Pago") +
+                            ", Data de vencimento: " + installment.getDueDate()
+            ));
+        }
+
+        // Encontrar a primeira parcela não paga (com base no atributo paymentDate)
+        return installments.stream()
+                .filter(installment -> installment.getPaymentDate() == null) // Parcela não paga se paymentDate for null
+                .map(InstallmentEntity::getDueDate)
+                .findFirst()
+                .orElse(null);
     }
 }
