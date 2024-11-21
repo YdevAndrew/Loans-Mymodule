@@ -91,7 +91,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
         entity.setForm(formEntityService.findEntityById(entity.getForm().getId()));
         loanResultsService.verifyIfScheduled(entity);
         //Quando juntar com o módulo Account
-        entity.setAccount(accountRepository.findById(/getLoggedAccount().getId())/ 1).orElse(null));
+        entity.setAccount(accountRepository.findById(/*getLoggedAccount().getId())*/ 1).orElse(null));
         if (entity.getStatus() == null) {
             entity.setStatus(entity.generateStatus());
         }
@@ -121,7 +121,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     public void delete(LoanEntityDto entityDto) {
         LoanEntity entity = loanEntityMapper.mapFrom(entityDto);
         LoanEntity foundEntity = loanEntityRepository.findById(entity.getId()).orElse(null);
-
+        
         if (foundEntity == null) {
             throw new IllegalArgumentException("Entity " + entityDto + " not found.");
         }
@@ -149,7 +149,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     @Transactional(readOnly = true)
     public List<LoanEntityDto> findLoansByAccountId() {
         Integer id = 1; //Ajustar quando juntar módulos para o id da conta logada
-        //List<LoanEntity> loans = loanEntityRepository.findByAccountId(id);
+        //List<LoanEntity> loans = loanEntityRepository.findByAccountId(id); 
         List<LoanEntity> loans = null;
         loans.forEach(LoanEntity::updateStatusFinished);
         return loans.stream()
@@ -171,7 +171,7 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     private void scheduleStatusChange(LoanEntity loanEntity) {
         Instant startTime = Instant.now().plus(Duration.ofSeconds(2)); // 2 minutos no futuro
-
+    
         taskScheduler.schedule(() -> changeStatusRandomly(loanEntity), startTime);
     }
 

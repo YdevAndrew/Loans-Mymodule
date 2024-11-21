@@ -14,7 +14,7 @@ public class CalculationUtil {
      * @param numberOfInstallments the number of monthly installments
      * @return the total amount payable with compound interest
      */
-    public static Double getTotalPayable(Double amountBorrowed, Double numberOfInstallments) {
+    public static Double getTotalPayable(Double amountBorrowed, int numberOfInstallments) {
         Double totalPayable;
         double monthlyInterestRate = 0.02;
         // (1 + 0.02)^n (compound interest calculation)
@@ -31,7 +31,7 @@ public class CalculationUtil {
      * @param numberOfInstallments the number of monthly installments
      * @return the value of each installment
      */
-    public static Double getValueOfInstallments(Double amountBorrowed, Double numberOfInstallments) {
+    public static Double getValueOfInstallments(Double amountBorrowed, int numberOfInstallments) {
         Double valueOfInstallments;
         valueOfInstallments = getTotalPayable(amountBorrowed, numberOfInstallments) / numberOfInstallments;
         return valueOfInstallments;
@@ -44,7 +44,7 @@ public class CalculationUtil {
      * @param numberOfInstallments the number of monthly installments
      * @return the total interest to be paid
      */
-    public static Double getTotalInterest(Double amountBorrowed, Double numberOfInstallments) {
+    public static Double getTotalInterest(Double amountBorrowed, int numberOfInstallments) {
         Double totalInterest;
         totalInterest = getTotalPayable(amountBorrowed, numberOfInstallments) - amountBorrowed;
         return totalInterest;

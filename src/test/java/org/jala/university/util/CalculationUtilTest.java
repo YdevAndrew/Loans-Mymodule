@@ -11,7 +11,7 @@ public class CalculationUtilTest {
         
         // Valores de teste
         Double amountBorrowed = 1000.0;
-        Double numberOfInstallments = 12.0;
+        int numberOfInstallments = 12;
         
         // Valor esperado calculado manualmente
         Double expectedTotalPayable = 1000.0 * Math.pow(1 + 0.02, 12);

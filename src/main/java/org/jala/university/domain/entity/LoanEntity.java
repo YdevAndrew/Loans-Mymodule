@@ -3,7 +3,6 @@ package org.jala.university.domain.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.jala.university.commons.domain.BaseEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
@@ -18,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -79,10 +79,10 @@ public class LoanEntity implements BaseEntity<Integer> {
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 
-    // @ManyToOne
-    // @JoinColumn(name = "account_id", nullable = true)
-    // private Account account;
-    
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = true)
+    private Account account;
+
     public LoanEntity(Double amountBorrowed, Integer numberOfInstallments, FormEntity form,
             PaymentMethod paymentMethod) {
 
@@ -136,9 +136,9 @@ public class LoanEntity implements BaseEntity<Integer> {
     // Retorna a primeira parcela não paga da lista
     public InstallmentEntity getFirstUnpaidInstallment() {
         return installments.stream()
-                .filter(installment -> !installment.getPaid()) // Filtra as parcelas não pagas
-                .findFirst() // Retorna a primeira encontrada
-                .orElse(null); // Retorna null se todas estiverem pagas
+                .filter(installment -> !installment.getPaid())
+                .findFirst()
+                .orElse(null);
     }
 
     // Retorna o número de parcelas pagas
@@ -155,7 +155,16 @@ public class LoanEntity implements BaseEntity<Integer> {
             status = Status.REVIEW;
 
         } else if (status == Status.REVIEW) {
-            status = new Random().nextBoolean() ? Status.APPROVED : Status.REJECTED;
+            double feeCommitment = valueOfInstallments / form.getIncome();
+            double incomeAnnual = form.getIncome() * 12;
+            double proportionLoan = amountBorrowed / incomeAnnual;
+
+            if (feeCommitment > 0.30 || proportionLoan > 0.50) {
+                status = Status.REJECTED;   
+
+            } else {
+                status = Status.APPROVED;
+            }
         }
         return status;
     }
@@ -166,14 +175,15 @@ public class LoanEntity implements BaseEntity<Integer> {
     }
 
     public void recalculate() {
-        // Calculate totalPayable based on the amount borrowed and the number of installments
-        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, (double) numberOfInstallments);
+        // Calculate totalPayable based on the amount borrowed and the number of
+        // installments
+        this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, numberOfInstallments);
 
         // Calculate the value of each installment
         this.valueOfInstallments = totalPayable / numberOfInstallments;
 
         // Calculate the total interest based on the amount borrowed
-        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, this.valueOfInstallments);
+        this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, numberOfInstallments);
     }
 
     public void generateInstallments() {
@@ -194,9 +204,9 @@ public class LoanEntity implements BaseEntity<Integer> {
             this.installments.add(installment);
         }
     }
-    
+
     public void markInstallmentsAsPaid(long toMarkAsPaid) {
-        for (int i=0; i<toMarkAsPaid; i++) {
+        for (int i = 0; i < toMarkAsPaid; i++) {
             markAsPaid();
         }
     }
@@ -222,11 +232,4 @@ public class LoanEntity implements BaseEntity<Integer> {
             setStatus(Status.FINISHED);
         }
     }
-
-    //Se for receber resposta do pagamentos externos.
-    /*public void verifyIfItsPaid() {
-        if (método que retorna se o pagamento agendado foi feito == true) {
-            this.markAsPaid();
-        }
-    }*/
 }
