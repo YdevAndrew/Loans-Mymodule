@@ -1,7 +1,9 @@
 package org.jala.university.application.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.jala.university.application.dto.InstallmentEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.domain.entity.LoanEntity;
 
@@ -17,4 +19,7 @@ public interface LoanEntityService {
     List<LoanEntityDto> findLoansByAccountId();
     boolean payInstallmentManually(LoanEntityDto dto);
     long getPaidInstallments(LoanEntityDto dto);
+    LocalDate getFirstUnpaidInstallmentDate(LoanEntityDto dto);
+    Double getOutstandingBalance(Integer loanId);
+    InstallmentEntityDto getFirstUnpaidInstallment(LoanEntityDto loan);
 }

@@ -4,7 +4,7 @@ import org.jala.university.domain.entity.LoanEntity;
 
 public interface LoanResultsService {
 
-    // PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity);
-    // PaymentHistoryDTO payInstallment(LoanEntity loanEntity);
+     PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity);
+     PaymentHistoryDTO payInstallment(LoanEntity loanEntity);
     void verifyIfScheduled(LoanEntity loanEntity);
 }
