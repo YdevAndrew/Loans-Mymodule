@@ -59,7 +59,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         if (account == null) {
             return null;
         }
-        LoanEntityDto loanEntityDto = loanEntityMapper.mapTo(loanEntity);
+
         account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(
             loanEntity.getFirstUnpaidInstallment().getAmount()
             )));
@@ -84,9 +84,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         if (/*método != null*/true) {
             //colocar o id que o método retorna
             Integer id = 1;
-            LoanEntity entity = loanEntityService.findEntityById(loanEntity.getId());
-            entity.setScheduledPaymentId(id);
-            loanEntityRepository.save(entity);
+            loanEntity.setScheduledPaymentId(id);
             return true;
         }
         return false;
