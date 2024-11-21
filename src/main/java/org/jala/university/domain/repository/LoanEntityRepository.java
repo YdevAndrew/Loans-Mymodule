@@ -23,6 +23,9 @@ public interface LoanEntityRepository extends JpaRepository<LoanEntity, Integer>
     @Query("SELECT l FROM LoanEntity l WHERE l.status = :status AND l.paymentMethod = :paymentMethod")
     List<LoanEntity> findByStatusPaymentMethod(@Param("status") Integer status, @Param("paymentMethod") Integer paymentMethod);
 
+    // @Query("SELECT l FROM LoanEntity l WHERE l.account.id = :accountId AND l.status = :status")
+    // List<LoanEntity> findByAccountAndStatusCode(@Param("accountId") Integer accountId, @Param("status") Integer status);
+
     @Query("SELECT COALESCE(SUM(i.amount), 0) FROM InstallmentEntity i WHERE i.loan.id = :loanId AND i.paid = false")
     Double getOutstandingBalance(@Param("loanId") Integer loanId);
 }
