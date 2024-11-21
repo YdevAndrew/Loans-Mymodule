@@ -13,6 +13,6 @@
         </ImageView>
         <HBox fx:id="filterBar" layoutY="10.0" spacing="10.0" style="-fx-padding: 10; -fx-background-color: transparent;" />
         <FlowPane fx:id="loansContainer" hgap="20.0" layoutX="22.0" layoutY="47.0" prefWidth="975.0" style="-fx-padding: 20; -fx-background-color: transparent;" vgap="20.0" />
-         <ComboBox fx:id="statusFilterComboBox" layoutX="694.0" layoutY="16.0" promptText="Filter by status" />
+         <ComboBox fx:id="statusFilterComboBox" layoutX="749.0" layoutY="16.0" promptText="Filter by status" />
     </children>
 </AnchorPane>

@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.jala.university.presentation.SpringFXMLLoader;
-import org.jala.university.presentation.controller.MainViewController;
+import org.jala.university.presentation.controller.MainViewControllerLoan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class MainViewControllerTest {
     private Button loanButton;
     private List<ImageView> imageViews;
 
-    private MainViewController mainViewController;
+    private MainViewControllerLoan mainViewController;
 
     @BeforeEach
     void setUp() {
@@ -45,7 +45,7 @@ class MainViewControllerTest {
         }
 
         // Configura o controlador com os componentes reais
-        mainViewController = new MainViewController();
+        mainViewController = new MainViewControllerLoan();
         mainViewController.mainPane = mainPane;
         mainViewController.loanButton = loanButton;
         mainViewController.imageViews = imageViews;
@@ -66,7 +66,7 @@ class MainViewControllerTest {
         FXMLLoader loaderMock = mock(FXMLLoader.class);
         Pane loanPane = new Pane();
 
-        when(springFXMLLoader.load("/Form/form.fxml")).thenReturn(loaderMock);
+        when(springFXMLLoader.load("/FormLoan/form.fxml")).thenReturn(loaderMock);
         when(loaderMock.load()).thenReturn(loanPane);
 
         mainViewController.startLoanSimulation();

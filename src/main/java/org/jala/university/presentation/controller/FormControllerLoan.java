@@ -28,7 +28,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * Controller for managing the loan request form.
  */
 @Controller
-public class FormController {
+public class FormControllerLoan {
 
     @Qualifier("formEntityServiceImpl")
     @Autowired
@@ -166,7 +166,7 @@ public class FormController {
                 showSuccessPopup("Request sent successfully!");
 
                 // Load payments pane with the saved form details
-                PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
+                PaymentsControllerLoan.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
                 // Reset file and UI after successful submission
                 resetFormState();

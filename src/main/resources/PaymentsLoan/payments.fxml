@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" prefHeight="584.0" prefWidth="1181.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.PaymentsController">
+<Pane fx:id="mainPane" prefHeight="584.0" prefWidth="1181.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.PaymentsControllerLoan">
    <children>
       <ImageView fitHeight="196.0" fitWidth="1179.0">
          <image>
