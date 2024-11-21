@@ -255,9 +255,9 @@ public class LoanEntityServiceImpl implements LoanEntityService {
             ));
         }
 
-        // Encontrar a primeira parcela não paga (com base no atributo paymentDate)
+        // Encontrar a primeira parcela não paga (com base no atributo `paymentDate`)
         return installments.stream()
-                .filter(installment -> installment.getPaymentDate() == null) // Parcela não paga se paymentDate for null
+                .filter(installment -> installment.getPaymentDate() == null) // Parcela não paga se `paymentDate` for null
                 .map(InstallmentEntity::getDueDate)
                 .findFirst()
                 .orElse(null);

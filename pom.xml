@@ -173,7 +173,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
-          <mainClass>org.jala.university.presentation.MainView</mainClass>
+          <mainClass>org.jala.university.presentation.MainViewLoan</mainClass>
         </configuration>
       </plugin>
       <plugin>
