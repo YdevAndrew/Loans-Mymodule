@@ -210,8 +210,9 @@ public class LoanEntityServiceImpl implements LoanEntityService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getPaidInstallments(LoanEntityDto dto) {
-        LoanEntity entity = loanEntityMapper.mapFrom(dto);
+        LoanEntity entity = findEntityById(dto.getId());
         return entity.getNumberOfPaidInstallments();
     }
 

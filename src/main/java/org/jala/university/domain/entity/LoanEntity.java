@@ -75,7 +75,7 @@ public class LoanEntity implements BaseEntity<Integer> {
     // private ScheduledPayment scheduledPayment;
 
     private Integer scheduledPaymentId;
-
+    
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 

@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.service.FormEntityService;
 import org.jala.university.presentation.SpringFXMLLoader;
-import org.jala.university.presentation.controller.FormController;
+import org.jala.university.presentation.controller.FormControllerLoan;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ public class FormControllerTest {
     private Pane mainPane;
 
     @InjectMocks
-    private FormController formController;
+    private FormControllerLoan formController;
 
     private File incomeProofFile;
 

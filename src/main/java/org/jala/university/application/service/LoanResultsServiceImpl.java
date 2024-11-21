@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.jala.university.ServiceFactory;
+import org.jala.university.application.dto.LoanEntityDto;
+import org.jala.university.application.mapper.LoanEntityMapper;
 import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
@@ -34,6 +36,9 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private LoanEntityMapper loanEntityMapper;
+
     @Override
     public Account sendAmountAccount(LoanEntity loanEntity) {
 
@@ -54,7 +59,10 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         if (account == null) {
             return null;
         }
-        account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(loanEntity.getAmountBorrowed())));
+        LoanEntityDto loanEntityDto = loanEntityMapper.mapTo(loanEntity);
+        account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(
+            loanEntity.getFirstUnpaidInstallment().getAmount()
+            )));
         savedAccount = accountRepository.save(account);
         return savedAccount;
     }
