@@ -13,7 +13,7 @@ public enum LoansView {
     /**
      * Represents the main view of the loans feature.
      */
-    MAIN("main-view.fxml");
+    MAIN("main-viewLoan.fxml");
 
     private final View view;
 

@@ -17,7 +17,7 @@ import java.util.List;
  * Controller for managing the main view of the application.
  */
 @Controller
-public class MainViewController {
+public class MainViewControllerLoan {
 
     @Autowired
     public SpringFXMLLoader springFXMLLoader;
@@ -38,7 +38,7 @@ public class MainViewController {
     /**
      * Default constructor for MainViewController.
      */
-    public MainViewController() {
+    public MainViewControllerLoan() {
     }
 
     /**
@@ -71,7 +71,7 @@ public class MainViewController {
     @FXML
     public void startLoanSimulation() {
         try {
-            FXMLLoader loader = springFXMLLoader.load("/Form/form.fxml");
+            FXMLLoader loader = springFXMLLoader.load("/FormLoan/form.fxml");
             Pane loanPane = loader.load();
 
             mainPane.getChildren().clear();

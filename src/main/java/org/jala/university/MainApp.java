@@ -1,6 +1,6 @@
 package org.jala.university;
 
-import org.jala.university.presentation.MainView;
+import org.jala.university.presentation.MainViewLoan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -14,12 +14,12 @@ public class MainApp {
 
     /**
      * The main method to launch the application.
-     * Delegates to the JavaFX {@link MainView} class for launching the UI.
+     * Delegates to the JavaFX {@link MainViewLoan} class for launching the UI.
      *
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        MainView.launch(args);
+        MainViewLoan.launch(args);
     }
 
 }

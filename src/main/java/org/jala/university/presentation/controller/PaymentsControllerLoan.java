@@ -31,7 +31,7 @@ import javafx.scene.layout.Pane;
  * Controller responsible for managing the payment flow for loans.
  */
 @Controller
-public class PaymentsController {
+public class PaymentsControllerLoan {
 
     @FXML
     private Label dueDateLabel;
@@ -177,10 +177,10 @@ public class PaymentsController {
      */
     public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntityDto) {
         try {
-            FXMLLoader loader = springFXMLLoader.load("/Payments/payments.fxml");
+            FXMLLoader loader = springFXMLLoader.load("/PaymentsLoan/payments.fxml");
             Pane paymentsPane = loader.load();
 
-            PaymentsController controller = loader.getController();
+            PaymentsControllerLoan controller = loader.getController();
             controller.setFormEntity(formEntityDto);
 
             if (mainPane != null) {

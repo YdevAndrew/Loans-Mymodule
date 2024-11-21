@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" prefHeight="586.0" prefWidth="657.0" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.FormController">
+<Pane fx:id="mainPane" prefHeight="586.0" prefWidth="657.0" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.FormControllerLoan">
     <!-- Título do formulário -->
     <Label layoutX="20.0" layoutY="24.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" text=" Fill out the form" />
     <Label layoutX="27.0" layoutY="51.0" style="-fx-font-size: 12px; -fx-text-fill: #888;" text="*All information is mandatory " />

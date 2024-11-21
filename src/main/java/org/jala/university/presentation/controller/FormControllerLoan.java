@@ -28,7 +28,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * Controller for managing the loan request form.
  */
 @Controller
-public class FormController {
+public class FormControllerLoan {
 
     @Qualifier("formEntityServiceImpl")
     @Autowired
@@ -70,16 +70,16 @@ public class FormController {
      */
     private void checkExistingApprovedLoan() {
         try {
-            
-            List<LoanEntityDto> userLoans = loanService.findAll();// Mudar depois para filtrar por usuarios logados
+            List<LoanEntityDto> userLoans = loanService.findAll(); // Alterar para buscar por usuário logado no futuro
 
-            
-            boolean hasApprovedLoan = userLoans.stream()
-                    .anyMatch(loan -> "APPROVED".equalsIgnoreCase(String.valueOf(loan.getStatus())));
 
-            if (hasApprovedLoan) {
-               
-                disableLoanRequestButton("You already have an approved loan and cannot request another.");
+            boolean hasBlockedLoan = userLoans.stream()
+                    .anyMatch(loan -> "APPROVED".equalsIgnoreCase(String.valueOf(loan.getStatus()))
+                            || "REVIEW".equalsIgnoreCase(String.valueOf(loan.getStatus())));
+
+            if (hasBlockedLoan) {
+
+                disableLoanRequestButton("You cannot request a new loan because you have an active loan under review or approved.");
             }
         } catch (Exception e) {
             showErrorPopup("An error occurred while checking loan status. Please try again.");
@@ -166,7 +166,7 @@ public class FormController {
                 showSuccessPopup("Request sent successfully!");
 
                 // Load payments pane with the saved form details
-                PaymentsController.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
+                PaymentsControllerLoan.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
 
                 // Reset file and UI after successful submission
                 resetFormState();

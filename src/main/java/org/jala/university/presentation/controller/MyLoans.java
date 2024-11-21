@@ -3,20 +3,20 @@ package org.jala.university.presentation.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.service.LoanEntityService;
+import org.jala.university.domain.entity.InstallmentEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,12 +32,12 @@ public class MyLoans {
     public AnchorPane mainContainer;
 
     @FXML
-    private FlowPane loansContainer; 
+    private FlowPane loansContainer;
 
     @FXML
     private ComboBox<String> statusFilterComboBox;
 
-    private double currentOffset = 0; 
+    private double currentOffset = 0;
 
     @Autowired
     @Qualifier("loanEntityService")
@@ -57,7 +57,7 @@ public class MyLoans {
         mainContainer.setOnScroll(this::handleScroll);
 
 
-        
+
         statusFilterComboBox.setItems(statuses);
         statusFilterComboBox.setValue("ALL");
         statusFilterComboBox.setOnAction(event -> loadLoanDetails());
@@ -69,12 +69,12 @@ public class MyLoans {
      * @param event ScrollEvent triggered by the user.
      */
     private void handleScroll(ScrollEvent event) {
-       
+
         double deltaY = event.getDeltaY() * 0.5;
 
         double newOffset = currentOffset - deltaY;
 
-     
+
         double maxOffset = loansContainer.getHeight() - mainContainer.getPrefHeight();
         if (newOffset < 0) {
             newOffset = 0;
@@ -82,7 +82,7 @@ public class MyLoans {
             newOffset = maxOffset;
         }
 
-       
+
         loansContainer.setLayoutY(-newOffset);
         currentOffset = newOffset;
 
@@ -114,7 +114,7 @@ public class MyLoans {
 
             for (LoanEntityDto loan : loans) {
                 VBox loanBox = createLoanBox(loan, dateFormatter);
-                loansContainer.getChildren().add(loanBox); 
+                loansContainer.getChildren().add(loanBox);
             }
         } else {
             loansContainer.getChildren().add(noLoanLabel);
@@ -145,12 +145,87 @@ public class MyLoans {
         addDetailToVBox(loanBox, "Total Amount + Interest:", String.format("R$ %.2f", loan.getAmountBorrowed() + loan.getTotalInterest()));
         addDetailToVBox(loanBox, "Payment Method:", loan.getPaymentMethod().name());
 
+        // Call the new method to get the outstanding balance
+        Double outstandingBalance = getOutstandingBalance(loan.getId());
+        addDetailToVBox(loanBox, "Outstanding Balance:", String.format("R$ %.2f", outstandingBalance));
+
         long paidInstallments = loanService.getPaidInstallments(loan);
         addDetailToVBox(loanBox, "Paid Installments:", String.format("%d / %d", paidInstallments, loan.getNumberOfInstallments()));
+
+        // Add the payment section if the status is APPROVED
+        if ("APPROVED".equalsIgnoreCase(loan.getStatus().name())) {
+            VBox paymentSection = createPaymentSection(loan);
+            loanBox.getChildren().add(paymentSection);
+        }
 
         return loanBox;
     }
 
+    /**
+     * Gets the outstanding balance of a loan.
+     *
+     * @param loanId The ID of the loan.
+     * @return The outstanding balance.
+     */
+    public Double getOutstandingBalance(Integer loanId) {
+        return loanService.getOutstandingBalance(loanId); // Assuming LoanEntityService has this method
+    }
+
+
+    /**
+     * Creates a payment section for an approved loan.
+     *
+     * @param loan The loan entity to create the payment section for.
+     * @return A VBox containing the payment section.
+     */
+    private VBox createPaymentSection(LoanEntityDto loan) {
+        VBox paymentBox = new VBox();
+        paymentBox.setSpacing(10);
+        paymentBox.setStyle("-fx-background-color: #F1F8FF; -fx-padding: 10; -fx-border-color: #CCE7FF; -fx-border-radius: 10; -fx-background-radius: 10;");
+
+        Label installmentLabel = new Label(String.format("Next Installment: R$ %.2f", loan.getValueOfInstallments()));
+        installmentLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
+
+        Label dueDateLabel;
+        try {
+            LocalDate nextDueDate = loanService.getFirstUnpaidInstallmentDate(loan);
+            if (nextDueDate != null) {
+                String formattedDate = nextDueDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                dueDateLabel = new Label("Due Date: " + formattedDate);
+            } else {
+                dueDateLabel = new Label("No unpaid installments.");
+            }
+        } catch (Exception e) {
+
+            System.err.println("Error fetching next unpaid installment date: " + e.getMessage());
+            dueDateLabel = new Label("Error fetching due date.");
+        }
+
+        dueDateLabel.setStyle("-fx-font-size: 14;");
+
+        Button payButton = new Button("Pay Installment");
+        payButton.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 5 10;");
+        payButton.setOnAction(event -> handlePayInstallment(loan));
+
+        paymentBox.getChildren().addAll(installmentLabel, dueDateLabel, payButton);
+
+        return paymentBox;
+    }
+    /**
+     * Handles the "Pay Installment" button click.
+     *
+     * @param loan The loan entity to process the payment for.
+     */
+    private void handlePayInstallment(LoanEntityDto loan) {
+        boolean success = loanService.payInstallmentManually(loan);
+        if (success) {
+            // Atualiza os detalhes do empréstimo após o pagamento
+            loadLoanDetails();
+            System.out.println("Installment paid successfully!");
+        } else {
+            System.err.println("Failed to pay the installment. Please try again.");
+        }
+    }
     /**
      * Adds a detail line to a VBox with separation and right alignment.
      *
@@ -167,7 +242,7 @@ public class MyLoans {
 
         Label labelName = new Label(label);
         labelName.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-        HBox.setHgrow(labelName, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(labelName, Priority.ALWAYS);
 
 
         Label labelValue = new Label(value);
