@@ -70,12 +70,10 @@ public class LoanEntity implements BaseEntity<Integer> {
     @JoinColumn(name = "form_id", nullable = true)
     private FormEntity form;
 
-    // @OneToOne
-    // @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
-    // private ScheduledPayment scheduledPayment;
-
-    private Integer scheduledPaymentId;
-
+    @OneToOne
+    @JoinColumn(name = "Scheduled_Payment_id", nullable = true)
+    private ScheduledPaymentEntity scheduledPayment;
+    
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<InstallmentEntity> installments = new ArrayList<>();
 
@@ -129,11 +127,6 @@ public class LoanEntity implements BaseEntity<Integer> {
         generateInstallments();
     }
 
-    /*
-     * Para o Front:
-     */
-
-    // Retorna a primeira parcela não paga da lista
     public InstallmentEntity getFirstUnpaidInstallment() {
         return installments.stream()
                 .filter(installment -> !installment.getPaid())
@@ -141,7 +134,6 @@ public class LoanEntity implements BaseEntity<Integer> {
                 .orElse(null);
     }
 
-    // Retorna o número de parcelas pagas
     public long getNumberOfPaidInstallments() {
         return installments.stream()
                 .filter(InstallmentEntity::getPaid)
@@ -175,19 +167,13 @@ public class LoanEntity implements BaseEntity<Integer> {
     }
 
     public void recalculate() {
-        // Calculate totalPayable based on the amount borrowed and the number of
-        // installments
         this.totalPayable = CalculationUtil.getTotalPayable(amountBorrowed, numberOfInstallments);
-
-        // Calculate the value of each installment
         this.valueOfInstallments = totalPayable / numberOfInstallments;
-
-        // Calculate the total interest based on the amount borrowed
         this.totalInterest = CalculationUtil.getTotalInterest(amountBorrowed, numberOfInstallments);
     }
 
     public void generateInstallments() {
-        this.installments.clear(); // Limpa a lista anterior, se houver
+        this.installments.clear();
 
         double installmentAmount = totalPayable / numberOfInstallments;
 
@@ -211,7 +197,6 @@ public class LoanEntity implements BaseEntity<Integer> {
         }
     }
 
-    // Coloca a primeira parcela não paga da lista como paga
     public void markAsPaid() {
         for (InstallmentEntity installment : installments) {
             if (!installment.getPaid()) {
@@ -222,11 +207,6 @@ public class LoanEntity implements BaseEntity<Integer> {
             }
         }
     }
-
-    /*
-     * Verifica se todas as parcelas foram pagas,
-     * se sim, define o empréstimo como FINISHED
-     */
     public void updateStatusFinished() {
         if (installments.stream().allMatch(InstallmentEntity::getPaid)) {
             setStatus(Status.FINISHED);

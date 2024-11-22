@@ -37,25 +37,21 @@ public class LoansAppConfig {
 
     @Bean
     public FormEntityMapper formEntityMapper() {
-        // Retorna uma instância de FormEntityMapper
         return new FormEntityMapper();
     }
 
     @Bean
     public InstallmentEntityMapper installmentEntityMapper() {
-        // Retorna uma instância de InstallmentEntityMapper
         return new InstallmentEntityMapper();
     }
 
     @Bean
     public LoanEntityMapper loanEntityMapper() {
-        // Retorna uma instância de LoanEntityMapper
         return new LoanEntityMapper();
     }
 
     @Bean
     public TaskScheduler taskScheduler() {
-        // Configura o TaskScheduler para tarefas assíncronas
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(10);
         return scheduler;
@@ -63,15 +59,12 @@ public class LoansAppConfig {
 
     @Bean
     public FormEntityService formEntityService(FormEntityMapper formEntityMapper) {
-        // Injeta os beans RepositoryFactory e FormEntityMapper em FormEntityServiceImpl
         return new FormEntityServiceImpl(formEntityMapper);
     }
 
     @Bean
     public LoanEntityService loanEntityService(LoanEntityMapper loanEntityMapper, InstallmentEntityMapper installmentEntityMapper, FormEntityMapper formEntityMapper,
             TaskScheduler taskScheduler) {
-        // Injeta os beans RepositoryFactory, LoanEntityMapper e TaskScheduler em
-        // LoanEntityServiceImpl
         return new LoanEntityServiceImpl(loanEntityMapper,installmentEntityMapper, formEntityMapper, taskScheduler);
     }
 
