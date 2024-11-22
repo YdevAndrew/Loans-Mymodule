@@ -58,7 +58,7 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     public Account payInstallment(LoanEntity loanEntity) {
         LoanEntity entity = loanEntityRepository.findByIdWithInstallments(loanEntity.getId());
 
-        Account account = accountRepository.findById(1/* método para recuperar conta logada */)
+        Account account = accountRepository.findById(1/* colocar o método que pega a conta logada */)
                 .orElseThrow(() -> new IllegalStateException("Conta não encontrada"));
 
         InstallmentEntity firstUnpaidInstallment = entity.getFirstUnpaidInstallment();
