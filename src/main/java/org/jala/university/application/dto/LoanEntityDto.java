@@ -3,7 +3,6 @@ package org.jala.university.application.dto;
 import java.time.LocalDate;
 import java.util.List;
 import org.jala.university.domain.entity.Account;
-// import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.FormEntity;
 import org.jala.university.domain.entity.InstallmentEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
@@ -27,7 +26,6 @@ public class LoanEntityDto {
     LocalDate issueDate;
     LocalDate loanDueDate;
     FormEntity form;
-    Integer scheduledPaymentId;
     List<InstallmentEntity> installments;
     Account account;
 }

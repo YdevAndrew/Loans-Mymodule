@@ -4,13 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.jala.university.ServiceFactory;
-import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.LoanEntityMapper;
 import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.LoanEntity;
+import org.jala.university.domain.entity.ScheduledPaymentEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.repository.AccountRepository;
 import org.jala.university.domain.repository.LoanEntityRepository;
+import org.jala.university.domain.repository.ScheduledPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,9 +22,6 @@ import jakarta.transaction.Transactional;
 @Service
 public class LoanResultsServiceImpl implements LoanResultsService {
 
-    // @Autowired
-    // private PaymentHistoryService paymentHistoryService;
-
     @Autowired
     private LoanEntityRepository loanEntityRepository;
 
@@ -31,19 +29,17 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     @Lazy
     private LoanEntityService loanEntityService;
 
-    private AccountService accountService = ServiceFactory.accountService();
-
     @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
-    private LoanEntityMapper loanEntityMapper;
+    private ScheduledPaymentRepository scheduledPaymentRepository;
 
     @Override
     public Account sendAmountAccount(LoanEntity loanEntity) {
-
         Account account = accountRepository.findById(1 /*colocar o método que pega a conta logada */).orElse(null);
         Account savedAccount;
+
         if (account == null) {
             return null;
         }
@@ -67,7 +63,6 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         return savedAccount;
     }
     
-    // Verifica se o método de pagamento é o automático e chama o agendamento.
     @Override
     public void verifyIfScheduled(LoanEntity loanEntity) {
         if (loanEntity.getPaymentMethod().getCode() == PaymentMethod.DEBIT_ACCOUNT.getCode()) {
@@ -80,11 +75,10 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     // agendado ainda não foi feito no módulo de pagamentos externos.
     @Transactional
     boolean schedulePayment(LoanEntity loanEntity) {
-        // chamar o método do pagamento agendado para criar o agendamento.
         if (/*método != null*/true) {
             //colocar o id que o método retorna
             Integer id = 1;
-            loanEntity.setScheduledPaymentId(id);
+            loanEntity.setScheduledPayment(scheduledPaymentRepository.findById(id).orElse(null));
             return true;
         }
         return false;
@@ -100,7 +94,6 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         }
     }
 
-    // Tenta processar o empréstimo em caso de falha
     void processLoanWithRetry(LoanEntity loan, int retryCount) {
         for (int attempt = 1; attempt <= retryCount; attempt++) {
             try {
@@ -119,16 +112,16 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     // Método para atualizar as parcelas pagas de um empréstimo
     @Transactional 
     void updateLoanPaidInstallments(LoanEntity loanEntity) {
-        // Integer scheduledPaymentId = loanEntity.getScheduledPaymentId();
-        // long payments = loanEntityRepository.countPaymentsForLoan(scheduledPaymentId);
-        // long paidInstallments = loanEntity.getNumberOfPaidInstallments();
+        ScheduledPaymentEntity scheduledPaymentEntity = loanEntity.getScheduledPayment();
+        long payments = loanEntityRepository.countCompletedPaymentsForLoan(scheduledPaymentEntity);
+        long paidInstallments = loanEntity.getNumberOfPaidInstallments();
         
-        // if (payments > paidInstallments) {
-        //     long installmentsToMarkAsPaid = payments - paidInstallments;
-        //     LoanEntity loan = loanEntityService.findEntityById(loanEntity.getId());
-        //     loan.markInstallmentsAsPaid(installmentsToMarkAsPaid);
-        //     loanEntityRepository.save(loan);
-        // }
+        if (payments > paidInstallments) {
+            long installmentsToMarkAsPaid = payments - paidInstallments;
+            LoanEntity loan = loanEntityService.findEntityById(loanEntity.getId());
+            loan.markInstallmentsAsPaid(installmentsToMarkAsPaid);
+            loanEntityRepository.save(loan);
+        }
     }
 
     // Chama o método de transferir e guardar histórico do módulo de transferência.
