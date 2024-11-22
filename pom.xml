@@ -44,11 +44,11 @@
       <artifactId>transaction-module</artifactId>
       <version>1.0-RELEASE</version>
     </dependency> -->
-    <!-- <dependency>
+    <dependency>
       <groupId>org.jala.university</groupId>
       <artifactId>external-payment-module</artifactId>
       <version>1.0-RELEASE</version>
-    </dependency> -->
+    </dependency>
 
     <!-- Spring Boot Dependencies -->
     <dependency>

@@ -46,7 +46,6 @@ public class InstallmentEntity implements BaseEntity<Integer> {
     @JoinColumn(name = "loan_id", nullable = false)
     private LoanEntity loan;
 
-    //Para o Front, retorna a data de vencimento em formato brasileiro
     public String getFormattedDueDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return dueDate.format(formatter);
