@@ -1,5 +1,7 @@
 package org.jala.university.presentation.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,8 +11,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.service.LoanEntityService;
+import org.jala.university.application.service.LoanResultsService;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.InstallmentEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +43,9 @@ public class MyLoans {
     private ComboBox<String> statusFilterComboBox;
 
     private double currentOffset = 0;
+
+    @Autowired
+    private LoanResultsService loanResultsService;
 
     @Autowired
     @Qualifier("loanEntityService")
@@ -217,15 +225,39 @@ public class MyLoans {
      * @param loan The loan entity to process the payment for.
      */
     private void handlePayInstallment(LoanEntityDto loan) {
-        boolean success = loanService.payInstallmentManually(loan);
-        if (success) {
-            // Atualiza os detalhes do empréstimo após o pagamento
+        try {
+            Account account = loanResultsService.payInstallment(loanService.findEntityById(loan.getId()));
+            if (account == null) {
+                Label errorLabel = new Label("Saldo insuficiente para pagar a parcela.");
+                errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14;");
+                loansContainer.getChildren().add(errorLabel);
+                removeLabelAfterDelay(errorLabel, 3);
+
+                return;
+            }
+
             loadLoanDetails();
-            System.out.println("Installment paid successfully!");
-        } else {
-            System.err.println("Failed to pay the installment. Please try again.");
+            Label successLabel = new Label("Parcela paga com sucesso!");
+            successLabel.setStyle("-fx-text-fill: green; -fx-font-size: 14;");
+            loansContainer.getChildren().add(successLabel);
+            removeLabelAfterDelay(successLabel, 3);
+
+        } catch (Exception e) {
+            System.err.println("Erro ao processar pagamento: " + e.getMessage());
+            Label errorLabel = new Label("Erro ao processar o pagamento. Tente novamente.");
+            errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14;");
+            loansContainer.getChildren().add(errorLabel);
+            removeLabelAfterDelay(errorLabel, 3);
         }
     }
+
+
+    private void removeLabelAfterDelay(Label label, int seconds) {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(seconds), e -> loansContainer.getChildren().remove(label)));
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
     /**
      * Adds a detail line to a VBox with separation and right alignment.
      *
