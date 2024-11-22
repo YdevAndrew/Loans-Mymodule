@@ -26,4 +26,7 @@ public interface LoanEntityRepository extends JpaRepository<LoanEntity, Integer>
 
     @Query("SELECT COALESCE(SUM(i.amount), 0) FROM InstallmentEntity i WHERE i.loan.id = :loanId AND i.paid = false")
     Double getOutstandingBalance(@Param("loanId") Integer loanId);
+
+    @Query("SELECT l FROM LoanEntity l LEFT JOIN FETCH l.installments WHERE l.id = :id")
+    LoanEntity findByIdWithInstallments(@Param("id") Integer id);
 }

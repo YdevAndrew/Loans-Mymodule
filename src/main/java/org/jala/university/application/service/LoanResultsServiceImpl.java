@@ -1,15 +1,18 @@
 package org.jala.university.application.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.jala.university.ServiceFactory;
 import org.jala.university.application.mapper.LoanEntityMapper;
 import org.jala.university.domain.entity.Account;
+import org.jala.university.domain.entity.InstallmentEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.ScheduledPaymentEntity;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.repository.AccountRepository;
+import org.jala.university.domain.repository.InstallmentEntityRepository;
 import org.jala.university.domain.repository.LoanEntityRepository;
 import org.jala.university.domain.repository.ScheduledPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,8 @@ public class LoanResultsServiceImpl implements LoanResultsService {
 
     @Autowired
     private ScheduledPaymentRepository scheduledPaymentRepository;
+    @Autowired
+    private InstallmentEntityRepository installmentEntityRepository;
 
     @Override
     public Account sendAmountAccount(LoanEntity loanEntity) {
@@ -49,18 +54,31 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     }
 
     @Override
+    @Transactional
     public Account payInstallment(LoanEntity loanEntity) {
-        Account account = accountRepository.findById(1 /*colocar o método que pega a conta logada */).orElse(null);
-        Account savedAccount;
-        if (account == null) {
-            return null;
+        LoanEntity entity = loanEntityRepository.findByIdWithInstallments(loanEntity.getId());
+
+        Account account = accountRepository.findById(1/* colocar o método que pega a conta logada */)
+                .orElseThrow(() -> new IllegalStateException("Conta não encontrada"));
+
+        InstallmentEntity firstUnpaidInstallment = entity.getFirstUnpaidInstallment();
+        if (firstUnpaidInstallment == null) {
+            throw new IllegalStateException("Nenhuma parcela pendente para pagamento.");
         }
 
-        account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(
-            loanEntity.getFirstUnpaidInstallment().getAmount()
-            )));
-        savedAccount = accountRepository.save(account);
-        return savedAccount;
+        BigDecimal installmentAmount = BigDecimal.valueOf(firstUnpaidInstallment.getAmount());
+        if (account.getBalance().compareTo(installmentAmount) < 0) {
+
+            return null;
+        }
+        account.setBalance(account.getBalance().subtract(installmentAmount));
+        accountRepository.save(account);
+
+        firstUnpaidInstallment.setPaid(true);
+        firstUnpaidInstallment.setPaymentDate(LocalDate.now());
+        installmentEntityRepository.save(firstUnpaidInstallment);
+
+        return account;
     }
     
     @Override
