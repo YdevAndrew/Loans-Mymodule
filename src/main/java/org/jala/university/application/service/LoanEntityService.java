@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jala.university.application.dto.InstallmentEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.LoanEntity;
 
 public interface LoanEntityService {
@@ -17,7 +18,7 @@ public interface LoanEntityService {
     void delete(LoanEntityDto entityDto);
     LoanEntityDto update(LoanEntityDto entityDto);
     List<LoanEntityDto> findLoansByAccountId();
-    boolean payInstallmentManually(LoanEntityDto dto);
+    Account payInstallmentManually(LoanEntityDto dto);
     long getPaidInstallments(LoanEntityDto dto);
     LocalDate getFirstUnpaidInstallmentDate(LoanEntityDto dto);
     Double getOutstandingBalance(Integer loanId);
