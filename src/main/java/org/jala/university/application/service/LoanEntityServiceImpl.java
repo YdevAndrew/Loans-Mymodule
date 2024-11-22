@@ -12,6 +12,7 @@ import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.mapper.InstallmentEntityMapper;
 import org.jala.university.application.mapper.LoanEntityMapper;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.InstallmentEntity;
 import org.jala.university.domain.entity.LoanEntity;
 import org.jala.university.domain.entity.enums.Status;
@@ -157,14 +158,14 @@ public class LoanEntityServiceImpl implements LoanEntityService {
 
     @Override
     @Transactional
-    public boolean payInstallmentManually(LoanEntityDto dto) {
+    public Account payInstallmentManually(LoanEntityDto dto) {
         LoanEntity entity = findEntityById(dto.getId());
-        if (loanResultsService.payInstallment(entity) != null) {
+        Account account = loanResultsService.payInstallment(entity);
+        if (account != null) {
             entity.markAsPaid();
             loanEntityRepository.save(entity);
-            return true;
         }
-        return false;
+        return account;
     }
 
     private void scheduleStatusChange(LoanEntity loanEntity) {
