@@ -226,7 +226,7 @@ public class MyLoans {
      */
     private void handlePayInstallment(LoanEntityDto loan) {
         try {
-            Account account = loanResultsService.payInstallment(loanService.findEntityById(loan.getId()));
+            Account account = loanService.payInstallmentManually(loan);
             if (account == null) {
                 Label errorLabel = new Label("Saldo insuficiente para pagar a parcela.");
                 errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14;");
