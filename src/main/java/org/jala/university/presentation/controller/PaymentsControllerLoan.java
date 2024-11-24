@@ -34,53 +34,54 @@ import javafx.scene.layout.Pane;
 public class PaymentsControllerLoan {
 
     @FXML
-    private Label dueDateLabel;
+    public Label dueDateLabel;
 
     @FXML
-    private Button submitButton;
+    public Button submitButton;
 
     @FXML
-    private Slider loanAmountSlider;
+    public Slider loanAmountSlider;
 
     @FXML
-    private ComboBox<Integer> installmentsComboBox;
+    public ComboBox<Integer> installmentsComboBox;
 
     @FXML
-    private ComboBox<PaymentMethod> paymentMethodComboBox;
+    public ComboBox<PaymentMethod> paymentMethodComboBox;
 
     @FXML
-    private Label loanAmountLabel;
+    public Label loanAmountLabel;
 
     @Autowired
     @Qualifier("formEntityServiceImpl")
-    private FormEntityService formService;
+    public FormEntityService formService;
 
     @FXML
-    private Label installmentValueLabel;
+    public Label installmentValueLabel;
 
     @FXML
-    private Pane mainPane;
+    public Pane mainPane;
 
     @Autowired
     private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
     @Qualifier("loanEntityService")
-    private LoanEntityService loanService;
+    public LoanEntityService loanService;
 
     private FormEntityDto formEntityDto;
 
     @Autowired
-    private FormEntityMapper formEntityMapper;
+    public FormEntityMapper formEntityMapper;
 
-    private final DateFormmaterUtil dateFormatterUtil = new DateFormmaterUtil();
+    public DateFormmaterUtil dateFormatterUtil = new DateFormmaterUtil();
 
     private Double valueOfInstallments;
 
     private Double totalInterest;
 
     /**
-     * Initializes the controller, setting up event listeners and default values.
+     * Initializes the controller, setting up event listeners and default values for UI components.
+     * Initializes due date, payment methods, and sets up listeners for combo boxes and buttons.
      */
     @FXML
     public void initialize() {
@@ -94,7 +95,7 @@ public class PaymentsControllerLoan {
     }
 
     /**
-     * Initializes the due date for the first installment.
+     * Initializes the due date label with the calculated first installment due date.
      */
     private void initializeDueDate() {
         String firstInstallmentDate = dateFormatterUtil.FirstInstallmentDueDate();
@@ -102,16 +103,17 @@ public class PaymentsControllerLoan {
     }
 
     /**
-     * Populates the payment method combo box with available options.
+     * Initializes the payment method combo box with the available payment methods.
      */
     private void initializePaymentMethods() {
         paymentMethodComboBox.getItems().setAll(PaymentMethod.values());
     }
 
     /**
-     * Sets the form entity data to configure the payment options.
+     * Sets the form entity data to be used for calculating loan details.
+     * Configures the loan amount slider and label based on the provided form data.
      *
-     * @param formEntityDto the form entity containing loan-related data
+     * @param formEntityDto the form entity containing user income and maximum loan amount
      */
     public void setFormEntity(FormEntityDto formEntityDto) {
         if (formEntityDto != null) {
@@ -134,10 +136,12 @@ public class PaymentsControllerLoan {
     }
 
     /**
-     * Updates the installment value based on the loan amount and the number of installments.
+     * Updates the installment value label based on the selected loan amount and number of installments.
+     * Calculates the total payable amount and divides it by the number of installments to display
+     * the installment value.
      */
     @FXML
-    private void updateInstallmentValue() {
+    public void updateInstallmentValue() {
         Double amountBorrowed = loanAmountSlider.getValue();
         Integer numberOfInstallments = installmentsComboBox.getValue();
 
@@ -152,9 +156,11 @@ public class PaymentsControllerLoan {
     }
 
     /**
-     * Updates the due date details based on the selected number of installments.
+     * Updates the due date label with information about the installment due dates.
+     * Calculates and displays the first installment due date and the final loan due date
+     * based on the selected number of installments.
      */
-    private void updateDueDate() {
+    public void updateDueDate() {
         Integer selectedInstallments = installmentsComboBox.getValue();
         if (selectedInstallments != null) {
             String finalDueDate = dateFormatterUtil.FormattedLoanDueDate(selectedInstallments);
@@ -171,9 +177,9 @@ public class PaymentsControllerLoan {
     /**
      * Loads the payments pane into the specified main pane.
      *
-     * @param mainPane       the main pane where the payments pane will be loaded
+     * @param mainPane        the main pane where the payments pane will be loaded
      * @param springFXMLLoader the loader used to load the FXML file
-     * @param formEntityDto  the form entity containing loan-related data
+     * @param formEntityDto   the form entity containing loan-related data
      */
     public static void loadPaymentsPane(Pane mainPane, SpringFXMLLoader springFXMLLoader, FormEntityDto formEntityDto) {
         try {
@@ -187,7 +193,7 @@ public class PaymentsControllerLoan {
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(paymentsPane);
             } else {
-                System.err.println("Erro:mainPane was not initialized in FormController.");
+                System.err.println("Error: mainPane was not initialized in FormController.");
             }
         } catch (IOException e) {
             System.err.println("Error loading Payments.fxml: " + e.getMessage());
@@ -197,6 +203,7 @@ public class PaymentsControllerLoan {
 
     /**
      * Loads the "My Loans" pane into the main pane.
+     * Clears the existing content of the main pane and loads the FXML file for the "My Loans" view.
      */
     private void loadMyLoansPane() {
         try {
@@ -209,7 +216,7 @@ public class PaymentsControllerLoan {
                 mainPane.getChildren().clear();
                 mainPane.getChildren().add(myLoansPane);
             } else {
-                System.err.println("Erro: mainPane was not initialized in PaymentsController.");
+                System.err.println("Error: mainPane was not initialized in PaymentsController.");
             }
         } catch (IOException e) {
             System.err.println("Error loading MyLoans.fxml: " + e.getMessage());
@@ -219,9 +226,9 @@ public class PaymentsControllerLoan {
 
     /**
      * Saves the loan data to the database.
-     * Validates input fields and formats dates before saving.
+     * Validates input fields, formats dates, and saves the loan data using the loan service.
      */
-    private void saveLoanToDatabase() {
+    public void saveLoanToDatabase() {
         try {
             Double amountBorrowed = loanAmountSlider.getValue();
             Integer numberOfInstallments = installmentsComboBox.getValue();

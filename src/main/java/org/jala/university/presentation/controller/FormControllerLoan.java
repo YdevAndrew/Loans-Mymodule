@@ -5,12 +5,14 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
 
+import jakarta.xml.bind.ValidationException;
 import javafx.application.Platform;
 import org.jala.university.application.dto.FormEntityDto;
 import org.jala.university.application.dto.LoanEntityDto;
 import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.application.service.FormEntityService;
 import org.jala.university.application.service.LoanEntityService;
+import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.presentation.SpringFXMLLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,9 +26,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * Controller for managing the loan request form.
- */
+import javax.naming.ServiceUnavailableException;
+
 @Controller
 public class FormControllerLoan {
 
@@ -54,9 +55,6 @@ public class FormControllerLoan {
 
     public File incomeProofFile;
 
-    /**
-     * Initializes the controller after its root element has been loaded.
-     */
     @FXML
     private void initialize() {
         if (mainPane == null) {
@@ -65,32 +63,24 @@ public class FormControllerLoan {
         checkExistingApprovedLoan();
     }
 
-    /**
-     * Checks if the user has an approved loan and disables the loan request functionality if true.
-     */
     private void checkExistingApprovedLoan() {
         try {
-            List<LoanEntityDto> userLoans = loanService.findAll(); // Alterar para buscar por usuário logado no futuro
-
+            List<LoanEntityDto> userLoans = loanService.findAll(); // TODO: Ajustar para buscar pelo usuário autenticado
 
             boolean hasBlockedLoan = userLoans.stream()
-                    .anyMatch(loan -> "APPROVED".equalsIgnoreCase(String.valueOf(loan.getStatus()))
-                            || "REVIEW".equalsIgnoreCase(String.valueOf(loan.getStatus())));
+                    .anyMatch(loan -> loan.getStatus() == Status.APPROVED // Use o enum Status
+                            || loan.getStatus() == Status.REVIEW);
 
             if (hasBlockedLoan) {
-
                 disableLoanRequestButton("You cannot request a new loan because you have an active loan under review or approved.");
             }
-        } catch (Exception e) {
-            showErrorPopup("An error occurred while checking loan status. Please try again.");
+        } catch (Exception e) { // Capture apenas exceções realmente relevantes
+            logError("Unexpected error while checking loan status: ", e);
+            showErrorPopup("An unexpected error occurred while checking loan status. Please try again.");
         }
     }
 
-    /**
-     * Disables the loan request button and shows an informational popup.
-     *
-     * @param message the message to display in the popup
-     */
+
     private void disableLoanRequestButton(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -99,24 +89,14 @@ public class FormControllerLoan {
             alert.setContentText(message);
             alert.showAndWait();
         });
-        incomeProofButton.setDisable(true); 
+        incomeProofButton.setDisable(true);
     }
 
-    /**
-     * Opens a file chooser for selecting proof of income.
-     */
     @FXML
     private void chooseIncomeProof() {
         incomeProofFile = openFileChooser("Choose Proof of Income", incomeProofButton);
     }
 
-    /**
-     * Opens a file chooser dialog with specified title and updates the button text.
-     *
-     * @param title  the title of the file chooser dialog
-     * @param button the button to update with the selected file's name
-     * @return the selected file, or null if no file was chosen
-     */
     private File openFileChooser(String title, Button button) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -131,27 +111,20 @@ public class FormControllerLoan {
         return file;
     }
 
-    /**
-     * Submits the loan request by validating inputs, ensuring a file is linked,
-     * and sending the data to the service layer.
-     */
     @FXML
     public void submitLoanRequest() {
         String salaryText = salaryField.getText();
         double salary;
 
-        // Validate salary input
         try {
             salary = Double.parseDouble(salaryText);
         } catch (NumberFormatException e) {
-            showErrorPopup("Erro: Invalid salary.");
+            showErrorPopup("Error: Invalid salary.");
             return;
         }
 
-        // Check if a document is linked
-        if (validateInputs(salary) && incomeProofFile != null && incomeProofFile.exists()) {
+        if (validateInputs(salary)) {
             try {
-                // Encode the selected file to Base64
                 String incomeProofBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(incomeProofFile.toPath()));
 
                 FormEntityDto formDto = FormEntityDto.builder()
@@ -159,47 +132,26 @@ public class FormControllerLoan {
                         .proofOfIncome(incomeProofBase64.getBytes())
                         .build();
 
-                // Save the form DTO through the service layer
                 FormEntityDto savedFormDto = formService.save(formDto);
 
-                // Show success popup
                 showSuccessPopup("Request sent successfully!");
-
-                // Load payments pane with the saved form details
                 PaymentsControllerLoan.loadPaymentsPane(mainPane, springFXMLLoader, savedFormDto);
-
-                // Reset file and UI after successful submission
                 resetFormState();
-
             } catch (Exception e) {
-                e.printStackTrace();
+                logError("Error processing the loan request: ", e);
                 showErrorPopup("Error processing the file. Please try again.");
-            }
-        } else {
-            // Show error if no file is linked
-            if (incomeProofFile == null || !incomeProofFile.exists()) {
-                showErrorPopup("Erro: Please attach a valid income proof document.");
             }
         }
     }
 
-    /**
-     * Resets the form state, clearing temporary variables and UI components.
-     */
     private void resetFormState() {
-        incomeProofFile = null; // Reset the linked file
-        salaryField.clear(); // Clear the salary input field
-        incomeProofButton.setText("No files selected"); // Reset the button text
+        incomeProofFile = null;
+        salaryField.clear();
+        incomeProofButton.setText("No files selected");
     }
 
-    /**
-     * Validates the inputs for the loan request.
-     *
-     * @param salary the salary input to validate
-     * @return true if inputs are valid, false otherwise
-     */
     public boolean validateInputs(double salary) {
-        if (incomeProofFile == null) {
+        if (incomeProofFile == null || !incomeProofFile.exists()) {
             showErrorPopup("Proof of income was not selected.");
             return false;
         }
@@ -210,11 +162,6 @@ public class FormControllerLoan {
         return true;
     }
 
-    /**
-     * Displays an error popup with the specified message.
-     *
-     * @param message the error message to display
-     */
     private void showErrorPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -225,11 +172,6 @@ public class FormControllerLoan {
         });
     }
 
-    /**
-     * Displays a success popup with the specified message.
-     *
-     * @param message the success message to display
-     */
     private void showSuccessPopup(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -238,5 +180,10 @@ public class FormControllerLoan {
             alert.setContentText(message);
             alert.showAndWait();
         });
+    }
+
+    private void logError(String message, Exception e) {
+        System.err.println(message + e.getMessage());
+        e.printStackTrace();
     }
 }
