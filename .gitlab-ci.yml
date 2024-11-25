@@ -22,7 +22,7 @@ build-job:
   stage: build
   script:
     - echo "Compiling source code with dummy dependencies"
-    - mvn clean compile -DskipTests -Dmaven.test.skip=true
+    - mvn clean compile 
     - echo "Compilation completed."
   artifacts:
     paths:
@@ -33,7 +33,7 @@ unit-test-job:
   needs: [build-job]
   script:
     - echo "Running unit tests"
-    - mvn test -Dtest='!*FormControllerTest' -DfailIfNoTests=false
+    - mvn clean compile test
     - echo "Unit tests completed."
   artifacts:
     paths:
@@ -44,7 +44,7 @@ coverage-job:
   needs: [unit-test-job]
   script:
     - echo "Generating code coverage report with Jacoco"
-    - mvn verify -Dtest='!*FormControllerTest' -DfailIfNoTests=false jacoco:report
+    - mvn verify  jacoco:report
     - echo "Coverage report generated."
   artifacts:
     paths:
@@ -55,7 +55,7 @@ package-job:
   needs: [coverage-job]
   script:
     - echo "Packaging the application with dummy dependencies"
-    - mvn clean package -DskipTests -Dmaven.test.skip=true
+    - mvn clean package 
     - echo "Packaged application."
   artifacts:
     paths:
