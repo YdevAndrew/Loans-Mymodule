@@ -13,7 +13,6 @@ import org.jala.university.application.service.LoanResultsService;
 import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.domain.entity.enums.Status;
 import org.jala.university.presentation.controller.MyLoans;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,17 +21,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class MyLoansTest {
-
-    @BeforeAll
-    static void initToolkit() {
-        if (!Platform.isFxApplicationThread()) {
-            Platform.startup(() -> {});
-        }
-    }
 
     private MyLoans myLoans;
     private LoanEntityService loanService;

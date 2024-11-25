@@ -16,7 +16,6 @@ import org.jala.university.domain.entity.enums.PaymentMethod;
 import org.jala.university.presentation.controller.PaymentsControllerLoan;
 import org.jala.university.utils.CalculationUtil;
 import org.jala.university.utils.DateFormmaterUtil;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,13 +29,6 @@ public class PaymentsControllerLoanTest {
     private LoanEntityService loanService;
     private FormEntityMapper formEntityMapper;
     private DateFormmaterUtil dateFormmaterUtil;
-
-    @BeforeAll
-    static void initToolkit() {
-        if (!Platform.isFxApplicationThread()) {
-            Platform.startup(() -> {});
-        }
-    }
 
     @BeforeEach
     void setUp() {
