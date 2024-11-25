@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="1254.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.MainViewControllerLoan">
+   <children>
+
+      <ImageView fx:id="image2" fitHeight="46.0" fitWidth="202.0" layoutX="713.0" layoutY="190.0">
+         <image>
+            <Image url="@/images/Botão.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image3" fitHeight="18.0" fitWidth="172.0" layoutX="728.0" layoutY="204.0">
+         <image>
+            <Image url="@images/Fixed%20rate%20of%202%25%20per%20month.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image4" fitHeight="139.0" fitWidth="410.0" layoutX="14.0" layoutY="213.0">
+         <image>
+            <Image url="@../images/Text.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image8" fitHeight="139.0" fitWidth="1303.0" layoutX="3.0">
+         <image>
+            <Image url="@../images/fundo (1).png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image9" fitHeight="28.0" fitWidth="439.0" layoutX="14.0" layoutY="69.0">
+         <image>
+            <Image url="@../images/Transparent, safe, and your way.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image10" fitHeight="18.0" fitWidth="131.0" layoutX="23.0" layoutY="32.0">
+         <image>
+            <Image url="@../images/Loans JalaU.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image11" fitHeight="146.0" fitWidth="306.0" layoutX="674.0" layoutY="-7.0">
+         <image>
+            <Image url="@/images/tablet.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image12" fitHeight="43.0" fitWidth="200.0" layoutX="714.0" layoutY="258.0">
+         <image>
+            <Image url="@/images/Botão.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image13" fitHeight="43.0" fitWidth="200.0" layoutX="715.0" layoutY="312.0">
+         <image>
+            <Image url="@/images/Botão.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image14" fitHeight="18.0" fitWidth="189.0" layoutX="720.0" layoutY="271.0">
+         <image>
+            <Image url="@../images/Installments in up to 36 months.png" />
+         </image>
+      </ImageView>
+
+      <ImageView fx:id="image15" fitHeight="18.0" fitWidth="122.0" layoutX="754.0" layoutY="325.0">
+         <image>
+            <Image url="@../images/Instant results.png" />
+         </image>
+      </ImageView>
+
+      <Button fx:id="loanButton" layoutX="50.0" layoutY="488.0" mnemonicParsing="false" onAction="#startLoanSimulation" prefHeight="12.0" prefWidth="159.0" style="-fx-background-color: #004BD6;" textFill="#3d40e8">
+         <graphic>
+            <ImageView fx:id="image16" fitHeight="30.0" fitWidth="182.0">
+               <image>
+                  <Image url="@../images/button.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+
+   </children>
+</Pane>
