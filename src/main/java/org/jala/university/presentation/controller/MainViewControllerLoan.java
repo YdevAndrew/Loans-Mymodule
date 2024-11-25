@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for managing the main view of the application.
+ * Controller for managing the main view of the loan application.
  */
 @Controller
 public class MainViewControllerLoan {
@@ -36,14 +36,8 @@ public class MainViewControllerLoan {
             image9, image10, image11, image12, image13, image14, image15, image16;
 
     /**
-     * Default constructor for MainViewController.
-     */
-    public MainViewControllerLoan() {
-    }
-
-    /**
      * Initializes the controller after its root element has been loaded.
-     * Populates the list of ImageView elements.
+     * Populates the list of ImageView elements for easier management.
      */
     @FXML
     public void initialize() {
@@ -67,6 +61,7 @@ public class MainViewControllerLoan {
 
     /**
      * Starts the loan simulation process by loading the loan form view.
+     * Clears the current pane and loads the FXML file responsible for the loan form.
      */
     @FXML
     public void startLoanSimulation() {
@@ -84,6 +79,7 @@ public class MainViewControllerLoan {
 
     /**
      * Navigates back to the main menu, restoring the initial view.
+     * Clears the pane and adds the initial UI elements back, toggling their visibility.
      */
     @FXML
     public void goBackToMenu() {
@@ -94,6 +90,7 @@ public class MainViewControllerLoan {
 
     /**
      * Toggles the visibility of UI elements based on the provided flag.
+     * Manages the visibility of the loan button and a list of image views.
      *
      * @param showInitial true to show the initial view, false to hide it
      */

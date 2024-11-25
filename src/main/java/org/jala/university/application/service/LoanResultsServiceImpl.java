@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * This class implements the {@link LoanResultsService} interface, providing concrete
+ * implementations for handling loan results and related actions.
+ */
 @Service
 public class LoanResultsServiceImpl implements LoanResultsService {
 
@@ -34,9 +38,12 @@ public class LoanResultsServiceImpl implements LoanResultsService {
     @Autowired
     private ScheduledPaymentRepository scheduledPaymentRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Account sendAmountAccount(LoanEntity loanEntity) {
-        Account account = accountRepository.findById(1 /*colocar o método que pega a conta logada */).orElse(null);
+        Account account = accountRepository.findById(1 /*replace with method to get logged-in account */).orElse(null);
         Account savedAccount;
 
         if (account == null) {
@@ -47,30 +54,35 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         return savedAccount;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Account payInstallment(LoanEntity loanEntity) {
-        Account account = accountRepository.findById(1/* colocar o método que pega a conta logada */)
-                .orElseThrow(() -> new IllegalStateException("Conta não encontrada"));
+        Account account = accountRepository.findById(1/* replace with method to get logged-in account */)
+                .orElseThrow(() -> new IllegalStateException("Account not found"));
 
         InstallmentEntity firstUnpaidInstallment = loanEntity.getFirstUnpaidInstallment();
         if (firstUnpaidInstallment == null) {
-            throw new IllegalStateException("Nenhuma parcela pendente para pagamento.");
+            throw new IllegalStateException("No pending installment for payment.");
         }
 
         BigDecimal installmentAmount = BigDecimal.valueOf(firstUnpaidInstallment.getAmount());
         if (account.getBalance().compareTo(installmentAmount) < 0) {
-
             return null;
         }
-        
+
         account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(
-            loanEntity.getFirstUnpaidInstallment().getAmount()
-            )));
-        
+                loanEntity.getFirstUnpaidInstallment().getAmount()
+        )));
+
         return accountRepository.save(account);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void verifyIfScheduled(LoanEntity loanEntity) {
         if (loanEntity.getPaymentMethod().getCode() == PaymentMethod.DEBIT_ACCOUNT.getCode()) {
@@ -78,13 +90,18 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         }
     }
 
-    // Chama o método de pagamento agendado.
-    // O método ainda não está com a lógica completa porque o pagamento
-    // agendado ainda não foi feito no módulo de pagamentos externos.
+    /**
+     * Schedules the payment for a loan entity.
+     * The method is not yet fully implemented as the scheduled payment
+     * has not been implemented in the external payments module.
+     *
+     * @param loanEntity The loan entity to schedule the payment for.
+     * @return True if the payment is scheduled successfully, false otherwise.
+     */
     @Transactional
     boolean schedulePayment(LoanEntity loanEntity) {
-        if (/*método != null*/true) {
-            //colocar o id que o método retorna
+        if (/*method != null*/true) {
+            //replace with the ID returned by the method
             Integer id = 1;
             loanEntity.setScheduledPayment(scheduledPaymentRepository.findById(id).orElse(null));
             return true;
@@ -92,7 +109,10 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         return false;
     }
 
-    // Agendamento da verificação a cada 24 horas
+    /**
+     * Verifies and updates paid installments for loans with scheduled payments.
+     * This method is scheduled to run every 24 hours.
+     */
     @Scheduled(fixedRate = 86400000)
     void verifyAndUpdatePaidInstallments() {
         List<LoanEntity> loansInReview = loanEntityRepository.findByStatusPaymentMethod(1, 1);
@@ -102,6 +122,12 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         }
     }
 
+    /**
+     * Processes a loan with retries to handle potential errors during payment updates.
+     *
+     * @param loan        The loan entity to process.
+     * @param retryCount The number of retry attempts.
+     */
     void processLoanWithRetry(LoanEntity loan, int retryCount) {
         for (int attempt = 1; attempt <= retryCount; attempt++) {
             try {
@@ -117,13 +143,17 @@ public class LoanResultsServiceImpl implements LoanResultsService {
         }
     }
 
-    // Método para atualizar as parcelas pagas de um empréstimo
-    @Transactional 
+    /**
+     * Updates the paid installments for a loan entity based on the scheduled payment information.
+     *
+     * @param loanEntity The loan entity to update.
+     */
+    @Transactional
     void updateLoanPaidInstallments(LoanEntity loanEntity) {
         ScheduledPaymentEntity scheduledPaymentEntity = loanEntity.getScheduledPayment();
         long payments = loanEntityRepository.countCompletedPaymentsForLoan(scheduledPaymentEntity);
         long paidInstallments = loanEntity.getNumberOfPaidInstallments();
-        
+
         if (payments > paidInstallments) {
             long installmentsToMarkAsPaid = payments - paidInstallments;
             LoanEntity loan = loanEntityService.findEntityById(loanEntity.getId());
@@ -131,64 +161,5 @@ public class LoanResultsServiceImpl implements LoanResultsService {
             loanEntityRepository.save(loan);
         }
     }
-
-    // Chama o método de transferir e guardar histórico do módulo de transferência.
-    // Para mandar o dinheiro emprestado para a conta.
-    // @Override
-    // public PaymentHistoryDTO sendAmountAccount(LoanEntity loanEntity) {
-
-    //     Integer bankId = 1;
-    //     AccountDto accountBank = accountService.getAccount(bankId);
-    //     if (accountBank == null) {
-    //         AccountDto accountDto = AccountDto.builder()
-    //                 .id(bankId)
-    //                 .accountNumber("12345")
-    //                 .balance(BigDecimal.valueOf(9999999999999999L))
-    //                 .status(AccountStatus.ACTIVE)
-    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
-    //                 .build();
-    //         accountBank = accountService.createAccount(accountDto);
-    //     }
-
-    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .amount(BigDecimal.valueOf(loanEntity.getAmountBorrowed()))
-    //             .transactionDate(LocalDateTime.now())
-    //             .agencyReceiver("This")
-    //             .accountReceiver(loanEntity.getAccount().getAccountNumber())
-    //             .nameReceiver("Loan applicant")
-    //             .bankNameReceiver("This")
-    //             .build();
-
-    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    // }
-
-    // // Chama o método de transferir e guardar histórico do módulo de transferência.
-    // // Para pagar a parcela manualmente.
-    // @Override
-    // public PaymentHistoryDTO payInstallment(LoanEntity loanEntity) {
-
-    //     Integer bankId = 1;
-    //     AccountDto accountBank = accountService.getAccount(bankId);
-    //     if (accountBank == null) {
-    //         AccountDto accountDto = AccountDto.builder()
-    //                 .id(bankId)
-    //                 .accountNumber("12345")
-    //                 .balance(BigDecimal.valueOf(9999999999999999L))
-    //                 .status(AccountStatus.ACTIVE)
-    //                 .currency(org.jala.university.domain.entity.Currency.fromCode("USD"))
-    //                 .build();
-    //         accountBank = accountService.createAccount(accountDto);
-    //     }
-
-    //     PaymentHistoryDTO paymentHistoryDTO = PaymentHistoryDTO.builder()
-    //             .amount(BigDecimal.valueOf(loanEntity.getValueOfInstallments()))
-    //             .transactionDate(LocalDateTime.now())
-    //             .agencyReceiver("This")
-    //             .accountReceiver(accountBank.getAccountNumber())
-    //             .nameReceiver("Loan applicant")
-    //             .bankNameReceiver("This")
-    //             .build();
-
-    //     return paymentHistoryService.createPaymentHistory(paymentHistoryDTO);
-    // }
 }
+

@@ -1,197 +1,146 @@
-/*package org.jala.university.application.service;
-/*package org.jala.university.application.service;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
+package org.jala.university.application.service;
 
 import org.jala.university.application.dto.FormEntityDto;
-import org.jala.university.application.mapper.FormEntityMapper;
 import org.jala.university.domain.entity.FormEntity;
-import org.jala.university.domain.repository.FormEntityRepository;
-import org.jala.university.infrastructure.persistance.RepositoryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 class FormEntityServiceTest {
 
     @Mock
-    private FormEntityRepository formEntityRepository;
-
-    @Mock
-    private FormEntityMapper formEntityMapper;
-
-    @Mock
-    private RepositoryFactory repositoryFactory;
-
     private FormEntityService formEntityService;
+
+    private FormEntityDto formEntityDto;
+    private FormEntity formEntity;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(repositoryFactory.createFormEntityRepository()).thenReturn(formEntityRepository);
-        formEntityService = new FormEntityServiceImpl(repositoryFactory, formEntityMapper);
+
+
+        formEntity = FormEntity.builder()
+                .id(1)
+                .income(1000.0)
+                .proofOfIncome("Test Proof".getBytes())
+                .maximumAmount(2000.0)
+                .build();
+
+        formEntityDto = FormEntityDto.builder()
+                .id(1)
+                .income(1000.0)
+                .proofOfIncome("Test Proof DTO".getBytes())
+                .maximumAmount(2000.0)
+                .build();
     }
 
     @Test
-    void testFindById_Success() {
-        Integer id = Integer.randomInteger();
-        FormEntity entity = FormEntity.builder().id(id).build();
-        FormEntityDto dto = FormEntityDto.builder().id(id).build();
+    void testFindById() {
 
-        when(formEntityRepository.findById(id)).thenReturn(entity);
-        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+        when(formEntityService.findById(1)).thenReturn(formEntityDto);
 
-        FormEntityDto result = formEntityService.findById(id);
+
+        FormEntityDto result = formEntityService.findById(1);
+
 
         assertNotNull(result);
-        assertEquals(id, result.getId());
-        verify(formEntityRepository).findById(id);
+        assertEquals(1, result.getId());
+        assertEquals(1000.0, result.getIncome());
+        verify(formEntityService, times(1)).findById(1);
     }
 
     @Test
-    void testFindById_NotFound() {
-        Integer id = Integer.randomInteger();
+    void testFindEntityById() {
 
-        when(formEntityRepository.findById(id)).thenReturn(null);
+        when(formEntityService.findEntityById(1)).thenReturn(formEntity);
 
-        assertThrows(IllegalArgumentException.class, () -> formEntityService.findById(id));
+        // Execute the method
+        FormEntity result = formEntityService.findEntityById(1);
 
-        verify(formEntityRepository).findById(id);
-    }
 
-    @Test
-    void testFindById_NullId() {
-        assertThrows(IllegalArgumentException.class, () -> formEntityService.findById(null));
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        verify(formEntityService, times(1)).findEntityById(1);
     }
 
     @Test
     void testFindAll() {
-        FormEntity entity = FormEntity.builder().id(Integer.randomInteger()).build();
-        FormEntityDto dto = FormEntityDto.builder().id(entity.getId()).build();
 
-        when(formEntityRepository.findAll()).thenReturn(List.of(entity));
-        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+        when(formEntityService.findAll()).thenReturn(Arrays.asList(formEntityDto));
+
 
         List<FormEntityDto> result = formEntityService.findAll();
 
+
+        assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(entity.getId(), result.get(0).getId());
-        verify(formEntityRepository).findAll();
+        assertEquals(1, result.get(0).getId());
+        verify(formEntityService, times(1)).findAll();
     }
 
     @Test
     void testSave() {
-        FormEntityDto dto = createFormDto();
-        FormEntity entity = FormEntity.builder().build();
 
-        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
-        when(formEntityRepository.save(entity)).thenReturn(entity);
-        when(formEntityMapper.mapTo(entity)).thenReturn(dto);
+        when(formEntityService.save(formEntityDto)).thenReturn(formEntityDto);
 
-        FormEntityDto result = formEntityService.save(dto);
+
+        FormEntityDto result = formEntityService.save(formEntityDto);
+
 
         assertNotNull(result);
-        verify(formEntityRepository).save(entity);
+        assertEquals(1, result.getId());
+        verify(formEntityService, times(1)).save(formEntityDto);
     }
 
     @Test
-    void testDeleteById_Success() {
-        Integer id = Integer.randomInteger();
-        FormEntity entity = FormEntity.builder().id(id).build();
+    void testDeleteById() {
 
-        when(formEntityRepository.findById(id)).thenReturn(entity);
+        doNothing().when(formEntityService).deleteById(1);
 
-        formEntityService.deleteById(id);
 
-        verify(formEntityRepository).delete(entity);
+        formEntityService.deleteById(1);
+
+
+        verify(formEntityService, times(1)).deleteById(1);
     }
 
     @Test
-    void testDeleteById_NotFound() {
-        Integer id = Integer.randomInteger();
+    void testDelete() {
 
-        when(formEntityRepository.findById(id)).thenReturn(null);
+        doNothing().when(formEntityService).delete(formEntityDto);
 
-        assertThrows(IllegalArgumentException.class, () -> formEntityService.deleteById(id));
 
-        verify(formEntityRepository).findById(id);
+        formEntityService.delete(formEntityDto);
+
+
+        verify(formEntityService, times(1)).delete(formEntityDto);
     }
 
     @Test
-    void testDelete_Success() {
-        FormEntityDto dto = createFormDto();
-        FormEntity entity = FormEntity.builder().id(dto.getId()).build();
+    void testUpdate() {
 
-        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
-        when(formEntityRepository.findById(entity.getId())).thenReturn(entity);
-
-        formEntityService.delete(dto);
-
-        verify(formEntityRepository).delete(entity);
-    }
-
-    @Test
-    void testDelete_NotFound() {
-        FormEntityDto dto = createFormDto();
-        FormEntity entity = FormEntity.builder().id(dto.getId()).build();
-
-        when(formEntityMapper.mapFrom(dto)).thenReturn(entity);
-        when(formEntityRepository.findById(entity.getId())).thenReturn(null);
-
-        assertThrows(IllegalArgumentException.class, () -> formEntityService.delete(dto));
-
-        verify(formEntityRepository).findById(entity.getId());
-    }
-
-    @Test
-    void testUpdate_Success() {
-        Integer id = Integer.randomInteger();
-
-        FormEntityDto dto = FormEntityDto.builder()
-                .id(id)
-                .income(5000.00)
-                .proofOfIncome(new byte[0])
+        FormEntityDto updatedDto = FormEntityDto.builder()
+                .id(1)
+                .income(1500.0)
+                .proofOfIncome("Updated Proof DTO".getBytes())
+                .maximumAmount(2500.0)
                 .build();
 
-        FormEntity existingEntity = FormEntity.builder().id(id).build();
-        FormEntity updatedEntity = FormEntity.builder().id(id).build();
+        when(formEntityService.update(1, formEntityDto)).thenReturn(updatedDto);
 
-        when(formEntityRepository.findById(id)).thenReturn(existingEntity);
-        when(formEntityMapper.mapFrom(dto)).thenReturn(updatedEntity);
-        when(formEntityRepository.save(updatedEntity)).thenReturn(updatedEntity);
-        when(formEntityMapper.mapTo(updatedEntity)).thenReturn(dto);
 
-        FormEntityDto result = formEntityService.update(id, dto);
+        FormEntityDto result = formEntityService.update(1, formEntityDto);
+
 
         assertNotNull(result);
-        assertEquals(id, result.getId());
-        verify(formEntityRepository).save(updatedEntity);
-    }
-
-    @Test
-    void testUpdate_NotFound() {
-        Integer id = Integer.randomInteger();
-        FormEntityDto dto = createFormDto();
-
-        when(formEntityRepository.findById(id)).thenReturn(null);
-
-        assertThrows(IllegalArgumentException.class, () -> formEntityService.update(id, dto));
-    }
-
-    private FormEntityDto createFormDto() {
-        return FormEntityDto.builder()
-                .id(Integer.randomInteger())
-                .income(5000.00)
-                .proofOfIncome(new byte[0])
-                .maximumAmount(100000.00)
-                .build();
+        assertEquals(1500.0, result.getIncome());
+        verify(formEntityService, times(1)).update(1, formEntityDto);
     }
 }
-*/

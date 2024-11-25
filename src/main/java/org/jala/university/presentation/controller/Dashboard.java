@@ -55,11 +55,17 @@ public class Dashboard {
     @FXML
     public Label dateLabel;
 
+
+    public AnchorPane getMainViewContainer() {
+        return mainViewContainer;
+    }
+
     private boolean isBalanceVisible = false;
     private double balance = 1234.56;
 
     /**
      * Initializes the controller after its root element has been completely processed.
+     * Sets up the initial state of the view and handles the toggle button action.
      */
     @FXML
     public void initialize() {
@@ -80,11 +86,12 @@ public class Dashboard {
         myCardsVBox.setVisible(!isVisible);
         myCardsVBox.setManaged(!isVisible);
 
-        if (isVisible) {
-            otherButtonsVBox.setVisible(true);
-        } else {
-            otherButtonsVBox.setVisible(true);
-        }
+        // This logic seems redundant, as the VBox is always set to visible
+        // if (isVisible) {
+        //     otherButtonsVBox.setVisible(true);
+        // } else {
+        //     otherButtonsVBox.setVisible(true);
+        // }
     }
 
     /**
@@ -111,7 +118,7 @@ public class Dashboard {
         try {
             System.out.println("Trying to load main-viewLoan.fxml...");
 
-            FXMLLoader loader = springFXMLLoader.load("/main-viewLoan.fxml");
+            FXMLLoader loader = springFXMLLoader.load("/Main-viewLoan/main-viewLoan.fxml");
             Node mainViewContent = loader.load();
 
             mainViewContainer.getChildren().clear();

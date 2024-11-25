@@ -33,38 +33,36 @@ import java.util.stream.Collectors;
 public class MyLoans {
 
     public HBox filterBar;
-
     public AnchorPane mainContainer;
 
     @FXML
-    private FlowPane loansContainer;
+    public FlowPane loansContainer;
 
     @FXML
-    private ComboBox<String> statusFilterComboBox;
+    public ComboBox<String> statusFilterComboBox;
 
     private double currentOffset = 0;
 
     @Autowired
-    private LoanResultsService loanResultsService;
+    public LoanResultsService loanResultsService;
 
     @Autowired
     @Qualifier("loanEntityService")
-    private LoanEntityService loanService;
+    public LoanEntityService loanService;
 
-    private Label noLoanLabel;
-
+    public Label noLoanLabel;
     private final ObservableList<String> statuses = FXCollections.observableArrayList("ALL", "APPROVED", "REJECTED", "REVIEW", "FINISHED");
 
     /**
      * Initializes the controller, setting up UI components and loading initial data.
+     * Adds a listener for scroll events and sets up the status filter combo box.
      */
+    @FXML
     public void initialize() {
         noLoanLabel = new Label("No loans found.");
         noLoanLabel.setStyle("-fx-font-size: 16; -fx-text-fill: gray;");
         loansContainer.getChildren().add(noLoanLabel);
         mainContainer.setOnScroll(this::handleScroll);
-
-
 
         statusFilterComboBox.setItems(statuses);
         statusFilterComboBox.setValue("ALL");
@@ -77,11 +75,8 @@ public class MyLoans {
      * @param event ScrollEvent triggered by the user.
      */
     private void handleScroll(ScrollEvent event) {
-
         double deltaY = event.getDeltaY() * 0.5;
-
         double newOffset = currentOffset - deltaY;
-
 
         double maxOffset = loansContainer.getHeight() - mainContainer.getPrefHeight();
         if (newOffset < 0) {
@@ -89,7 +84,6 @@ public class MyLoans {
         } else if (newOffset > maxOffset) {
             newOffset = maxOffset;
         }
-
 
         loansContainer.setLayoutY(-newOffset);
         currentOffset = newOffset;
@@ -99,6 +93,8 @@ public class MyLoans {
 
     /**
      * Loads the details of loans based on the selected filter status.
+     * Retrieves loans from the service, filters them based on the selected status,
+     * and dynamically creates UI elements to display the loan details.
      */
     public void loadLoanDetails() {
         String selectedStatus = statusFilterComboBox.getValue();
@@ -132,11 +128,11 @@ public class MyLoans {
     /**
      * Creates a VBox containing details of a loan.
      *
-     * @param loan The loan entity to display.
+     * @param loan           The loan entity to display.
      * @param dateFormatter DateTimeFormatter for formatting dates.
      * @return A styled VBox with loan details.
      */
-    private VBox createLoanBox(LoanEntityDto loan, DateTimeFormatter dateFormatter) {
+    public VBox createLoanBox(LoanEntityDto loan, DateTimeFormatter dateFormatter) {
         VBox loanBox = new VBox();
         loanBox.setSpacing(10);
         loanBox.setPrefSize(350, 600);
@@ -153,14 +149,12 @@ public class MyLoans {
         addDetailToVBox(loanBox, "Total Amount + Interest:", String.format("R$ %.2f", loan.getAmountBorrowed() + loan.getTotalInterest()));
         addDetailToVBox(loanBox, "Payment Method:", loan.getPaymentMethod().name());
 
-        // Call the new method to get the outstanding balance
         Double outstandingBalance = getOutstandingBalance(loan.getId());
         addDetailToVBox(loanBox, "Outstanding Balance:", String.format("R$ %.2f", outstandingBalance));
 
         long paidInstallments = loanService.getPaidInstallments(loan);
         addDetailToVBox(loanBox, "Paid Installments:", String.format("%d / %d", paidInstallments, loan.getNumberOfInstallments()));
 
-        // Add the payment section if the status is APPROVED
         if ("APPROVED".equalsIgnoreCase(loan.getStatus().name())) {
             VBox paymentSection = createPaymentSection(loan);
             loanBox.getChildren().add(paymentSection);
@@ -176,9 +170,8 @@ public class MyLoans {
      * @return The outstanding balance.
      */
     public Double getOutstandingBalance(Integer loanId) {
-        return loanService.getOutstandingBalance(loanId); // Assuming LoanEntityService has this method
+        return loanService.getOutstandingBalance(loanId);
     }
-
 
     /**
      * Creates a payment section for an approved loan.
@@ -219,16 +212,18 @@ public class MyLoans {
 
         return paymentBox;
     }
+
     /**
      * Handles the "Pay Installment" button click.
+     * Attempts to pay the next installment of the loan and updates the UI accordingly.
      *
      * @param loan The loan entity to process the payment for.
      */
-    private void handlePayInstallment(LoanEntityDto loan) {
+    public void handlePayInstallment(LoanEntityDto loan) {
         try {
             Account account = loanService.payInstallmentManually(loan);
             if (account == null) {
-                Label errorLabel = new Label("Saldo insuficiente para pagar a parcela.");
+                Label errorLabel = new Label("Insufficient balance to pay the installment.");
                 errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14;");
                 loansContainer.getChildren().add(errorLabel);
                 removeLabelAfterDelay(errorLabel, 3);
@@ -237,21 +232,26 @@ public class MyLoans {
             }
 
             loadLoanDetails();
-            Label successLabel = new Label("Parcela paga com sucesso!");
+            Label successLabel = new Label("Installment paid successfully!");
             successLabel.setStyle("-fx-text-fill: green; -fx-font-size: 14;");
             loansContainer.getChildren().add(successLabel);
             removeLabelAfterDelay(successLabel, 3);
 
         } catch (Exception e) {
-            System.err.println("Erro ao processar pagamento: " + e.getMessage());
-            Label errorLabel = new Label("Erro ao processar o pagamento. Tente novamente.");
+            System.err.println("Error processing payment: " + e.getMessage());
+            Label errorLabel = new Label("Error processing payment. Please try again.");
             errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14;");
             loansContainer.getChildren().add(errorLabel);
             removeLabelAfterDelay(errorLabel, 3);
         }
     }
 
-
+    /**
+     * Removes a label from the loansContainer after a specified delay.
+     *
+     * @param label   The label to remove.
+     * @param seconds The delay in seconds before removing the label.
+     */
     private void removeLabelAfterDelay(Label label, int seconds) {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(seconds), e -> loansContainer.getChildren().remove(label)));
         timeline.setCycleCount(1);
@@ -266,26 +266,19 @@ public class MyLoans {
      * @param value The value for the detail.
      */
     private void addDetailToVBox(VBox vbox, String label, String value) {
-
         HBox hBox = new HBox();
         hBox.setStyle("-fx-padding: 5;");
         hBox.setSpacing(10);
-
 
         Label labelName = new Label(label);
         labelName.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
         HBox.setHgrow(labelName, Priority.ALWAYS);
 
-
         Label labelValue = new Label(value);
         labelValue.setStyle("-fx-font-size: 14; -fx-text-alignment: right;");
 
-
         hBox.getChildren().addAll(labelName, labelValue);
-
-
         vbox.getChildren().add(hBox);
-
 
         Separator separator = new Separator();
         vbox.getChildren().add(separator);
