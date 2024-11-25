@@ -65,7 +65,7 @@ public class FormControllerLoan {
 
     private void checkExistingApprovedLoan() {
         try {
-            List<LoanEntityDto> userLoans = loanService.findAll(); // TODO: Ajustar para buscar pelo usuário autenticado
+            List<LoanEntityDto> userLoans = loanService.findAll();
 
             boolean hasBlockedLoan = userLoans.stream()
                     .anyMatch(loan -> loan.getStatus() == Status.APPROVED // Use o enum Status

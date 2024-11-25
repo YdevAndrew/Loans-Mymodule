@@ -33,7 +33,7 @@ unit-test-job:
   needs: [build-job]
   script:
     - echo "Running unit tests"
-    - mvn clean compile test
+    - mvn test
     - echo "Unit tests completed."
   artifacts:
     paths:
