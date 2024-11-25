@@ -1,0 +1,62 @@
+image: maven:3.8.5-openjdk-17
+
+stages:
+  - lint
+  - build
+  - test
+  - coverage
+  - package
+
+before_script:
+  - echo "Starting pipeline with dummy JARs in libs directory"
+
+lint-job:
+  stage: lint
+  script:
+    - echo "Running linter for static code analysis"
+    - mvn checkstyle:check
+    - echo "Static code analysis completed"
+  allow_failure: true
+
+build-job:
+  stage: build
+  script:
+    - echo "Compiling source code with dummy dependencies"
+    - mvn clean compile 
+    - echo "Compilation completed."
+  artifacts:
+    paths:
+      - target/classes
+
+unit-test-job:
+  stage: test
+  needs: [build-job]
+  script:
+    - echo "Running unit tests"
+    - mvn clean compile test
+    - echo "Unit tests completed."
+  artifacts:
+    paths:
+      - target/surefire-reports/
+
+coverage-job:
+  stage: coverage
+  needs: [unit-test-job]
+  script:
+    - echo "Generating code coverage report with Jacoco"
+    - mvn verify  jacoco:report
+    - echo "Coverage report generated."
+  artifacts:
+    paths:
+      - target/site/jacoco/
+
+package-job:
+  stage: package
+  needs: [coverage-job]
+  script:
+    - echo "Packaging the application with dummy dependencies"
+    - mvn clean package 
+    - echo "Packaged application."
+  artifacts:
+    paths:
+      - target/*.jar
