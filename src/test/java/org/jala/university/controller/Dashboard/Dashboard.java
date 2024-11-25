@@ -1,5 +1,8 @@
 package org.jala.university.controller.Dashboard;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -14,8 +17,10 @@ import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Arrays;
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DashboardTest extends ApplicationTest {
 
@@ -38,9 +43,9 @@ class DashboardTest extends ApplicationTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
-        // Inicializando os componentes JavaFX mockados manualmente.
+        // Mockando os componentes JavaFX
         toggleButton = new Button();
         balanceLabel = new Label("R$ ********");
         dateLabel = new Label();
@@ -48,7 +53,7 @@ class DashboardTest extends ApplicationTest {
         myCardsVBox = new VBox();
         otherButtonsVBox = new VBox();
 
-        // Setando os componentes no controller.
+        // Injetando os componentes no controlador
         dashboard.toggleButton = toggleButton;
         dashboard.balanceLabel = balanceLabel;
         dashboard.dateLabel = dateLabel;
@@ -56,49 +61,63 @@ class DashboardTest extends ApplicationTest {
         dashboard.myCardsVBox = myCardsVBox;
         dashboard.otherButtonsVBox = otherButtonsVBox;
 
-        // Chamando o método de inicialização.
+        // Inicialização do controlador
         dashboard.initialize();
     }
 
     @Test
     void testToggleBalanceVisibility_ShowsBalance() {
-        // Ação: Clicar no botão para exibir o saldo.
         toggleButton.fire();
-
-        // Verificação: Checar se o texto e o ícone foram atualizados.
-        assertEquals("R$ 1234.56", balanceLabel.getText());
-        assertEquals("/images/eye_open.png", eyeIcon.getImage().getUrl());
+        Image expectedImage = loadImage("/images/eye_open.png");
+        assertTrue(imagesAreEqual(expectedImage, eyeIcon.getImage()));
+        assertEquals("R$ 1234,56", balanceLabel.getText());
     }
 
     @Test
     void testToggleBalanceVisibility_HidesBalance() {
-        // Ação: Primeiro, exibe o saldo.
         toggleButton.fire();
-        // Ação: Oculta o saldo.
         toggleButton.fire();
-
-        // Verificação: Checar se o saldo e o ícone estão ocultos.
+        Image expectedImage = loadImage("/images/eye.png");
+        assertTrue(imagesAreEqual(expectedImage, eyeIcon.getImage()));
         assertEquals("R$ ********", balanceLabel.getText());
-        assertEquals("/images/eye.png", eyeIcon.getImage().getUrl());
     }
 
     @Test
     void testInitialize_SetsDateLabel() {
-        // Verificação: Checar se o rótulo de data está no formato correto.
         assertTrue(dateLabel.getText().matches("^[A-Za-z]+, \\d{2}$"));
     }
 
     @Test
     void testHandleMyCardsClick_TogglesVisibility() {
-        // Inicialmente, os cartões não devem estar visíveis.
         myCardsVBox.setVisible(false);
         otherButtonsVBox.setVisible(true);
-
-        // Ação: Clicar para exibir os cartões.
         dashboard.handleMyCardsClick();
-
-        // Verificação: Checar se a visibilidade foi alterada.
         assertTrue(myCardsVBox.isVisible());
         assertTrue(otherButtonsVBox.isVisible());
+    }
+
+    // Funções auxiliares
+    private boolean imagesAreEqual(Image img1, Image img2) {
+        if (img1.getWidth() != img2.getWidth() || img1.getHeight() != img2.getHeight()) {
+            return false; // Imagens de tamanhos diferentes
+        }
+
+        PixelReader reader1 = img1.getPixelReader();
+        PixelReader reader2 = img2.getPixelReader();
+
+        WritablePixelFormat<java.nio.ByteBuffer> pixelFormat = WritablePixelFormat.getByteBgraInstance();
+        int width = (int) img1.getWidth();
+        int height = (int) img1.getHeight();
+        byte[] pixels1 = new byte[width * height * 4];
+        byte[] pixels2 = new byte[width * height * 4];
+
+        reader1.getPixels(0, 0, width, height, pixelFormat, pixels1, 0, width * 4);
+        reader2.getPixels(0, 0, width, height, pixelFormat, pixels2, 0, width * 4);
+
+        return Arrays.equals(pixels1, pixels2);
+    }
+
+    private Image loadImage(String path) {
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
     }
 }

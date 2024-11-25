@@ -21,25 +21,25 @@
 
       <ImageView fx:id="image4" fitHeight="139.0" fitWidth="410.0" layoutX="14.0" layoutY="213.0">
          <image>
-            <Image url="@images/Text.png" />
+            <Image url="@../images/Text.png" />
          </image>
       </ImageView>
 
       <ImageView fx:id="image8" fitHeight="139.0" fitWidth="1303.0" layoutX="3.0">
          <image>
-            <Image url="@images/fundo (1).png" />
+            <Image url="@../images/fundo (1).png" />
          </image>
       </ImageView>
 
       <ImageView fx:id="image9" fitHeight="28.0" fitWidth="439.0" layoutX="14.0" layoutY="69.0">
          <image>
-            <Image url="@images/Transparent, safe, and your way.png" />
+            <Image url="@../images/Transparent, safe, and your way.png" />
          </image>
       </ImageView>
 
       <ImageView fx:id="image10" fitHeight="18.0" fitWidth="131.0" layoutX="23.0" layoutY="32.0">
          <image>
-            <Image url="@images/Loans JalaU.png" />
+            <Image url="@../images/Loans JalaU.png" />
          </image>
       </ImageView>
 
@@ -63,13 +63,13 @@
 
       <ImageView fx:id="image14" fitHeight="18.0" fitWidth="189.0" layoutX="720.0" layoutY="271.0">
          <image>
-            <Image url="@images/Installments in up to 36 months.png" />
+            <Image url="@../images/Installments in up to 36 months.png" />
          </image>
       </ImageView>
 
       <ImageView fx:id="image15" fitHeight="18.0" fitWidth="122.0" layoutX="754.0" layoutY="325.0">
          <image>
-            <Image url="@images/Instant results.png" />
+            <Image url="@../images/Instant results.png" />
          </image>
       </ImageView>
 
@@ -77,7 +77,7 @@
          <graphic>
             <ImageView fx:id="image16" fitHeight="30.0" fitWidth="182.0">
                <image>
-                  <Image url="@images/button.png" />
+                  <Image url="@../images/button.png" />
                </image>
             </ImageView>
          </graphic>
